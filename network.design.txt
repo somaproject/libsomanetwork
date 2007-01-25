@@ -1,0 +1,104 @@
+The "network" object is designed to be a complete independent
+interface to all necessary soma-network functions. All of its external
+API calls are to be thread-safe, and internally it spawns its own
+thread (maybe more than one).
+
+But to the rest of the application, Network looks like your standard single-threaded collection of data sources, with one exception: two pipes. 
+
+Why pipes? Obviously, condion variables are the superior solution
+here. In fact, i'm still not convinced that using pipes (and the
+associated kernel trap) won't be awful for performace. But currently,
+linux has no capacity to block on multiple conditonals, and glib has
+no way of incorporating conditionals into the primary event loop (that
+I can find).
+
+Pipes represent a language-neutral platform-neutral solution. 
+
+You construct network() with a string equal to the soma hardware's IP
+address, and an optional string as to the broadcast udp string to
+listen on.
+
+To configure network, we have:
+
+enableDataRx(type, source)
+disableDataRx(type, source) 
+  creates / opens the socket for type/source on the relevsant port, creates the correct internal buffer. 
+
+Network guarantees proper packet ordering, handling the necessary retx/etc. stuff. 
+
+Each pipe has one byte of data written to it for each datagram pending
+in the output queue. 
+
+-------------------------
+extracting data
+-------------------------
+
+There's the question of "do we extract one datagram or all datagrams?". I'm not sure what the best answer is here. I can't quite convince myself that a non-1:1 correspondence would be error-free. 
+
+Network only understands the sequence and type/src id of each
+datagram, and nothing beyond that. Thus we pass out: 
+
+rawData:
+  seq : uint32
+  src : byte
+  typ : uint8
+  data: char* 
+
+rawData* dataPop()
+method, which will return either Null (if there is no data) or a pointer to a new data object. 
+
+Note that we now own this object, and will have to call delete on it
+ourselves.
+
+
+-----------------
+status: 
+
+there's a readStatus() function which returns a pre-defined status object, containing [blah]
+
+--------------------------------------------------------------------------
+internal guts: 
+
+we're using boost's asio and boost's threads. yea, I like pain. 
+
+We can totally just use raw sockets at some point should we decide
+that we don't want to worry about all the other crap.
+
+
+--------------
+
+enableDataRX() creates a new DataReceiver that: 
+
+1. has an internal queue for received data
+2. can append to the output queue
+3. can send retx requests
+
+we create an output queue with potential placeholders for missing
+packets. at the end of each RX packet operation, we call
+flushRxQueue, which flushes the output queue until the queue is
+either empty or there is a blocking "missing packet".
+
+we also keep a list / something with constant look-up time to insert
+missing packets and then extract them.
+
+DataReceiver(type, src): constructor for data type and source. 
+
+We push_back() on the end of the queue when we get a new packet. 
+
+If newpacket.seq == back().seq + 1:
+   rxqueue.push_back(newpacket); 
+else: 
+   if it's in the future: 
+      add in missing packets
+      insert iterators into the missinghash
+   
+   else
+      perform a lookup in the missing hash
+         mark as valid
+      else
+         it must be a repeat
+
+
+Note that the DataReceiver simply pushes the output data into the final output queue. That is, 
+
+
