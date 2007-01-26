@@ -1,6 +1,5 @@
 #include <boost/test/unit_test.hpp>
 #include "tspipefifo.h"
-#define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <boost/thread/thread.hpp>
 

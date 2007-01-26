@@ -63,7 +63,7 @@ void DataReceiver::startReceive()
 void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 			       int seq)
 {
-  
+
   char * retxbuf =  new char[6]; 
   retxbuf[0] = typ; 
   retxbuf[1] = src; 
@@ -115,14 +115,14 @@ void DataReceiver::handleReceive(const asio::error_code& error,
 	  for (int i = 0; i < (prd->seq - (latestSeq_ +1)); i++) 
 	    {
 	      RawData * missingPkt = new RawData; 
-	      sequence_t missingSeq =  latestSeq_ + i; 
+	      sequence_t missingSeq =  latestSeq_ + i + 1; 
 	      missingPkt-> seq = missingSeq; 
-	      missingPkt->missing = false; 
+	      missingPkt->missing = true; 
 	      rawRxQueue_.push_back(missingPkt); 
 	      latestSeq_++; 
-	      // now add iterators
-	      missingPacketIters_[missingSeq] = rawRxQueue_.end(); 
-	      
+	      // now add missing packets
+	      missingPackets_[missingSeq] = missingPkt; 
+		
 	      // now request a retx 
 	      sendReTxReq(prd->src,  prd->typ, missingSeq); 
 
@@ -138,10 +138,10 @@ void DataReceiver::handleReceive(const asio::error_code& error,
 	{
 	  // it's in the past, which means it's either a dupe 
 	  // or on our missing list
-	  
+
 	  // check if it's a missing packet
-	  missingIterHash_t::iterator m = missingPacketIters_.find(prd->seq); 
-	  if (m == missingPacketIters_.end() ) 
+	  missingPktHash_t::iterator m = missingPackets_.find(prd->seq); 
+	  if (m == missingPackets_.end() ) 
 	    {
 	    // this was a duplicate packet; ignore
 	    dupeCount_++; 
@@ -150,15 +150,15 @@ void DataReceiver::handleReceive(const asio::error_code& error,
 	  else 
 	    { 
 	      // get the iterator 
-	      rawQueue_t::iterator pkt = (*m).second; 
-	      missingPacketIters_.erase(m); 
-	      
-	      // now, delete the (empty) packet that the pointer points to
-	      delete *pkt; 
-	      
-	      // set the iterator to be the new just-rx'd packet
-	      *pkt = prd;
-	      
+	      RawData* pkt = (*m).second; 
+
+	      // copy the received packet into the one that's currently in the retx buffer
+
+	      *pkt = *prd; 
+	      missingPackets_.erase(m); 
+
+	      delete prd; 
+
 	      pktCount_++; 
 	      
 	    }
@@ -184,10 +184,15 @@ void DataReceiver::updateOutQueue()
   
   int updateCount = 0;  // the number of new packets we've added to the queue
   // extract out
+
   while (not rawRxQueue_.empty() and 
 	 (*rawRxQueue_.front()).missing == false) {
     
-    putIn_(rawRxQueue_.front()); 
+
+    RawData* rdp = rawRxQueue_.front(); 
+	
+
+    putIn_(rdp); 
     
     rawRxQueue_.pop_front(); 
     

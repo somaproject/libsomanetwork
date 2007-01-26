@@ -1,6 +1,5 @@
 #include <boost/test/unit_test.hpp>
 
-#include "datareceiver.h"
 #define BOOST_AUTO_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 #include <iostream>
@@ -8,6 +7,9 @@
 #include <asio.hpp>
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include "datareceiver.h"
+#include "tests.h"
 
 using asio::ip::udp;
 
@@ -25,19 +27,8 @@ void finish(const asio::error_code& /*e*/, asio::io_service * ios )
   ios->stop(); 
 }
 
-char * fakeDataPacket(unsigned int seq, char src, char typ)
-{
-  char * data = new char[BUFSIZE]; 
-  unsigned int seqh = htonl(seq); 
-  memcpy(data, &seqh,  4); 
-  data[4] = src; 
-  data[5] = typ; 
 
-  return data; 
-
-}
-
-BOOST_AUTO_TEST_CASE( simpletest )
+BOOST_AUTO_TEST_CASE( simpledatatest )
 {
   // There's an interesting question of what we want to test here
   // and how we do it. We need to hook up datareceiver to the dispatcher, 

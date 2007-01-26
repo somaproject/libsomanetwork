@@ -34,7 +34,7 @@ typedef std::list<RawData*> rawQueue_t;
 
 // missing packet type
 typedef std::map<sequence_t, 
-		   rawQueue_t::iterator> missingIterHash_t;
+		   RawData*> missingPktHash_t;
 
 
 int dataPortLookup(int type, int source); 
@@ -82,7 +82,7 @@ private:
   rawQueue_t rawRxQueue_; 
   
   // missing packet hash
-  missingIterHash_t missingPacketIters_; 
+  missingPktHash_t missingPackets_; 
 
   void updateOutQueue(void); 
   

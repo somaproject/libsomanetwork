@@ -27,6 +27,19 @@ void Network::shutdown()
 Network::~Network()
 {
   pthrd_->join(); 
+
+  // delete the data receivers that remain
+  std::map<const datagen_t, DataReceiver*>::iterator i;
+  for (i = dataReceivers_.begin(); i != dataReceivers_.end(); 
+       i++) 
+    {
+      
+      delete (*i).second; 
+    }
+  
+  
+  // 
+
 }
 
 
@@ -62,5 +75,7 @@ void Network::disableDataRx(datasource_t src, datatype_t typ)
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 
   std::map<const datagen_t, DataReceiver*>::iterator i = dataReceivers_.find(dg); 
+  // UM THIS IS BROKEN WHAT ARE WE SUPPOSED TO DO WITH i? 
+
   delete dr;   
 }
