@@ -16,6 +16,8 @@ using namespace boost::posix_time;
 const int BUFSIZE = 1024; 
 const int HDRLEN = 6;
 
+typedef unsigned char datasource_t; 
+typedef unsigned char datatype_t; 
 typedef unsigned int sequence_t; 
 
 struct RawData
@@ -55,7 +57,11 @@ private:
   void startReceive(); 
   void handleReceive(const asio::error_code& error,
 		   std::size_t /*bytes_transferred*/); 
-  
+  void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq); 
+  void handleSend(char * message,
+		  const asio::error_code& /*error*/,
+		  std::size_t /*bytes_transferred*/);
+
   
   int source_; 
   int type_; 

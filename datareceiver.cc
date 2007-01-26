@@ -11,14 +11,16 @@ int dataPortLookup(int type, int source) {
 RawData * newRawData(boost::array<char, BUFSIZE> buffer) 
 {
   RawData * prd = new RawData; 
-//   std::cout << (int) buffer[0] << ' '
-// 	    << (int) buffer[1] << ' '
-// 	    << (int) buffer[2] << ' '
-// 	    << (int) buffer[3] << std::endl; 
+//    std::cout << (int) buffer[0] << ' '
+//  	    << (int) buffer[1] << ' '
+//  	    << (int) buffer[2] << ' '
+//  	    << (int) buffer[3] << ' '
+//  	    << (int) buffer[4] << ' '
+//  	    << (int) buffer[5] << std::endl; 
     
   prd->seq = ntohl(*((int *) &buffer[0])); 
-  prd->src = buffer[4]; 
-  prd->typ = buffer[5]; 
+  prd->typ = buffer[4]; 
+  prd->src = buffer[5]; 
   prd->missing = false; 
 
   for(int i = HDRLEN; i < BUFSIZE; i++) {
@@ -58,6 +60,36 @@ void DataReceiver::startReceive()
 					 asio::placeholders::bytes_transferred));
 }
 
+void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
+			       int seq)
+{
+  
+  char * retxbuf =  new char[6]; 
+  retxbuf[0] = typ; 
+  retxbuf[1] = src; 
+  unsigned int seqn = htonl(seq); 
+  
+  memcpy(&retxbuf[2], &seqn, 4); 
+  
+  udp::endpoint retxep = remote_endpoint_;
+  retxep.port(4400); 
+  
+  socket_.async_send_to(asio::buffer(retxbuf, 6), 
+			retxep,
+			boost::bind(&DataReceiver::handleSend, 
+				    this, 
+				    retxbuf,
+				    asio::placeholders::error,
+				    asio::placeholders::bytes_transferred));
+
+}
+
+void DataReceiver::handleSend(char * message,
+			      const asio::error_code& /*error*/,
+			      std::size_t /*bytes_transferred*/)
+{
+  delete message; 
+}
 
 void DataReceiver::handleReceive(const asio::error_code& error,
 				 std::size_t bytes_transferred)
@@ -92,7 +124,7 @@ void DataReceiver::handleReceive(const asio::error_code& error,
 	      missingPacketIters_[missingSeq] = rawRxQueue_.end(); 
 	      
 	      // now request a retx 
-	      // NEED TO IMPLEMENT
+	      sendReTxReq(prd->src,  prd->typ, missingSeq); 
 
 	    }
 	  

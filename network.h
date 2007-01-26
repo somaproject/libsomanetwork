@@ -8,8 +8,6 @@
 #include "tspipefifo.h"
 #include "datareceiver.h"
 
-typedef unsigned char datasource_t; 
-typedef unsigned char datatype_t; 
 
 typedef std::pair<datasource_t, datatype_t> datagen_t; 
 

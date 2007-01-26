@@ -61,6 +61,7 @@ int main(int argc, char * argv[])
       
       RawData * rdp = network.getNewData(); 
       char chan = rdp->src; 
+      //std::cout << "received chan" << (int) chan << std::endl; 
       if (chan >= vm["startchan"].as<int>() and
 	  chan <= vm["endchan"].as<int>()) 
 	{

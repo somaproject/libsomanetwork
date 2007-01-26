@@ -1,4 +1,4 @@
-CXXFLAGS = -I../../asio/asio-0.3.8rc1/include/ -g -O2 -D_REENTRANT
+CXXFLAGS = -I../asio-0.3.8rc1/include/ -g -O2 -D_REENTRANT
 LDFLAGS = -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options 
 CXX = g++
 
@@ -29,8 +29,8 @@ tspipefifo_bench: tspipefifo_bench.o
 
 
 
-deploy:
-	cp main ~/acq/acq2
-	cp main ~/acq/acq3
-	cp main ~/acq/acq4
-	cp main ~/acq/acq6
+deploy: network_bench
+	cp network_bench ~/acq/acq2
+	cp network_bench ~/acq/acq3
+	cp network_bench ~/acq/acq4
+	cp network_bench ~/acq/acq6
