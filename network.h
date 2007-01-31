@@ -25,6 +25,8 @@ class Network
   int getTSPipeFifoPipe(); 
   void run(); 
   void shutdown(); 
+  
+  std::vector<DataReceiverStats>  getDataStats(); 
 
  private: 
   TSPipeFifo<RawData*> outputFifo_; 

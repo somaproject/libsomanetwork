@@ -1,5 +1,5 @@
-CXXFLAGS = -I../../asio/asio-0.3.8rc1/include/ -g -O2 -D_REENTRANT
-LDFLAGS = -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options 
+CXXFLAGS = -I../asio-0.3.8rc1/include/ -g -pg -O2 -D_REENTRANT
+LDFLAGS = -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options -pg
 CXX = g++
 
 OBJS = main.o network.o datareceiver.o tests.o

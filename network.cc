@@ -46,7 +46,7 @@ Network::~Network()
 void Network::appendDataOut(RawData* out) {
 
   outputFifo_.append(out); 
-
+  
 }
 
 RawData* Network::getNewData(void)
@@ -78,4 +78,16 @@ void Network::disableDataRx(datasource_t src, datatype_t typ)
   // UM THIS IS BROKEN WHAT ARE WE SUPPOSED TO DO WITH i? 
 
   delete dr;   
+}
+
+std::vector<DataReceiverStats>  Network::getDataStats()
+{
+  std::map<const datagen_t, DataReceiver*>::iterator i;
+  std::vector<DataReceiverStats> drs; 
+  for (i = dataReceivers_.begin(); i != dataReceivers_.end(); i++)
+    {
+      drs.push_back(((i->second))->getStats()); 
+    }
+  return std::vector<DataReceiverStats>(drs); 
+
 }

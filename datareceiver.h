@@ -36,6 +36,19 @@ typedef std::list<RawData*> rawQueue_t;
 typedef std::map<sequence_t, 
 		   RawData*> missingPktHash_t;
 
+struct DataReceiverStats
+{
+  
+  int source; 
+  int type; 
+  int pktCount; 
+  int latestSeq;
+  int dupeCount; 
+  int pendingCount; 
+  int missingPacketCount;
+  int reTxRxCount; 
+  int outOfOrderCount; 
+}; 
 
 int dataPortLookup(int type, int source); 
 
@@ -51,8 +64,13 @@ public:
     {  
       return pktCount_; // rawBuffer_.size();
     }
+  int getPktCount() { return pktCount_;} 
+  int getLatestSeq() { return latestSeq_;}
+  int getDupeCount() { return dupeCount_;}
+  int getPendingCount() { return pendingCount_; }
   
-
+  DataReceiverStats getStats(); 
+  
 private:
   void startReceive(); 
   void handleReceive(const asio::error_code& error,
@@ -66,8 +84,11 @@ private:
   int source_; 
   int type_; 
   int pktCount_; 
-  int latestSeq_; 
-
+  int latestSeq_;
+  int dupeCount_; 
+  int pendingCount_; 
+  int reTxRxCount_; 
+  int outOfOrderCount_; 
   boost::function<void (RawData *)>  putIn_; 
   
   //ptime firstPacket_, lastPacket_;
@@ -76,7 +97,6 @@ private:
   asio::ip::udp::endpoint remote_endpoint_;
   boost::array<char, BUFSIZE> recv_buffer_;
 
-  int dupeCount_; 
 
   // received queue
   rawQueue_t rawRxQueue_; 
