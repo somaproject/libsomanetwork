@@ -101,4 +101,19 @@ else:
 
 Note that the DataReceiver simply pushes the output data into the final output queue. That is, 
 
+-----------------------------------------------------------------
+
+We're keeping basically the same abstraction pattern but we're using
+the Network object to handle select/poll (actually epoll) operations
+and the associated calback.
+
+Epoll is actually neat for this due to the user-specific data component that lives in the kernel. So all we really do here is: 
+
+
+1. create DataReceiver
+2. extract its socket descriptor
+3. add it to the event set
+4. when we run()
+
+epoll() then calls the relevant callback that the kernel pointer points to
 

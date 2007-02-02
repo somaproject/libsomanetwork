@@ -3,14 +3,14 @@
 
 #include <ctime>
 #include <iostream>
-#include <list>
+#include <queue>
 #include <map>
 #include <string>
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <asio.hpp>
+#include <sys/epoll.h>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 using namespace boost::posix_time;
 const int BUFSIZE = 1024; 
@@ -29,7 +29,7 @@ struct RawData
   boost::array<char, BUFSIZE - HDRLEN> body;
 }; 
 
-typedef std::list<RawData*> rawQueue_t; 
+typedef std::queue<RawData*> rawQueue_t; 
 
 
 // missing packet type
@@ -56,8 +56,7 @@ class DataReceiver
 {
   
 public:
-  DataReceiver(asio::io_service& io_service, 
-	       int source, int type,
+  DataReceiver(int epollfd, int source, int type,
 	       boost::function<void (RawData *)> rdp); 
   ~DataReceiver(); 
   int getBufferSize(void) 
@@ -68,19 +67,17 @@ public:
   int getLatestSeq() { return latestSeq_;}
   int getDupeCount() { return dupeCount_;}
   int getPendingCount() { return pendingCount_; }
-  
+  int getSocket() { return socket_;}
   DataReceiverStats getStats(); 
-  
-private:
-  void startReceive(); 
-  void handleReceive(const asio::error_code& error,
-		   std::size_t /*bytes_transferred*/); 
-  void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq); 
-  void handleSend(char * message,
-		  const asio::error_code& /*error*/,
-		  std::size_t /*bytes_transferred*/);
 
+  void handleReceive();   
+private:
+
+
+  void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq); 
   
+  int socket_; 
+
   int source_; 
   int type_; 
   int pktCount_; 
@@ -92,10 +89,7 @@ private:
   boost::function<void (RawData *)>  putIn_; 
   
   //ptime firstPacket_, lastPacket_;
-
-  asio::ip::udp::socket socket_;
-  asio::ip::udp::endpoint remote_endpoint_;
-  boost::array<char, BUFSIZE> recv_buffer_;
+  struct epoll_event  ev_; 
 
 
   // received queue

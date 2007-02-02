@@ -1,4 +1,4 @@
-CXXFLAGS = -I../asio-0.3.8rc1/include/ -g -pg -O2 -D_REENTRANT
+CXXFLAGS = -I../asio-0.3.8rc1/include/ -g -pg -O2 -D_REENTRANT -m64
 LDFLAGS = -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options -pg
 CXX = g++
 

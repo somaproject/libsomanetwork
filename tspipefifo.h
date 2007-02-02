@@ -1,7 +1,7 @@
 #ifndef TSPIPEFIFO_H
 #define TSPIPEFIFO_H
 
-#include <list>
+#include <queue>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 
@@ -10,7 +10,7 @@ class TSPipeFifo
 {
 
  private:
-  std::list<T> fifo_; 
+  std::queue<T> fifo_; 
   boost::mutex mutex_; 
   int writingPipe_; 
 
@@ -43,7 +43,7 @@ class TSPipeFifo
       // pipe, it's not like the client will pop the (added) data
 
       boost::mutex::scoped_lock * sl = new boost::mutex::scoped_lock(mutex_);
-      fifo_.push_back(x); 
+      fifo_.push(x); 
       delete sl; 
 
       write(writingPipe_, &test, 1); 
@@ -57,7 +57,7 @@ class TSPipeFifo
  
       boost::mutex::scoped_lock scoped_lock(mutex_);
       T x = fifo_.front(); 
-      fifo_.pop_front(); 
+      fifo_.pop(); 
       
       return x; 
     }

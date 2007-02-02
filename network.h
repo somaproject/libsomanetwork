@@ -3,6 +3,7 @@
 
 #include <map>
 #include <utility>
+#include <sys/epoll.h>
 
 
 #include "tspipefifo.h"
@@ -32,8 +33,10 @@ class Network
   TSPipeFifo<RawData*> outputFifo_; 
   std::map<const datagen_t, DataReceiver*> dataReceivers_; 
   void appendDataOut(RawData* out); 
-  asio::io_service ioservice_; 
 
+  bool shuttingDown_; 
+
+  int epollfd_; 
   boost::thread *  pthrd_; 
   void workthread(void); 
 

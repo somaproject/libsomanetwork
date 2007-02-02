@@ -1,26 +1,61 @@
 #include <boost/thread/thread.hpp>
+#include <errno.h>
 #include "network.h"
 #include "datareceiver.h"
 
 
-Network::Network()
+const int EPOLLMAXCNT = 64; 
+
+Network::Network() :
+  shuttingDown_ (false)
 {
+  epollfd_ = epoll_create(EPOLLMAXCNT); 
+
 }
 
 void Network::run()
 {
   pthrd_ = new boost::thread(boost::bind(&Network::workthread,
-				 this));
+					 this));
   
 }
 void Network::workthread()
 {
-  ioservice_.run(); 
+  while(not shuttingDown_) {
+
+
+    epoll_event events[EPOLLMAXCNT]; 
+    const int epMaxWaitMS = 1000; 
+    int nfds = epoll_wait(epollfd_, events, EPOLLMAXCNT, 
+			  epMaxWaitMS); 
+
+
+    if (nfds > 0 ) {
+      
+      for(int evtnum = 0; evtnum < nfds; evtnum++) {
+	DataReceiver * drp  = (DataReceiver*)events[evtnum].data.ptr; 
+	//std::cout << (long int)events[evtnum].data.ptr << std::endl; 
+	drp->handleReceive(); 
+      }
+
+
+    } else if (nfds < 0 ) {
+      if (errno == EINTR) {
+	std::cerr << "EINTR: The call was interrupted by a singal handler before any of the requested events occured or the timeout expired" << std::endl; 
+
+      }
+    } else {
+      std::cout << "Timeout occureD" << std::endl;
+      // otherwise, just a timeout
+    }
+
+  }
+  
 }
 
 void Network::shutdown()
 {
-  ioservice_.stop(); 
+  shuttingDown_ = true; 
 
 }
 
@@ -44,7 +79,7 @@ Network::~Network()
 
 
 void Network::appendDataOut(RawData* out) {
-
+  //std::cout << "appending" << std::endl; 
   outputFifo_.append(out); 
   
 }
@@ -63,9 +98,10 @@ void Network::enableDataRx(datasource_t src, datatype_t typ)
 {
   datagen_t dg(src, typ); 
 
-  dataReceivers_[dg] = new DataReceiver(ioservice_, src, typ, 
-					 boost::bind(&Network::appendDataOut, 
-						     this, _1) ); 
+  dataReceivers_[dg] = new DataReceiver(epollfd_, src, typ, 
+					boost::bind(&Network::appendDataOut, 
+						    this, _1) ); 
+  
   
 }
 
