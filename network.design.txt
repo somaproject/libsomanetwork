@@ -1,9 +1,9 @@
 The "network" object is designed to be a complete independent
 interface to all necessary soma-network functions. All of its external
 API calls are to be thread-safe, and internally it spawns its own
-thread (maybe more than one).
+threads (maybe more than one).
 
-But to the rest of the application, Network looks like your standard single-threaded collection of data sources, with one exception: two pipes. 
+But to the rest of the application, Network looks like your standard single-threaded collection of data sources, with one exception: exposed pipes. 
 
 Why pipes? Obviously, condion variables are the superior solution
 here. In fact, i'm still not convinced that using pipes (and the
@@ -14,9 +14,6 @@ I can find).
 
 Pipes represent a language-neutral platform-neutral solution. 
 
-You construct network() with a string equal to the soma hardware's IP
-address, and an optional string as to the broadcast udp string to
-listen on.
 
 To configure network, we have:
 
@@ -45,7 +42,7 @@ rawData:
   data: char* 
 
 rawData* dataPop()
-method, which will return either Null (if there is no data) or a pointer to a new data object. 
+bvmethod, which will return either Null (if there is no data) or a pointer to a new data object. 
 
 Note that we now own this object, and will have to call delete on it
 ourselves.
@@ -53,17 +50,23 @@ ourselves.
 
 -----------------
 status: 
+-----------------
 
-there's a readStatus() function which returns a pre-defined status object, containing [blah]
+there's a readStatus() function which returns a pre-defined status object, containing something that has yet to be defined. 
 
 --------------------------------------------------------------------------
 internal guts: 
 
-we're using boost's asio and boost's threads. yea, I like pain. 
+we're using boost's threads. yea, I like pain. 
 
-We can totally just use raw sockets at some point should we decide
-that we don't want to worry about all the other crap.
+Epoll is actually neat for this due to the user-specific data component that lives in the kernel. So all we really do here is: 
 
+1. create DataReceiver
+2. extract its socket descriptor
+3. add it to the event set
+4. when we run()
+
+epoll() then calls the relevant callback that the kernel pointer points to
 
 --------------
 
@@ -99,21 +102,4 @@ else:
          it must be a repeat
 
 
-Note that the DataReceiver simply pushes the output data into the final output queue. That is, 
-
------------------------------------------------------------------
-
-We're keeping basically the same abstraction pattern but we're using
-the Network object to handle select/poll (actually epoll) operations
-and the associated calback.
-
-Epoll is actually neat for this due to the user-specific data component that lives in the kernel. So all we really do here is: 
-
-
-1. create DataReceiver
-2. extract its socket descriptor
-3. add it to the event set
-4. when we run()
-
-epoll() then calls the relevant callback that the kernel pointer points to
-
+Note that the DataReceiver simply pushes the output data into the final output queue. 

@@ -1,4 +1,4 @@
-CXXFLAGS = -I../asio-0.3.8rc1/include/ -g -pg -O2 -D_REENTRANT -m64
+CXXFLAGS = -g -pg -O2 -D_REENTRANT -m64
 LDFLAGS = -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options -pg
 CXX = g++
 
@@ -31,7 +31,9 @@ tests: datareceiver_test.o network_test.o datareceiver.o network.o tests.o
 	$(CXX) datareceiver_test.o network_test.o network.o datareceiver.o tests.o $(LDFLAGS) -o tests -lboost_unit_test_framework
 
 deploy: network_bench
-	cp network_bench ~/acq/acq2
 	cp network_bench ~/acq/acq3
 	cp network_bench ~/acq/acq4
 	cp network_bench ~/acq/acq6
+
+clean:
+	rm *.o

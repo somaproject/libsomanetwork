@@ -11,6 +11,13 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <sys/epoll.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 using namespace boost::posix_time;
 const int BUFSIZE = 1024; 
@@ -74,7 +81,8 @@ public:
 private:
 
 
-  void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq); 
+  void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq,
+		   sockaddr_in & sfrom); 
   
   int socket_; 
 

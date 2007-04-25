@@ -4,10 +4,11 @@
 #include "datareceiver.h"
 
 
-const int EPOLLMAXCNT = 64; 
+const int EPOLLMAXCNT = 256; 
 
 Network::Network() :
-  shuttingDown_ (false)
+  running_ (false), 
+  pthrd_(NULL)
 {
   epollfd_ = epoll_create(EPOLLMAXCNT); 
 
@@ -15,17 +16,17 @@ Network::Network() :
 
 void Network::run()
 {
+  running_ = true; 
   pthrd_ = new boost::thread(boost::bind(&Network::workthread,
 					 this));
   
 }
 void Network::workthread()
 {
-  while(not shuttingDown_) {
-
+  while(running_) {
 
     epoll_event events[EPOLLMAXCNT]; 
-    const int epMaxWaitMS = 1000; 
+    const int epMaxWaitMS = 10000; 
     int nfds = epoll_wait(epollfd_, events, EPOLLMAXCNT, 
 			  epMaxWaitMS); 
 
@@ -38,14 +39,16 @@ void Network::workthread()
 	drp->handleReceive(); 
       }
 
-
     } else if (nfds < 0 ) {
       if (errno == EINTR) {
-	std::cerr << "EINTR: The call was interrupted by a singal handler before any of the requested events occured or the timeout expired" << std::endl; 
+	std::cerr << "EINTR: The call was interrupted by a " 
+		  << "singal handler before any of the requested events "
+		  << "occured or THE TIMEOUT EXPIRED" << std::endl; 
 
+      } else {
+	throw std::runtime_error("epoll_wait returned an unexpected error condition"); 
       }
     } else {
-      std::cout << "Timeout occureD" << std::endl;
       // otherwise, just a timeout
     }
 
@@ -55,7 +58,7 @@ void Network::workthread()
 
 void Network::shutdown()
 {
-  shuttingDown_ = true; 
+  running_ = false; 
 
 }
 
@@ -96,6 +99,10 @@ int Network::getTSPipeFifoPipe()
 
 void Network::enableDataRx(datasource_t src, datatype_t typ)
 {
+  if (running_) {
+    throw std::runtime_error("cannot change DataRx state while running"); 
+  }
+
   datagen_t dg(src, typ); 
 
   dataReceivers_[dg] = new DataReceiver(epollfd_, src, typ, 
@@ -107,6 +114,10 @@ void Network::enableDataRx(datasource_t src, datatype_t typ)
 
 void Network::disableDataRx(datasource_t src, datatype_t typ)
 {
+  if (running_) {
+    throw std::runtime_error("cannot change DataRx state while running"); 
+  }
+
   // we really need a custom try/catch here 
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 
@@ -118,6 +129,11 @@ void Network::disableDataRx(datasource_t src, datatype_t typ)
 
 std::vector<DataReceiverStats>  Network::getDataStats()
 {
+  // NOT THREAD SAFE NOT THREAD SAFE
+  // NOT THREAD SAFE NOT THREAD SAFE
+  // NOT THREAD SAFE NOT THREAD SAFE
+  // NOT THREAD SAFE NOT THREAD SAFE
+
   std::map<const datagen_t, DataReceiver*>::iterator i;
   std::vector<DataReceiverStats> drs; 
   for (i = dataReceivers_.begin(); i != dataReceivers_.end(); i++)

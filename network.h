@@ -34,8 +34,8 @@ class Network
   std::map<const datagen_t, DataReceiver*> dataReceivers_; 
   void appendDataOut(RawData* out); 
 
-  bool shuttingDown_; 
-
+  bool running_; 
+  
   int epollfd_; 
   boost::thread *  pthrd_; 
   void workthread(void); 

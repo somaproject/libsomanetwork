@@ -41,7 +41,8 @@ DataReceiver::DataReceiver(int epollfd, int source, int type,
     
   socket_ = socket(AF_INET, SOCK_DGRAM, 17); 
   if (socket_ < 0) {
-    std::cerr << "Error creating socket!" << std::endl; 
+    throw std::runtime_error("could not create socket"); 
+
   }
 
   memset((char *) &si_me, sizeof(si_me), 0);
@@ -53,28 +54,25 @@ DataReceiver::DataReceiver(int epollfd, int source, int type,
   
   int optval = 1; 
 
-  // configure socket for broadcast
-  int res = setsockopt (socket_, SOL_SOCKET, SO_BROADCAST, 
-			(const void *) &optval, sizeof(optval)); 
-  if (res < 0) {
-    std::cerr << "Error setting SO_BROADCAST" << std::endl; 
-  }
-
   // confiugre socket for reuse
   optval = 1; 
-  setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, 
+  int res = setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, 
 	     &optval, sizeof (optval)); 
-  
+  if (res < 0) {
+    throw std::runtime_error("error settng socket to reuse"); 
+  }
+
   optval = 500000; 
   res = setsockopt (socket_, SOL_SOCKET, SO_RCVBUF, 
 		    (const void *) &optval, sizeof(optval)); 
   if (res < 0) {
-    std::cerr << "Error setting socket size" << std::endl; 
+    throw std::runtime_error("error settng receive buffer size"); 
+
   }
 
   res =  bind(socket_, (sockaddr*)&si_me, sizeof(si_me)); 
   if (res < 0) {
-      std::cerr << "Error binding" << std::endl; 
+    throw std::runtime_error("error binding socket"); 
   }
     
   // try adding to epoll
@@ -93,19 +91,17 @@ DataReceiver::~DataReceiver()
 
 
 void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
-			       int seq)
+			       int seq,  sockaddr_in & sfrom)
 {
 
   char * retxbuf =  new char[6]; 
   retxbuf[0] = typ; 
   retxbuf[1] = src; 
   unsigned int seqn = htonl(seq); 
-  
   memcpy(&retxbuf[2], &seqn, 4); 
-  
-  //udp::endpoint retxep = remote_endpoint_;
-  //retxep.port(4400); 
 
+  sfrom.sin_port = htons(4400); 
+  sendto(socket_, &retxbuf[0], 6, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
 
 }
 
@@ -166,7 +162,7 @@ void DataReceiver::handleReceive()
 	      missingPackets_[missingSeq] = missingPkt; 
 		
 	      // now request a retx 
-	      //sendReTxReq(prd->src,  prd->typ, missingSeq); 
+	      sendReTxReq(prd->src,  prd->typ, missingSeq, sfrom); 
 
 	    }
 	  
@@ -182,11 +178,7 @@ void DataReceiver::handleReceive()
 	{
 	  // it's in the past, which means it's either a dupe 
 	  // or on our missing list
-	  std::cout << "I am " << source_ << " !" 
-		    << " packet received in past for  "
-		    << (int) prd->src << " | " 
-		    << (int) prd->typ << " | " << prd->seq << std::endl; 
-	  
+
 	  // check if it's a missing packet
 	  missingPktHash_t::iterator m = missingPackets_.find(prd->seq); 
 	  if (m == missingPackets_.end() ) 

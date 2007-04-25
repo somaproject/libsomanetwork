@@ -4,14 +4,11 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <iostream>
 #include <boost/array.hpp>
-#include <asio.hpp>
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "datareceiver.h"
 #include "tests.h"
-
-using asio::ip::udp;
 
 using boost::unit_test::test_suite;
 
@@ -22,17 +19,10 @@ void rawDataReceiver(RawData* rd) {
   
 }
 
-void finish(const asio::error_code& /*e*/, asio::io_service * ios )
-{
-  ios->stop(); 
-}
 
 
 BOOST_AUTO_TEST_CASE( simpledatatest )
 {
-  // There's an interesting question of what we want to test here
-  // and how we do it. We need to hook up datareceiver to the dispatcher, 
-  // and then hook up something that sends datagrams, and hook up a callback
 
   // and then test them all. 
 
