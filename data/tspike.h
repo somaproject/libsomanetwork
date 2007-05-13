@@ -1,6 +1,9 @@
 #ifndef TSPIKE_TYPE_H
 #define TSPIKE_TYPE_H
 #include <stdint.h>
+#include <netdata/rawdata.h>
+#include <byteswap.h>
+#include <arpa/inet.h>
 
 /*
 Type declaration for Tetrode Spike data packet.
@@ -30,18 +33,76 @@ struct TSpike_t
 
 }; 
 
-inline TSpike_t rawToTSpike(RawData * rd)
+inline 
+TSpike_t rawToTSpike(RawData * rd)
 {
-  // This doesn't actually work yet, it's just here for type conversion
+  if (! rd->missing) {
+    TSpike_t ts; 
+    ts.src = rd->body[1]; 
+    
+    uint64_t time; 
+    memcpy(&time,  &(rd->body[4]), 8); 
 
-  return TSpike_t(); 
+    ts.time = htonll(time); 
+    TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
+    size_t bpos = (size_t) &rd->body[12]; 
+    for (int i = 0; i < 4; i++)
+      {
+	TSpikeWave_t * tsp= ptrs[i]; 
+	tsp->filtid = *((uint8_t*)bpos); 
+	bpos++; 
+	
+	tsp->valid = *((uint8_t*)bpos); 
+	bpos++; 
+	
+	tsp->threshold = ntohl(*((uint32_t *)bpos)); 
+	bpos += sizeof(tsp->threshold); 
+	for(int j = 0; j < TSPIKEWAVE_LEN; j++)
+	  {
+	    tsp->wave[j] = ntohl(*((uint32_t *)bpos)); 
+	    bpos += sizeof(tsp->wave[0]); 
+
+	  }
+	
+	
+      }
+    return ts; 
+  }
+
 }
 
-inline RawData * newRawDataFromSpike(const TSpike_t & ts)
+inline RawData * rawFromTSpike(const TSpike_t & ts)
 {
-  // This doesn't actually work yet, it's just here for type conversion
+  
+  RawData * rdp = new RawData; 
+  rdp->src = ts.src; 
+  rdp->seq = 0; 
+  uint64_t htime = htonll(ts.time); 
+  memcpy((void*)(&rdp->body[0]), &htime, sizeof(htime)); 
+  
 
-  return new RawData; 
+  const TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
+  size_t bpos = (size_t) &rdp->body[8]; 
+  for (int i = 0; i < 4; i++)
+    {
+      const TSpikeWave_t * tswp = ptrs[i]; 
+      memcpy((void*)bpos, &tswp->filtid, 1); 
+      bpos++; 
+      memcpy((void*)bpos, &tswp->valid, 1); 
+      bpos++; 
+	
+      int32_t nthreshold = htonl(tswp->threshold); 
+      bpos += sizeof(tswp->threshold); 
+
+      for (int i = 0; i < TSPIKEWAVE_LEN; i++)
+	{
+	  int32_t x = htonl(tswp->wave[i]);
+	  memcpy((void*)bpos, &x, sizeof(x)); 
+	  bpos += sizeof(x); 
+	}
+    }
+  
+  return  rdp; 
 
 }
 

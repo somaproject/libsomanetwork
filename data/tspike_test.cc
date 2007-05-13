@@ -1,0 +1,58 @@
+
+#include <boost/test/auto_unit_test.hpp>
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/fstream.hpp"   
+#include <iostream>    
+#include <fstream>                    
+#include "tspike.h"
+using  namespace boost;       
+using namespace boost::filesystem; 
+using namespace std; 
+
+BOOST_AUTO_TEST_SUITE(tspike_test); 
+
+BOOST_AUTO_TEST_CASE(tspike_fromraw)
+{
+  // we generate test data in python and read it here
+  std::fstream pyfile("frompy.dat", ios::in | ios::binary); 
+  int N = 100000; 
+  for (int i = 0; i < N; i++)
+    {
+      RawData * rdp = new RawData(); 
+      const int PACKLEN = 548; 
+      char buffer[PACKLEN]; 
+
+      pyfile.read(buffer, PACKLEN); 
+      memcpy(&rdp->body[0], buffer, PACKLEN); 
+
+      TSpike_t ts = rawToTSpike(rdp); 
+      BOOST_CHECK_EQUAL(ts.src,  i % 256); 
+      uint64_t time = i * 10215; 
+
+      BOOST_CHECK_EQUAL(ts.time, time); 
+      
+      std::vector<TSpikeWave_t> waves; 
+      waves.push_back(ts.x); 
+      waves.push_back(ts.y); 
+      waves.push_back(ts.a); 
+      waves.push_back(ts.b); 
+
+      for (int j = 0; j < 4; j++)
+	{
+	  TSpikeWave_t tsw = waves[j] ; 
+	  BOOST_CHECK_EQUAL(tsw.filtid, (j*i) % 256 );
+	  BOOST_CHECK_EQUAL(tsw.valid, (j*i) % 256 );
+	  BOOST_CHECK_EQUAL(tsw.threshold, j * i * (2*17 - 141)); 
+	  for (int k = 0; k < TSPIKEWAVE_LEN; k++)
+	    {
+	      BOOST_CHECK_EQUAL(tsw.wave[k], j*i*0x12345 + k); 
+	    }
+	}
+    }
+  
+    
+
+}
+
+
+BOOST_AUTO_TEST_SUITE_END(); 
