@@ -34,7 +34,7 @@ struct TSpike_t
 }; 
 
 inline 
-TSpike_t rawToTSpike(RawData * rd)
+TSpike_t rawToTSpike(const RawData * rd)
 {
   if (! rd->missing) {
     TSpike_t ts; 
