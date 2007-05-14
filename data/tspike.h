@@ -77,12 +77,16 @@ inline RawData * rawFromTSpike(const TSpike_t & ts)
   RawData * rdp = new RawData; 
   rdp->src = ts.src; 
   rdp->seq = 0; 
+  rdp->body[0] = 0; 
+  rdp->body[1] = ts.src;
+  rdp->body[2] = 0; 
+  rdp->body[3] = 0; 
   uint64_t htime = htonll(ts.time); 
-  memcpy((void*)(&rdp->body[0]), &htime, sizeof(htime)); 
+  memcpy((void*)(&rdp->body[4]), &htime, sizeof(htime)); 
   
 
   const TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
-  size_t bpos = (size_t) &rdp->body[8]; 
+  size_t bpos = (size_t) &rdp->body[12]; 
   for (int i = 0; i < 4; i++)
     {
       const TSpikeWave_t * tswp = ptrs[i]; 
@@ -92,6 +96,7 @@ inline RawData * rawFromTSpike(const TSpike_t & ts)
       bpos++; 
 	
       int32_t nthreshold = htonl(tswp->threshold); 
+      memcpy((void*)bpos, &nthreshold, sizeof(nthreshold)); 
       bpos += sizeof(tswp->threshold); 
 
       for (int i = 0; i < TSPIKEWAVE_LEN; i++)

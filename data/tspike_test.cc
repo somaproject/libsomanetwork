@@ -11,7 +11,7 @@ using namespace std;
 
 BOOST_AUTO_TEST_SUITE(tspike_test); 
 
-BOOST_AUTO_TEST_CASE(tspike_fromraw)
+BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
 {
   // we generate test data in python and read it here
   std::fstream pyfile("frompy.dat", ios::in | ios::binary); 
@@ -51,6 +51,37 @@ BOOST_AUTO_TEST_CASE(tspike_fromraw)
     }
   
     
+
+}
+
+BOOST_AUTO_TEST_CASE(tspike_toraw)
+{
+  // we generate test data in python and read it here
+  std::fstream pyfile("frompy.dat", ios::in | ios::binary); 
+  int N = 1; 
+  for (int i = 0; i < N; i++)
+    {
+      RawData * rdp = new RawData(); 
+      const int PACKLEN = 548; 
+      char buffer[PACKLEN]; 
+
+      pyfile.read(buffer, PACKLEN); 
+      memcpy(&rdp->body[0], buffer, PACKLEN); 
+
+      TSpike_t ts = rawToTSpike(rdp); 
+      
+      
+      RawData * nrdp = rawFromTSpike(ts); 
+      
+      for (int i = 0; i < PACKLEN; i++)
+	{
+// 	  std::cout << i << ':' <<  hex << (uint32_t)(rdp->body[i]) << ' ' 
+// 		    << (uint16_t)( nrdp->body[i]) << std::endl; 
+	  BOOST_CHECK_EQUAL(rdp->body[i], nrdp->body[i]); 
+	}
+    }
+  
+  
 
 }
 
