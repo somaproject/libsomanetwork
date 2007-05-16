@@ -1,27 +1,7 @@
-#include "datareceiver.h"
 #include <iostream>
 #include <arpa/inet.h>
+#include <datareceiver.h>
 
-
-int dataPortLookup(int type, int source) {
-  return 4000  + type*64 + source;  
-}
-
-RawData * newRawData(boost::array<char, BUFSIZE> buffer) 
-{
-  RawData * prd = new RawData; 
-    
-  prd->seq = ntohl(*((int *) &buffer[0])); 
-  prd->typ = buffer[4]; 
-  prd->src = buffer[5]; 
-  prd->missing = false; 
-
-  for(int i = HDRLEN; i < BUFSIZE; i++) {
-    prd->body[i - HDRLEN] = buffer[i]; 
-  }
-
-  return prd; 
-}
 
 DataReceiver::DataReceiver(int epollfd, int source, int type, 
 			   boost::function<void (RawData *)> rdp)
@@ -33,7 +13,8 @@ DataReceiver::DataReceiver(int epollfd, int source, int type,
     pendingCount_(0), 
     reTxRxCount_(0), 
     outOfOrderCount_(0),
-    putIn_(rdp)
+    putIn_(rdp), 
+    epollFD_(epollfd)
 {
 
   struct sockaddr_in si_me, si_other;
@@ -79,14 +60,20 @@ DataReceiver::DataReceiver(int epollfd, int source, int type,
   ev_.events = EPOLLIN; 
   ev_.data.fd = socket_;
   ev_.data.ptr = this; // store self!
-  res = epoll_ctl(epollfd, EPOLL_CTL_ADD, socket_, &ev_); 
-  
+  res = epoll_ctl(epollFD_, EPOLL_CTL_ADD, socket_, &ev_); 
 
 }
 
 
 DataReceiver::~DataReceiver()
 {
+  
+  // remove from epoll
+  int res = epoll_ctl(epollFD_, EPOLL_CTL_DEL, socket_, NULL); 
+  
+  // close socket
+  close(socket_); 
+
 }
 
 
@@ -230,17 +217,18 @@ void DataReceiver::updateOutQueue()
 
   if ((*rawRxQueue_.front()).missing == true) {
     if (rawRxQueue_.size() > 10) {
-//       RawData * rdp = rawRxQueue_.front(); 
-//       sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
+      //       RawData * rdp = rawRxQueue_.front(); 
+      //       sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
       
     }
   }
   while (not rawRxQueue_.empty() and 
-	 (*rawRxQueue_.front()).missing == false) {
+	 (*rawRxQueue_.front()).missing == false) 
+    {
     
     
     RawData* rdp = rawRxQueue_.front(); 
- 
+    
     
     putIn_(rdp); 
     

@@ -68,38 +68,3 @@ Epoll is actually neat for this due to the user-specific data component that liv
 
 epoll() then calls the relevant callback that the kernel pointer points to
 
---------------
-
-enableDataRX() creates a new DataReceiver that: 
-
-1. has an internal queue for received data
-2. can append to the output queue
-3. can send retx requests
-
-we create an output queue with potential placeholders for missing
-packets. at the end of each RX packet operation, we call
-flushRxQueue, which flushes the output queue until the queue is
-either empty or there is a blocking "missing packet".
-
-we also keep a list / something with constant look-up time to insert
-missing packets and then extract them.
-
-DataReceiver(type, src): constructor for data type and source. 
-
-We push_back() on the end of the queue when we get a new packet. 
-
-If newpacket.seq == back().seq + 1:
-   rxqueue.push_back(newpacket); 
-else: 
-   if it's in the future: 
-      add in missing packets
-      insert iterators into the missinghash
-   
-   else
-      perform a lookup in the missing hash
-         mark as valid
-      else
-         it must be a repeat
-
-
-Note that the DataReceiver simply pushes the output data into the final output queue. 

@@ -1,0 +1,7 @@
+Do we set up the socket / ep correctly? 
+
+first, check epoll output
+
+How do we generate fake data? well, we generate a fake packet and send it to localhost, via the fakedata interface or something
+
+

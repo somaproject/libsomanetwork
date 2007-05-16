@@ -23,4 +23,24 @@ struct RawData
   boost::array<char, BUFSIZE - HDRLEN> body;
 }; 
 
+
+inline RawData * newRawData(boost::array<char, BUFSIZE> buffer) 
+{
+  RawData * prd = new RawData; 
+    
+  prd->seq = ntohl(*((int *) &buffer[0])); 
+  prd->typ = buffer[4]; 
+  prd->src = buffer[5]; 
+  prd->missing = false; 
+
+  for(int i = HDRLEN; i < BUFSIZE; i++) {
+    prd->body[i - HDRLEN] = buffer[i]; 
+  }
+
+  return prd; 
+}
+
+inline int dataPortLookup(int type, int source) {
+  return 4000  + type*64 + source;  
+}
 #endif // 
