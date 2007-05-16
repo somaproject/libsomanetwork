@@ -3,6 +3,9 @@
 
 #include <boost/array.hpp>
 #include <byteswap.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
 
 const int BUFSIZE = 1024; 
 const int HDRLEN = 6;

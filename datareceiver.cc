@@ -71,8 +71,7 @@ DataReceiver::~DataReceiver()
   // remove from epoll
   int res = epoll_ctl(epollFD_, EPOLL_CTL_DEL, socket_, NULL); 
   
-  // close socket
-  close(socket_); 
+    close(socket_); 
 
 }
 
@@ -111,6 +110,7 @@ void DataReceiver::handleReceive()
     {
 
       RawData * prd = newRawData(recvbuffer); 
+
       if (prd->src != source_ or prd->typ != type_) {
 	std::cerr  << "Error receiving packet " 
 		   << (int) prd->src << " != " << source_  << " or " 
