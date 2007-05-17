@@ -1,9 +1,9 @@
 #include <iostream>
 #include <arpa/inet.h>
-#include <datareceiver.h>
+#include "datareceiver.h"
 
 
-DataReceiver::DataReceiver(int epollfd, int source, int type, 
+DataReceiver::DataReceiver(int epollfd, int source, datatype_t type, 
 			   boost::function<void (RawData *)> rdp)
   : source_ (source), 
     type_ (type), 

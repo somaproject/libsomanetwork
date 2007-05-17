@@ -97,7 +97,7 @@ int Network::getTSPipeFifoPipe()
   return outputFifo_.readingPipe; 
 }
 
-void Network::enableDataRx(datasource_t src, datatype_t typ)
+void Network::enableDataRX(datasource_t src, datatype_t typ)
 {
   if (running_) {
     throw std::runtime_error("cannot change DataRx state while running"); 
@@ -112,7 +112,7 @@ void Network::enableDataRx(datasource_t src, datatype_t typ)
   
 }
 
-void Network::disableDataRx(datasource_t src, datatype_t typ)
+void Network::disableDataRX(datasource_t src, datatype_t typ)
 {
   if (running_) {
     throw std::runtime_error("cannot change DataRx state while running"); 

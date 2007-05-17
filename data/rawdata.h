@@ -13,6 +13,36 @@ const int HDRLEN = 6;
 typedef unsigned char datasource_t; 
 enum datatype_t {TSPIKE, WAVE, RAW};
 
+inline char datatypeToChar(datatype_t x)
+{
+  switch (x)
+    {
+    case TSPIKE:
+      return 0; 
+    case WAVE:
+      return 1;
+    case RAW:
+      return 2; 
+    default:
+      return 0; 
+    }; 
+}
+
+inline datatype_t charToDatatype(char x)
+{
+  switch(x)
+    { 
+    case 0:
+      return TSPIKE; 
+    case 1:
+      return WAVE; 
+    case 2:
+      return RAW; 
+    default:
+      return TSPIKE; 
+    }
+}
+
 typedef unsigned int sequence_t; 
 
 #define ntohll(x) bswap_64(x)
@@ -21,8 +51,8 @@ typedef unsigned int sequence_t;
 struct RawData
 {
   sequence_t seq; 
-  unsigned char src; 
-  unsigned char typ; 
+  datasource_t src; 
+  datatype_t typ; 
   bool missing; 
   boost::array<char, BUFSIZE - HDRLEN> body;
 }; 
@@ -33,7 +63,7 @@ inline RawData * newRawData(boost::array<char, BUFSIZE> buffer)
   RawData * prd = new RawData; 
     
   prd->seq = ntohl(*((int *) &buffer[0])); 
-  prd->typ = buffer[4]; 
+  prd->typ = charToDatatype(buffer[4]); 
   prd->src = buffer[5]; 
   prd->missing = false; 
 

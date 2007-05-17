@@ -19,8 +19,8 @@ class Network
   Network(); 
   ~Network(); 
   
-  void enableDataRx(datasource_t, datatype_t); 
-  void disableDataRx(datasource_t, datatype_t); 
+  void enableDataRX(datasource_t, datatype_t); 
+  void disableDataRX(datasource_t, datatype_t); 
 
   RawData*  getNewData(void); 
   int getTSPipeFifoPipe(); 

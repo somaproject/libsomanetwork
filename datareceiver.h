@@ -20,7 +20,7 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
-#include <data/rawdata.h>
+#include "data/rawdata.h"
 
 typedef std::queue<RawData*> rawQueue_t; 
 
@@ -49,7 +49,7 @@ class DataReceiver
 {
   
 public:
-  DataReceiver(int epollfd, int source, int type,
+  DataReceiver(int epollfd, int source, datatype_t type,
 	       boost::function<void (RawData *)> rdp); 
   ~DataReceiver(); 
   int getBufferSize(void) 
@@ -73,7 +73,7 @@ private:
   int socket_; 
 
   int source_; 
-  int type_; 
+  datatype_t type_; 
   int pktCount_; 
   int latestSeq_;
   int dupeCount_; 
