@@ -28,8 +28,8 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
 
   // and then test them all. 
   int epollfd = epoll_create(EPOLLMAXCNT); 
-  int src = 10;
-  int typ = 2; 
+  datasource_t src = 10;
+  datatype_t typ = RAW; 
   
   DataReceiver dr(epollfd, src, typ, &append); 
   
@@ -62,8 +62,8 @@ BOOST_AUTO_TEST_CASE(outofordertest)
 
   // and then test them all. 
   int epollfd = epoll_create(EPOLLMAXCNT); 
-  int src = 30;
-  int typ = 0; 
+  datasource_t src = 30;
+  datatype_t  typ = TSPIKE; 
   
   DataReceiver dr(epollfd, src, typ, &append); 
   
@@ -112,8 +112,8 @@ BOOST_AUTO_TEST_CASE(dupetest)
 
   // and then test them all. 
   int epollfd = epoll_create(EPOLLMAXCNT); 
-  int src = 30;
-  int typ = 0; 
+  datasource_t src = 30;
+  datatype_t typ = TSPIKE; 
   
   DataReceiver dr(epollfd, src, typ, &append); 
   
@@ -163,8 +163,8 @@ BOOST_AUTO_TEST_CASE(retxtest)
 
   // and then test them all. 
   int epollfd = epoll_create(EPOLLMAXCNT); 
-  int src = 30;
-  int typ = 0; 
+  datasource_t src = 30;
+  datatype_t typ = RAW; 
   
   DataReceiver dr(epollfd, src, typ, &append); 
   
