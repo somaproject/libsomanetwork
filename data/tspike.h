@@ -1,7 +1,7 @@
 #ifndef TSPIKE_TYPE_H
 #define TSPIKE_TYPE_H
 #include <stdint.h>
-#include <netdata/rawdata.h>
+#include <data/rawdata.h>
 #include <byteswap.h>
 #include <arpa/inet.h>
 

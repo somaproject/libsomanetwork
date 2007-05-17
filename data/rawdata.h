@@ -11,7 +11,8 @@ const int BUFSIZE = 1024;
 const int HDRLEN = 6;
 
 typedef unsigned char datasource_t; 
-typedef unsigned char datatype_t; 
+enum datatype_t {TSPIKE, WAVE, RAW};
+
 typedef unsigned int sequence_t; 
 
 #define ntohll(x) bswap_64(x)
