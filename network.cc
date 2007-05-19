@@ -99,15 +99,17 @@ int Network::getTSPipeFifoPipe()
 
 void Network::enableDataRX(datasource_t src, datatype_t typ)
 {
-  if (running_) {
-    throw std::runtime_error("cannot change DataRx state while running"); 
-  }
 
   datagen_t dg(src, typ); 
 
-  dataReceivers_[dg] = new DataReceiver(epollfd_, src, typ, 
-					boost::bind(&Network::appendDataOut, 
-						    this, _1) ); 
+  if (running_) {
+    std::runtime_error("cannot change DataRx state while running"); 
+  }
+
+
+   dataReceivers_[dg] = new DataReceiver(epollfd_, src, typ, 
+  					boost::bind(&Network::appendDataOut, 
+  						    this, _1) ); 
   
   
 }
@@ -141,5 +143,5 @@ std::vector<DataReceiverStats>  Network::getDataStats()
       drs.push_back(((i->second))->getStats()); 
     }
   return std::vector<DataReceiverStats>(drs); 
-
+  
 }

@@ -94,7 +94,8 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 
 void DataReceiver::handleReceive()
 {
-
+  
+  boost::mutex::scoped_lock lock( statusMutex_ );
 
   boost::array<char, BUFSIZE> recvbuffer; 
   sockaddr_in sfrom; 
@@ -243,6 +244,9 @@ void DataReceiver::updateOutQueue()
 
 DataReceiverStats DataReceiver::getStats()
 {
+  // This is now thread safe thanks to the mutex
+
+  boost::mutex::scoped_lock lock( statusMutex_ );
   DataReceiverStats st; 
   st.source = source_; 
   st.type = type_; 

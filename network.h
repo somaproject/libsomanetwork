@@ -28,7 +28,7 @@ class Network
   void shutdown(); 
   
   std::vector<DataReceiverStats>  getDataStats(); 
-
+  
  private: 
   TSPipeFifo<RawData*> outputFifo_; 
   std::map<const datagen_t, DataReceiver*> dataReceivers_; 

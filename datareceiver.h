@@ -17,7 +17,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
+#include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
 #include "data/rawdata.h"
@@ -96,6 +96,8 @@ private:
   
   // pipe logic
   int readPipe_, writePipe_; 
+
+  boost::mutex statusMutex_;
   
 }; 
 
