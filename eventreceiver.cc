@@ -123,6 +123,10 @@ void EventReceiver::handleReceive()
       else if (pEventPacket->seq > latestSeq_ + 1)
 	{
 	  // we're missing a packet; add in blanks with "missing" set
+	  std::cout << "We're missing a packet; we got seq="
+		    <<  pEventPacket->seq << " instead of " 
+		    << latestSeq_ + 1  
+		    << std::endl; 
 
 	  eventseq_t missingSeq;
 	  for (int i = 0; i < (pEventPacket->seq - (latestSeq_ +1)); i++) 
@@ -137,7 +141,7 @@ void EventReceiver::handleReceive()
 	       
 	      // now add missing packets
 	      missingPackets_[missingSeq] = missingPkt; 
-		
+	      
 	      // now request a retx 
 	      sendReTxReq(pEventPacket->seq); 
 
@@ -171,9 +175,9 @@ void EventReceiver::handleReceive()
 	      // get the iterator 
 	     EventPacket_t * pkt = (*m).second; 
 
-	      // copy the received packet into the one that's currently in the retx buffer
+	      // copy the received packet into the one 
+	     // that's currently in the retx buffer
 
-	     delete pkt->events; 
 	     *pkt = *pEventPacket; 
 	     missingPackets_.erase(m); 
 	     
