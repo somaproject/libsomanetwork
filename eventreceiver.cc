@@ -73,17 +73,15 @@ EventReceiver::~EventReceiver()
 }
 
 
-void EventReceiver::sendReTxReq(eventseq_t seq)
+void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
 {
 
-//   char * retxbuf =  new char[6]; 
-//   retxbuf[0] = typ; 
-//   retxbuf[1] = src; 
-//   unsigned int seqn = htonl(seq); 
-//   memcpy(&retxbuf[2], &seqn, 4); 
+  char * retxbuf =  new char[4]; 
+  unsigned int seqn = htonl(seq); 
+  memcpy(&retxbuf[0], &seqn, 4); 
 
-//   sfrom.sin_port = htons(4400); 
-//   sendto(socket_, &retxbuf[0], 6, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
+  sfrom.sin_port = htons(5100); 
+  sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
 
 }
 
@@ -143,7 +141,7 @@ void EventReceiver::handleReceive()
 	      missingPackets_[missingSeq] = missingPkt; 
 	      
 	      // now request a retx 
-	      sendReTxReq(pEventPacket->seq); 
+	      sendReTxReq(missingSeq, sfrom); 
 
 	    }
 	  

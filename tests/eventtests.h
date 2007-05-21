@@ -10,6 +10,7 @@
 #include <map>
 #include <iostream>
 #include <queue>
+#include <list>
 
 
 typedef std::pair<eventseq_t, std::vector<char> > eventsetout_t; 
@@ -27,6 +28,9 @@ class FakeEventServer
 
   void start(); 
   void shutdown(); 
+
+  void setSkip(eventseq_t s); 
+
  private:
 
   int port_; 
@@ -39,8 +43,9 @@ class FakeEventServer
   retxLUT_t retxLUT_; 
   void workthread(); 
   void retxthread(); 
-  
 
+  std::list<eventseq_t> skiplist_; 
+  
 };
 
 #endif // EVENTTEST_H

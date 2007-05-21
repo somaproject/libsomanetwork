@@ -92,9 +92,15 @@ void FakeEventServer::workthread()
       
       std::vector<char> dp = createEventBuffer(seq, els); 
       retxLUT_[seq] = dp; 
-      n=sendto(sendsock_, &(dp)[0],
-	       dp.size(), 0, (sockaddr*)&server,
-	       length);
+
+      std::list<eventseq_t>::iterator result = find(skiplist_.begin(),
+ 					       skiplist_.end(), 
+ 					       seq); 
+      if (result == skiplist_.end()) {
+	n=sendto(sendsock_, &(dp)[0],
+		 dp.size(), 0, (sockaddr*)&server,
+		 length);
+      }
     }
 }
 
@@ -114,7 +120,11 @@ FakeEventServer::~FakeEventServer()
 }
 
 
+void FakeEventServer::setSkip(eventseq_t s)
+{
+  skiplist_.push_back(s); 
 
+}
 void FakeEventServer::retxthread(void) {
   std::cout << "Stating reTx Thread" << std::endl; 
   // setup socket
@@ -159,7 +169,7 @@ void FakeEventServer::retxthread(void) {
   bcopy((char *)hp->h_addr, 
         (char *)&server.sin_addr,
 	hp->h_length);
-  server.sin_port = htons(port_);
+  server.sin_port = htons(5000);
   int length=sizeof(struct sockaddr_in);
   
   
@@ -185,7 +195,7 @@ void FakeEventServer::retxthread(void) {
       seq_host = ntohl(seq); 
 
       std::vector<char> dp = retxLUT_[seq_host]; 
-
+      std::cout << "received retx req for " << seq_host << std::endl; 
       int n = sendto(sendsock_, &(dp)[0],
 		     dp.size(), 0, (sockaddr*)&server,
 		     length);

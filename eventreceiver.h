@@ -40,8 +40,7 @@ public:
 private:
 
 
-  void sendReTxReq(eventseq_t seq); 
-  //sockaddr_in & sfrom); 
+  void sendReTxReq(eventseq_t seq, sockaddr_in sfrom); 
   
   int socket_; 
 
