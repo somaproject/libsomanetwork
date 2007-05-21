@@ -16,9 +16,12 @@ network.o: ../network.cc
 datareceiver.o: ../datareceiver.cc
 	$(CXX) $(CXXFLAGS) -c ../datareceiver.cc
 
+eventreceiver.o: ../eventreceiver.cc
+	$(CXX) $(CXXFLAGS) -c ../eventreceiver.cc
+
 glibbench.o: glibbench.cc
 
-glibbench: glibbench.o network.o datareceiver.o
+glibbench: glibbench.o network.o datareceiver.o eventreceiver.o
 
 clean:
 	rm *.o

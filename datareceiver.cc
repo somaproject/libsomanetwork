@@ -4,7 +4,7 @@
 
 
 DataReceiver::DataReceiver(int epollfd, int source, datatype_t type, 
-			   boost::function<void (RawData *)> rdp)
+			   boost::function<void (DataPacket_t *)> rdp)
   : source_ (source), 
     type_ (type), 
     pktCount_(0),
@@ -110,7 +110,7 @@ void DataReceiver::handleReceive()
     } else
     {
 
-      RawData * prd = newRawData(recvbuffer); 
+      DataPacket_t * prd = newRawData(recvbuffer); 
 
       if (prd->src != source_ or prd->typ != type_) {
 	std::cerr  << "Error receiving packet " 
@@ -136,7 +136,7 @@ void DataReceiver::handleReceive()
 	  sequence_t missingSeq;
 	  for (int i = 0; i < (prd->seq - (latestSeq_ +1)); i++) 
 	    {
-	      RawData * missingPkt = new RawData; 
+	      DataPacket_t * missingPkt = new DataPacket_t; 
 	      missingSeq =  latestSeq_ + i + 1; 
 	      missingPkt-> seq = missingSeq; 
 	      missingPkt->typ = type_; 
@@ -178,7 +178,7 @@ void DataReceiver::handleReceive()
 	  else 
 	    { 
 	      // get the iterator 
-	      RawData* pkt = (*m).second; 
+	      DataPacket_t* pkt = (*m).second; 
 
 	      // copy the received packet into the one that's currently in the retx buffer
 
@@ -228,7 +228,7 @@ void DataReceiver::updateOutQueue()
     {
     
     
-    RawData* rdp = rawRxQueue_.front(); 
+    DataPacket_t* rdp = rawRxQueue_.front(); 
     
     
     putIn_(rdp); 

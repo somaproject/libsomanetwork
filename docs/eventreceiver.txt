@@ -1,0 +1,21 @@
+For the time being we simply pass up all events. This will, at a
+minimum, be the clock events.
+
+What should we pass up? individual events? event packets? Should the higher level have to extract out event sets? (no)
+
+So we will pass up a _pointer_ to a std::vector of events, which we're calling an EventList_t. 
+
+The path is something like this:
+
+buffer of char
+  to
+EventPacket_t  (which has a pointer to the extracted EventList_t as well as the sequence /missing data)
+  to 
+passing up the contained eventList_t
+
+
+This is just for event RX; the protocol is very similar to the data
+receiver interface. We take in an epollFD, set it up, register our
+data handler as the callback, and take a pointer to where we should
+eventually deposit the events.
+

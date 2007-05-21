@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
     network =  new Network(); 
     for (int i = vm["startchan"].as<int>(); 
 	 i <= vm["endchan"].as<int>(); i++) {
-      network->enableDataRx(i, 0); // always assume type 0
+      network->enableDataRX(i, 0); // always assume type 0
       //rxCnt[i - vm["startchan"].as<int>()] = -1; 
     }
     network->run(); 
@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
 	  t1 = microsec_clock::local_time(); 
 	}
       
-      RawData * rdp = network->getNewData(); 
+      DataPacket_t * rdp = network->getNewData(); 
       char chan = rdp->src; 
       if (chan >= vm["startchan"].as<int>() and
 	  chan <= vm["endchan"].as<int>()) 

@@ -1,5 +1,5 @@
-#ifndef DATARECEIVER_H
-#define DATARECEIVER_H
+#ifndef EVENTRECEIVER_H
+#define EVENTRECEIVER_H
 
 #include <ctime>
 #include <iostream>
@@ -24,10 +24,11 @@
 
 typedef std::queue<EventPacket_t *> eventPacketQueue_t; 
 
-typedef std::map<eventseq_t, EventPacket_t*> missingPktHash_t;
+
 
 class EventReceiver
 {
+  typedef std::map<eventseq_t, EventPacket_t*> missingPktHash_t;
   
 public:
   EventReceiver(int epollfd, boost::function<void (EventList_t *)> erxp); 
@@ -69,4 +70,4 @@ private:
 }; 
 
  
-#endif // DATARECEIVER_H
+#endif // EVENTRECEIVER_H

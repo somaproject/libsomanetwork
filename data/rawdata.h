@@ -48,7 +48,7 @@ typedef unsigned int sequence_t;
 #define ntohll(x) bswap_64(x)
 #define htonll(x) bswap_64(x)
 
-struct RawData
+struct DataPacket_t
 {
   sequence_t seq; 
   datasource_t src; 
@@ -58,9 +58,9 @@ struct RawData
 }; 
 
 
-inline RawData * newRawData(boost::array<char, BUFSIZE> buffer) 
+inline DataPacket_t * newRawData(boost::array<char, BUFSIZE> buffer) 
 {
-  RawData * prd = new RawData; 
+  DataPacket_t * prd = new DataPacket_t; 
     
   prd->seq = ntohl(*((int *) &buffer[0])); 
   prd->typ = charToDatatype(buffer[4]); 

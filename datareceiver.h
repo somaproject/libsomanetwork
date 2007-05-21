@@ -22,12 +22,12 @@
 
 #include "data/rawdata.h"
 
-typedef std::queue<RawData*> rawQueue_t; 
+typedef std::queue<DataPacket_t*> rawQueue_t; 
 
 
 // missing packet type
 typedef std::map<sequence_t, 
-		   RawData*> missingPktHash_t;
+		   DataPacket_t*> missingPktHash_t;
 
 struct DataReceiverStats
 {
@@ -50,7 +50,7 @@ class DataReceiver
   
 public:
   DataReceiver(int epollfd, int source, datatype_t type,
-	       boost::function<void (RawData *)> rdp); 
+	       boost::function<void (DataPacket_t *)> rdp); 
   ~DataReceiver(); 
   int getBufferSize(void) 
     {  
@@ -80,7 +80,7 @@ private:
   int pendingCount_; 
   int reTxRxCount_; 
   int outOfOrderCount_; 
-  boost::function<void (RawData *)>  putIn_; 
+  boost::function<void (DataPacket_t *)>  putIn_; 
   int epollFD_; 
   //ptime firstPacket_, lastPacket_;
   struct epoll_event  ev_; 
@@ -100,6 +100,6 @@ private:
 
 
 
-RawData *  newRawData(boost::array<char, BUFSIZE> buffer) ; 
+DataPacket_t *  newRawData(boost::array<char, BUFSIZE> buffer) ; 
  
 #endif // DATARECEIVER_H

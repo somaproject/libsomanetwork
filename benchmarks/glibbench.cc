@@ -35,9 +35,9 @@ bool DataRxCallback(Glib::IOCondition io_condition)
   else 
     {
       char x; 
-      read(network->getTSPipeFifoPipe(), &x, 1); 
+      read(network->getDataFifoPipe(), &x, 1); 
       
-      RawData * rdp = network->getNewData(); 
+      DataPacket_t * rdp = network->getNewData(); 
       char chan = rdp->src; 
       pktcnt--; 
       rxCnt[chan - startchan]++; 
@@ -132,7 +132,7 @@ int main(int argc, char * argv[])
   
   
   // connect the signal handler
-  int read_fd = network->getTSPipeFifoPipe(); 
+  int read_fd = network->getEventFifoPipe(); 
   
   Glib::signal_io().connect(sigc::ptr_fun(DataRxCallback), 
 			    read_fd, Glib::IO_IN);

@@ -11,8 +11,8 @@
 
 using boost::unit_test::test_suite;
 
-std::list<RawData*> rawDataBuffer; 
-void append(RawData * rdp)
+std::list<DataPacket_t*> rawDataBuffer; 
+void append(DataPacket_t * rdp)
 {
   rawDataBuffer.push_back(rdp); 
 }

@@ -8,9 +8,11 @@ const int EPOLLMAXCNT = 256;
 
 Network::Network() :
   running_ (false), 
-  pthrd_(NULL)
+  pthrd_(NULL), 
+  epollfd_(epoll_create(EPOLLMAXCNT)),
+  eventReceiver_(epollfd_,boost::bind(&Network::appendEventOut, this, _1) )
 {
-  epollfd_ = epoll_create(EPOLLMAXCNT); 
+
 
 }
 
@@ -81,20 +83,36 @@ Network::~Network()
 }
 
 
-void Network::appendDataOut(RawData* out) {
-  //std::cout << "appending" << std::endl; 
-  outputFifo_.append(out); 
+void Network::appendDataOut(DataPacket_t* out) {
+
+  outputDataFifo_.append(out); 
   
 }
 
-RawData* Network::getNewData(void)
-{
-  return outputFifo_.pop(); 
+void Network::appendEventOut(EventList_t* out) {
+
+  outputEventFifo_.append(out); 
+  
 }
 
-int Network::getTSPipeFifoPipe()
+DataPacket_t* Network::getNewData(void)
 {
-  return outputFifo_.readingPipe; 
+  return outputDataFifo_.pop(); 
+}
+
+EventList_t* Network::getNewEvents(void)
+{
+  return outputEventFifo_.pop(); 
+}
+
+int Network::getDataFifoPipe()
+{
+  return outputDataFifo_.readingPipe; 
+}
+
+int Network::getEventFifoPipe()
+{
+  return outputEventFifo_.readingPipe; 
 }
 
 void Network::enableDataRX(datasource_t src, datatype_t typ)
