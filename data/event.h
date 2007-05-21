@@ -126,6 +126,6 @@ inline std::vector<char> createEventBuffer(int seq,
 	}
       
     }
-
+  return buffer; 
 }
 #endif // EVENT_H

@@ -1,36 +1,20 @@
 #include "tests.h"
-#include "data/events.h"
+#include "eventtests.h"
+#include <data/event.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <boost/bind.hpp>
+
 #include <netdb.h>
 #include <stdio.h>
 
-void sendDataPacket(const std::vector<char> & dp , int port)
-{
-   int sock, length, n;
-   struct sockaddr_in server, from;
-   struct hostent *hp;
-   
-   sock= socket(AF_INET, SOCK_DGRAM, 0);
 
-   server.sin_family = AF_INET;
-   hp = gethostbyname("127.0.0.1"); 
-
-   bcopy((char *)hp->h_addr, 
-        (char *)&server.sin_addr,
-         hp->h_length);
-   server.sin_port = htons(port);
-   length=sizeof(struct sockaddr_in);
-   n=sendto(sock,&dp[0],
-            sizeof(dp),0,(sockaddr*)&server,length);
-
-}
-
-
-FakeEventServer::FakeEventServer()
+FakeEventServer::FakeEventServer() :
   running_(false)
 {
 
@@ -48,12 +32,35 @@ void FakeEventServer::start()
   running_ = true; 
 
   pretxthrd_ = new boost::thread(boost::bind(&FakeEventServer::retxthread, 
-                                         this));
+					     this));
   pmainthrd_ = new boost::thread(boost::bind(&FakeEventServer::workthread,
-                                         this));
+					     this));
   
 
   
+}
+
+std::list<EventList_t> genEventList(std::vector<char> es)
+{
+  std::list<EventList_t> els; 
+  for (std::vector<char>::iterator i = es.begin(); 
+       i != es.end(); i++)
+	{
+	  EventList_t el; 
+	  // create the event
+	  for (int j = 0; j < *i; j++) {
+	    Event_t event; 
+	    event.cmd = j; 
+	    event.src = j * 4; 
+	    for (int k = 0; k < 5; k++)
+	      {
+		event.data[k] = k * 0x1234; 
+	      }
+	    el.push_back(event); 
+	  }
+	  els.push_back(el); 
+	}
+  return els; 
 }
 
 void FakeEventServer::workthread()
@@ -71,7 +78,7 @@ void FakeEventServer::workthread()
   bcopy((char *)hp->h_addr, 
         (char *)&server.sin_addr,
 	hp->h_length);
-  server.sin_port = htons(4400);
+  server.sin_port = htons(5000);
   length=sizeof(struct sockaddr_in);
   
   while (!fifo_.empty())
@@ -80,34 +87,14 @@ void FakeEventServer::workthread()
       fifo_.pop(); 
       
       // now create the necessary event lists:
-      esequence_t seq = es.first; 
-      std::list<EventList_t> els; 
-      for (std::vector<char>::iterator i = es.second.begin(); 
-	   i != es.second.end(); i++)
-	{
-	  EventList_t el; 
-	  // create the event
-	  for (int j = 0; j < *i; i++) {
-	    Event_t event; 
-	    event.cmd = j; 
-	    event.src = j * 4; 
-	    for (int k = 0; i < 5; k++)
-	      {
-		event.data[k] = k * 0x1234; 
-	      }
-	    el.push_back(event); 
-	  }
-	  els.push_back(el); 
-	}
-      
+      eventseq_t seq = es.first; 
+      std::list<EventList_t> els = genEventList(es.second);    
       
       std::vector<char> dp = createEventBuffer(seq, els); 
       retxLUT_[seq] = dp; 
-
       n=sendto(sendsock_, &(dp)[0],
 	       dp.size(), 0, (sockaddr*)&server,
 	       length);
-      
     }
 }
 
@@ -144,7 +131,7 @@ void FakeEventServer::retxthread(void) {
   memset((char *) &si_me, sizeof(si_me), 0);
   
   si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(4400);
+  si_me.sin_port = htons(5100);
   si_me.sin_addr.s_addr = INADDR_ANY; 
   
   int optval = 1; 

@@ -26,7 +26,7 @@ EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> 
   memset((char *) &si_me, sizeof(si_me), 0);
 
   si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(4400); 
+  si_me.sin_port = htons(5000); 
 
   si_me.sin_addr.s_addr = INADDR_ANY; 
   
@@ -93,11 +93,11 @@ void EventReceiver::handleReceive()
 
   boost::mutex::scoped_lock lock( statusMutex_ );
 
-  boost::array<char, BUFSIZE> recvbuffer; 
+  boost::array<char, EBUFSIZE> recvbuffer; 
   sockaddr_in sfrom; 
   socklen_t fromlen = sizeof(sfrom); 
 
-  size_t len = recvfrom(socket_, &recvbuffer[0], BUFSIZE, 
+  size_t len = recvfrom(socket_, &recvbuffer[0], EBUFSIZE, 
 		   0, (sockaddr*)&sfrom, &fromlen); 
       
   if ( len == -1 )

@@ -1,28 +1,30 @@
-#ifndef TESTS_H
-#define TESTS_H
+#ifndef EVENTTEST_H
+#define EVENTTEST_H
 
 #include <vector>
-#include <data/rawdata.h>
+#include <data/event.h>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <data/rawdata.h>
+#include <map>
+#include <iostream>
 #include <queue>
 
-std::vector<char> fakeDataPacket(unsigned int seq, char src, char typ); 
 
-void sendDataPacket(const std::vector<char> & dp, int port);
+typedef std::pair<eventseq_t, std::vector<char> > eventsetout_t; 
 
-std::pair<eventseq_t, std::vector<char> > eventsetout_t; 
+typedef std::map<eventseq_t, std::vector<char> > retxLUT_t; 
 
-std::map<eventseq_t, std::vector<char> > retxLUT_t; 
+std::list<EventList_t> genEventList(std::vector<char> es);
+
 class FakeEventServer 
 {
  public:
   FakeEventServer(); 
   ~FakeEventServer(); 
-  void appendSeqsToSend(eventsetout_t); 
+  void appendSeqsToSend(eventsetout_t es); 
+
   void start(); 
   void shutdown(); 
  private:
@@ -41,4 +43,4 @@ class FakeEventServer
 
 };
 
-#endif // TESTS_H
+#endif // EVENTTEST_H
