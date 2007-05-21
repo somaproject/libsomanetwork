@@ -123,7 +123,7 @@ int main(int argc, char * argv[])
   
   for (int i = startchan; 
        i <= endchan; i++) {
-    network->enableDataRx(i, 0); // always assume type 0
+    network->enableDataRX(i, charToDatatype(0)); // always assume type 0
   }
   
   network->run(); 

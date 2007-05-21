@@ -8,7 +8,13 @@ all: runner event_test.o
 tspike_test.o: tspike_test.cc
 event_test.o: event_test.cc event.h
 
-runner: runner.o  event_test.o
+events.1.dat: event_test.py
+	python event_test.py
+
+frompy.dat: tspike_test.py
+	python tspike_test.py
+
+runner: runner.o  event_test.o tspike_test.o 
 
 
 clean:

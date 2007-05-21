@@ -14,7 +14,7 @@ typedef uint8_t eventcmd_t;
 typedef uint32_t eventseq_t; 
 const int EVENTLEN = 6; 
 
-const int BUFSIZE = 1550; 
+const int EBUFSIZE = 1550; 
 
 struct Event_t
 {
@@ -26,19 +26,21 @@ struct Event_t
 
 typedef std::vector<Event_t> EventList_t; 
 
-struct eventpkt_t
+struct EventPacket_t
 {
   eventseq_t seq; 
+  bool missing; 
   EventList_t * events; 
 }; 
 
-inline eventpkt_t * newEventPacket(boost::array<char, BUFSIZE> buffer, 
+inline EventPacket_t * newEventPacket(boost::array<char, EBUFSIZE> buffer, 
 				   int len) 
 {
   // We need to take in the len because the total number of event
   // packets is a function of the length of this packet; 
-  eventpkt_t *  pepkt = new eventpkt_t; 
-  
+  EventPacket_t *  pepkt = new EventPacket_t; 
+  pepkt->missing = false; 
+
   pepkt->seq = ntohl(*((int *) &buffer[0])); 
   int remaininglen = len -4; 
 

@@ -94,9 +94,6 @@ private:
 
   void updateOutQueue(void); 
   
-  // pipe logic
-  int readPipe_, writePipe_; 
-
   boost::mutex statusMutex_;
   
 }; 

@@ -4,7 +4,7 @@ Constructor:
 	     epollfd: the epoll file descriptor that we will add ourselves to
 	     type, source : the type and source to listen to
 	     rdp: the output function to call with our processed packets
-
+	     
 
 1. has an internal queue for received data
 2. can append packets to the output queue
