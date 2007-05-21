@@ -3,7 +3,6 @@ LDFLAGS = -lboost_thread -lboost_date_time  -lboost_program_options -lboost_unit
 
 CXX = g++
 
-OBJS = main.o network.o datareceiver.o tests.o
 all: runner
 
 %.o : %.cc
@@ -28,7 +27,9 @@ eventtests: eventtests.o
 
 runner.o: runner.cc
 
-runner: runner.o tests.o eventreceiver.o eventreceiver_test.o eventtests.o
+DATARXTEST = datareceiver.o datareceiver_test.o tests.o
+EVENTRXTEST = eventreceiver.o eventreceiver_test.o eventtests.o 
+runner: runner.o $(EVENTRXTEST) $(DATARXTEST) 
 
 
 clean:

@@ -21,8 +21,10 @@ class Network
   
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 
-
+  
   RawData*  getNewData(void); 
+  EventList_t getNewEvents(void); 
+
   int getTSPipeFifoPipe(); 
   void run(); 
   void shutdown(); 
@@ -30,10 +32,12 @@ class Network
   std::vector<DataReceiverStats>  getDataStats(); 
   
  private: 
-  TSPipeFifo<RawData*> outputFifo_; 
+  TSPipeFifo<RawData*> outputDataFifo_; 
+  TSPipeFifo<EventList_t*> outputEventFifo_; 
+
   std::map<const datagen_t, DataReceiver*> dataReceivers_; 
   void appendDataOut(RawData* out); 
-
+  void 
   bool running_; 
   
   int epollfd_; 
