@@ -34,7 +34,7 @@ struct TSpike_t
 }; 
 
 inline 
-TSpike_t rawToTSpike(const RawData * rd)
+TSpike_t rawToTSpike(const DataPacket_t * rd)
 {
   if (! rd->missing) {
     TSpike_t ts; 
@@ -71,10 +71,10 @@ TSpike_t rawToTSpike(const RawData * rd)
 
 }
 
-inline RawData * rawFromTSpike(const TSpike_t & ts)
+inline DataPacket_t * rawFromTSpike(const TSpike_t & ts)
 {
   
-  RawData * rdp = new RawData; 
+  DataPacket_t * rdp = new DataPacket_t; 
   rdp->src = ts.src; 
   rdp->seq = 0; 
   rdp->body[0] = 0; 
