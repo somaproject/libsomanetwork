@@ -58,7 +58,7 @@ struct DataPacket_t
 }; 
 
 
-inline DataPacket_t * newRawData(boost::array<char, BUFSIZE> buffer) 
+inline DataPacket_t * newDataPacket(boost::array<char, BUFSIZE> buffer) 
 {
   DataPacket_t * prd = new DataPacket_t; 
     

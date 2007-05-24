@@ -100,6 +100,6 @@ private:
 
 
 
-DataPacket_t *  newRawData(boost::array<char, BUFSIZE> buffer) ; 
+DataPacket_t *  newDataPacket(boost::array<char, BUFSIZE> buffer) ; 
  
 #endif // DATARECEIVER_H

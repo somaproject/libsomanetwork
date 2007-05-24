@@ -112,7 +112,7 @@ void DataReceiver::handleReceive()
     } else
     {
 
-      DataPacket_t * prd = newRawData(recvbuffer); 
+      DataPacket_t * prd = newDataPacket(recvbuffer); 
 
       if (prd->src != source_ or prd->typ != type_) {
 	std::cerr  << "Error receiving packet " 
@@ -221,7 +221,7 @@ void DataReceiver::updateOutQueue()
 
   if ((*rawRxQueue_.front()).missing == true) {
     if (rawRxQueue_.size() > 10) {
-      RawData * rdp = rawRxQueue_.front(); 
+      DataPacket_t * rdp = rawRxQueue_.front(); 
       //sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
       // we should figure out something smart to do here, but right
       // now there's nothing
