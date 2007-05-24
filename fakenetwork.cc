@@ -1,8 +1,7 @@
 #include <boost/thread/thread.hpp>
 #include <errno.h>
 #include <unistd.h>
-#include "network.h"
-#include "datareceiver.h"
+#include "fakenetwork.h"
 
 
 const int EPOLLMAXCNT = 256; 
@@ -43,17 +42,6 @@ FakeNetwork::~FakeNetwork()
   shutdown(); 
   pthrd_->join(); 
 
-  // delete the data receivers that remain
-  std::map<const datagen_t, DataReceiver*>::iterator i;
-  for (i = dataReceivers_.begin(); i != dataReceivers_.end(); 
-       i++) 
-    {
-      
-      delete (*i).second; 
-    }
-  
-  
-  // 
 
 }
 

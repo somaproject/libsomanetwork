@@ -1,6 +1,10 @@
 #ifndef NETWORKINTERFACE_H 
 #define NETWORKINTERFACE_H
 
+#include "data/event.h"
+#include "data/rawdata.h"
+#include "datareceiver.h"
+
 class NetworkInterface
 {
 
