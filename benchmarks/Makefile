@@ -1,6 +1,6 @@
 CXXFLAGS = -g -pg -O2 -D_REENTRANT -m64 `pkg-config --cflags gtkmm-2.4 gdkmm-2.4 glibmm-2.4` -I../ -I../data/
 
-LDFLAGS = -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options -pg `pkg-config --libs gtkmm-2.4 gdkmm-2.4 glibmm-2.4` 
+LDFLAGS = -lboost_thread -lboost_date_time -lboost_program_options -pg `pkg-config --libs gtkmm-2.4 gdkmm-2.4 glibmm-2.4` 
 CXX = g++
 
 OBJS = glibbench.o
