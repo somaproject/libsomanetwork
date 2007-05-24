@@ -25,6 +25,8 @@ DataReceiver::DataReceiver(int epollfd, int source, datatype_t type,
     throw std::runtime_error("could not create socket"); 
 
   }
+  std::cout << "DataReceiver created with src=" 
+	    << (int)source << " typ=" << (int)type << std::endl; 
 
   memset((char *) &si_me, sizeof(si_me), 0);
 
@@ -150,7 +152,8 @@ void DataReceiver::handleReceive()
 	      missingPackets_[missingSeq] = missingPkt; 
 		
 	      // now request a retx 
-	      sendReTxReq(prd->src,  prd->typ, missingSeq, sfrom); 
+	      sendReTxReq(prd->src,  prd->typ,
+			  missingSeq, sfrom); 
 
 	    }
 	  
@@ -218,16 +221,18 @@ void DataReceiver::updateOutQueue()
 
   if ((*rawRxQueue_.front()).missing == true) {
     if (rawRxQueue_.size() > 10) {
-      //       RawData * rdp = rawRxQueue_.front(); 
-      //       sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
-      
+      RawData * rdp = rawRxQueue_.front(); 
+      //sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
+      // we should figure out something smart to do here, but right
+      // now there's nothing
+
     }
   }
   while (not rawRxQueue_.empty() and 
 	 (*rawRxQueue_.front()).missing == false) 
     {
     
-    
+      
     DataPacket_t* rdp = rawRxQueue_.front(); 
     
     
@@ -244,9 +249,10 @@ void DataReceiver::updateOutQueue()
 
 DataReceiverStats DataReceiver::getStats()
 {
-  // This is now thread safe thanks to the mutex
+  //This is now thread safe thanks to the mutex
 
   boost::mutex::scoped_lock lock( statusMutex_ );
+  
   DataReceiverStats st; 
   st.source = source_; 
   st.type = type_; 

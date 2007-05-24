@@ -66,6 +66,7 @@ void Network::shutdown()
 
 Network::~Network()
 {
+  shutdown(); 
   pthrd_->join(); 
 
   // delete the data receivers that remain
@@ -149,10 +150,6 @@ void Network::disableDataRX(datasource_t src, datatype_t typ)
 
 std::vector<DataReceiverStats>  Network::getDataStats()
 {
-  // NOT THREAD SAFE NOT THREAD SAFE
-  // NOT THREAD SAFE NOT THREAD SAFE
-  // NOT THREAD SAFE NOT THREAD SAFE
-  // NOT THREAD SAFE NOT THREAD SAFE
 
   std::map<const datagen_t, DataReceiver*>::iterator i;
   std::vector<DataReceiverStats> drs; 
