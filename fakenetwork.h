@@ -4,7 +4,7 @@
 #include <map>
 #include <utility>
 #include <sys/epoll.h>
-
+#include <fstream>
 
 #include "tspipefifo.h"
 #include "datareceiver.h"
@@ -45,7 +45,9 @@ class FakeNetwork : public NetworkInterface
   bool running_; 
 
   boost::thread *  pthrd_; 
+  boost::mutex appendMutex_; 
   void workthread(void); 
+  
 
 };
 

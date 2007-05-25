@@ -1,6 +1,7 @@
 #ifndef TSPIKE_TYPE_H
 #define TSPIKE_TYPE_H
 #include <stdint.h>
+#include <iostream>
 #include "rawdata.h"
 #include <byteswap.h>
 #include <arpa/inet.h>
@@ -36,8 +37,9 @@ struct TSpike_t
 inline 
 TSpike_t rawToTSpike(const DataPacket_t * rd)
 {
-  if (! rd->missing) {
     TSpike_t ts; 
+  if (! rd->missing) {
+
     ts.src = rd->body[1]; 
     
     uint64_t time; 
@@ -61,11 +63,14 @@ TSpike_t rawToTSpike(const DataPacket_t * rd)
 	  {
 	    tsp->wave[j] = ntohl(*((uint32_t *)bpos)); 
 	    bpos += sizeof(tsp->wave[0]); 
-
+	    
 	  }
 	
 	
       }
+    return ts; 
+  } else {
+    std::cout << " omg recovered spike is missing!" << std::endl;
     return ts; 
   }
 
@@ -76,7 +81,9 @@ inline DataPacket_t * rawFromTSpike(const TSpike_t & ts)
   
   DataPacket_t * rdp = new DataPacket_t; 
   rdp->src = ts.src; 
+  rdp->typ = TSPIKE; 
   rdp->seq = 0; 
+  rdp->missing = false; 
   rdp->body[0] = 0; 
   rdp->body[1] = ts.src;
   rdp->body[2] = 0; 

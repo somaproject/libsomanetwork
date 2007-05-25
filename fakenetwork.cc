@@ -47,12 +47,14 @@ FakeNetwork::~FakeNetwork()
 
 
 void FakeNetwork::appendDataOut(DataPacket_t* out) {
-
+  boost::mutex::scoped_lock lock(appendMutex_);
+  
   outputDataFifo_.append(out); 
   
 }
 
 void FakeNetwork::appendEventOut(EventList_t* out) {
+  boost::mutex::scoped_lock lock(appendMutex_);
 
   outputEventFifo_.append(out); 
   
@@ -60,11 +62,18 @@ void FakeNetwork::appendEventOut(EventList_t* out) {
 
 DataPacket_t* FakeNetwork::getNewData(void)
 {
-  return outputDataFifo_.pop(); 
+  boost::mutex::scoped_lock lock(appendMutex_);
+  
+  DataPacket_t * dp =  outputDataFifo_.pop(); 
+
+  return dp; 
+
 }
 
 EventList_t* FakeNetwork::getNewEvents(void)
 {
+  boost::mutex::scoped_lock lock(appendMutex_);
+
   return outputEventFifo_.pop(); 
 }
 
