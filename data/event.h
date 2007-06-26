@@ -33,6 +33,7 @@ struct EventPacket_t
   EventList_t * events; 
 }; 
 
+
 inline EventPacket_t * newEventPacket(boost::array<char, EBUFSIZE> buffer, 
 				   int len) 
 {

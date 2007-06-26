@@ -11,10 +11,10 @@ using namespace std;
 
 BOOST_AUTO_TEST_SUITE(event_test); 
 
-void vectbufcopy(boost::array<char, BUFSIZE>* outbuf, 
+void vectbufcopy(boost::array<char, EBUFSIZE>* outbuf, 
 		std::vector<char> & inbuf)
 {
-  if (inbuf.size() >= BUFSIZE) {
+  if (inbuf.size() >= EBUFSIZE) {
     std::cout << "Warning, inbuf too large" << std::endl;
   }
   memcpy(&((*outbuf)[0]), &inbuf[0], inbuf.size()); 
@@ -33,9 +33,9 @@ BOOST_AUTO_TEST_CASE(event_empty)
       buffer[i] = 0; 
     }
   
-  boost::array<char, BUFSIZE> inbuffer; 
+  boost::array<char, EBUFSIZE> inbuffer; 
   vectbufcopy(&inbuffer, buffer); 
-  eventpkt_t * test = newEventPacket(inbuffer, buffer.size()); 
+  EventPacket_t * test = newEventPacket(inbuffer, buffer.size()); 
   BOOST_CHECK_EQUAL(test->seq , 0x01234567); 
   BOOST_CHECK_EQUAL(test->events->size(), 0); 
   
@@ -54,11 +54,11 @@ BOOST_AUTO_TEST_CASE(event_sets_frompy)
       buffer.push_back(x); 
     }
 
-  boost::array<char, BUFSIZE> inbuffer; 
+  boost::array<char, EBUFSIZE> inbuffer; 
   vectbufcopy(&inbuffer, buffer); 
   
 
-  eventpkt_t * test = newEventPacket(inbuffer, buffer.size()); 
+  EventPacket_t * test = newEventPacket(inbuffer, buffer.size()); 
   
   BOOST_CHECK_EQUAL(test->seq , 0x12345678); 
   BOOST_CHECK_EQUAL(test->events->size(), 89); 
