@@ -4,7 +4,7 @@
 class PacketReceiver
 {
  public:
-  virtual void handleReceive() = 0; 
+  virtual void handleReceive(int fd) = 0; 
   virtual ~PacketReceiver() {}; 
 }; 
 

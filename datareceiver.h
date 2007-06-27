@@ -64,7 +64,7 @@ public:
   int getSocket() { return socket_;}
   DataReceiverStats getStats(); 
 
-  void handleReceive();   
+  void handleReceive(int fd);   
 private:
 
 

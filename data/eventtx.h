@@ -95,12 +95,12 @@ inline std::vector<char> createEventTXBuffer(eventtxnonce_t nonce,
 // to verify this is an identity operation
 
 inline eventtxnonce_t getEventListFromBuffer(const std::vector<char> & buffer,
-					     EventTXList_t * pEmptyEventList)
+					     EventTXList_t * pEventList)
 {
-  // returns the discovered events in pEmptyEventList and the nonce as
+  // append the discovered events to pEventList and the nonce as
   // the return value. 
 
-  assert(pEmptyEventList->size() == 0); 
+
 
   int bpos = 0; 
 
@@ -157,7 +157,7 @@ inline eventtxnonce_t getEventListFromBuffer(const std::vector<char> & buffer,
 	  eventtx.event.data[i] = heventword; 
 	}
       
-      pEmptyEventList->push_back(eventtx); 
+      pEventList->push_back(eventtx); 
       bpos += 5*2;  // padding
       
 

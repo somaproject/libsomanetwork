@@ -94,7 +94,7 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 }
 
 
-void DataReceiver::handleReceive()
+void DataReceiver::handleReceive(int fd)
 {
   
   boost::mutex::scoped_lock lock( statusMutex_ );

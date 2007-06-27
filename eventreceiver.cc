@@ -86,7 +86,7 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
 }
 
 
-void EventReceiver::handleReceive()
+void EventReceiver::handleReceive(int fd)
 {
 
   boost::mutex::scoped_lock lock( statusMutex_ );

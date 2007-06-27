@@ -6,11 +6,14 @@
 
 const int EPOLLMAXCNT = 256; 
 
+
+
 Network::Network() :
   running_ (false), 
   pthrd_(NULL), 
   epollfd_(epoll_create(EPOLLMAXCNT)),
-  eventReceiver_(epollfd_,boost::bind(&Network::appendEventOut, this, _1) )
+  eventReceiver_(epollfd_, 
+		 boost::bind(&Network::appendEventOut, this, _1) )
 {
 
 
@@ -36,9 +39,10 @@ void Network::workthread()
     if (nfds > 0 ) {
       
       for(int evtnum = 0; evtnum < nfds; evtnum++) {
-	PacketReceiver * pr  = (PacketReceiver*)events[evtnum].data.ptr; 
-	//std::cout << (long int)events[evtnum].data.ptr << std::endl; 
-	pr->handleReceive(); 
+	// we treat each callback as ... ummm... 
+	boost::function<void> * func =  (boost::function<void> *)events[evtnum].data.ptr; 
+	(*func)(); 
+	
       }
 
     } else if (nfds < 0 ) {

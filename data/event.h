@@ -35,7 +35,7 @@ struct EventPacket_t
 
 
 inline EventPacket_t * newEventPacket(boost::array<char, EBUFSIZE> buffer, 
-				   int len) 
+				      size_t len) 
 {
   // We need to take in the len because the total number of event
   // packets is a function of the length of this packet; 

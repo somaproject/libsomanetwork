@@ -24,10 +24,16 @@
 #include "data/eventtx.h"
 #include "packetreceiver.h"
 
+
+const int RETXTIME = 1000; // microseconds
+const int RETXCNT = 5; // try and send this many times, max
+
 struct EventTXPending_t
 {
   eventtxnonce_t nonce; 
-  timeval time; 
+  timeval inserttime; 
+  timeval sendtime; 
+  int txcnt; 
   std::vector<char> buffer; 
 }; 
 
@@ -41,22 +47,34 @@ class EventSender : PacketReceiver
   ~EventSender(); 
   
   void sendEvents(const EventTXList_t & el);
-  void handleReceive(); 
+  
+  // internal functions
+  void handleReceive(int fd); 
+  void newResponse(); 
+  void newEventIn(); 
+  
   
   void checkPending(); 
-  
+  eventtxnonce_t getLastSentNonce() { return lastSentNonce_; } ; 
+
  private:
   int epollFD_; 
-  eventtxnonce_t nonce_; 
-  struct epoll_event  ev_; 
+  eventtxnonce_t nonce_, lastSentNonce_; 
+  struct epoll_event  evSock_, evPipe_; 
   
   int sendSock_; 
+  int pipeR_;
+  int pipeW_; 
   sockaddr_in saServer_; 
   void sendPacket(  EventTXPending_t * etp);
+  void sendPendingEvent(); 
 
-  pendingQueue_t pendingRespQueue_; 
+
+  pendingQueue_t eventQueue_; 
+  EventTXPending_t * pPendingPacket_; 
+  
   boost::mutex appendMutex_;
-
+  
   
 };
 

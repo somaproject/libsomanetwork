@@ -1,70 +1,35 @@
-Event transmission uses the event transmission protocol, which consists of: 
-
-1. a nonce appended to an inbound list of events and addresses
-
-Ideally we'd like to aggregate events and then once every T send them across the bus, or something like that. 
-
-On some level it's crucial that event transmission never block. 
-
-Event transmission consists of sending a packet with a nonce and
-waiting for an ack, and if you don't get that ack, resending the
-original. Again, we'll want some sort of timeout detection here. 
-
-Assume we had some sort of fine-grained timeout mechanism. The algorithm would conceivably look like: 
-
-Send Packet
-Add Packet/Nonce to pending list
-when we receive a response, remove from this list. 
-
-for the time being, we won't actually do any retransmission, because
-we're lazy.
-
-EventSender(int epollfd)
-{
-   create a link to the responder
-	
-}
 
 
-sendEvent(EventTxList)
-processResponse(buffer)
-checkPending()
+Wow, this is a fantastic total rewrite of all of this shit. Damn. 
 
-sendEvent(EventTXList_t)
-   // sendEvent is thread-safe in that we acquire a mutex for the
-   relevant send structures prior to manipulating them
-   
-   
-   taken in an eventTxList_t and make a copy of it
-   
-   construct an EventTXPacket_t
-   
-   turn that into a buffer
-   // acquire mutex
-   attach the buffer, the nonce, and the time to a struct and put it in 
-   the "rx pending" list
-
-   actually send the buffer
-	    what if sending blocks? this thread still has the mutex! 
-	    but sending is blocking anyway; it's not like
-	    the other thread could actually do anything productive. 
+The new paradigm: the non-network ("control") thread passes to the
+network thread an EventList of events. There are two exposed
+functions:
 
 
-processResponse(buffer):
-   extract out Nonce
-   look up nonce in pending
-   remove nonce from pending, or count as error
-   
+sendEvents(const EventTXList_t & el) :
+   Send the current event list to the network. This does not block
+   unless there is something catastrophically wrong (like the sync
+   fifo breaks). 
 
-checkPending():
-   to be called roughly every ~ 1 ms
-   for each element in the list:
-      if it's old, resend it
+waitForEventTX():
+   blocks until the pending-event queue is empty. This can be used to
+   make sure we don't overwhelm the event bus when doing dumb things
+   like streaming data. 
 
-Why do we have "time"? It's possible that we'll check pending after
-doing other network-y things, and not get a real 1 ms in
-there. Similary, if the following sequence of events occurs: 
-       T=0 us  send event
-       
+---------------------------------------------------------------------
+Internally, we will use callbacks via the main network() epoll
+pipe mechanism to handle the event transmission. That is, we need to
+solve the problem of the main thread having blocked() waiting to
+send. We could just use a conditional and a separate EventTX thread
+here, but that requires considerable synchronization effort. 
 
-	 
+There's this notion of a "pending" event, the one we are currently
+working on. This is distinct from the event queue because it will
+contain additional metadata and be a shared pointer with separate
+thread saftey . 
+
+newEventsWakeup() // an internal signal that gets called once for
+every new event queue addition; the job here is to send the event if
+there is not currently a pending one. 
+
