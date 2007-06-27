@@ -1,5 +1,5 @@
-CXXFLAGS = -g -O2 -D_REENTRANT -m64 -I../
-LDFLAGS = -lboost_thread -lboost_date_time  -lboost_program_options -lboost_unit_test_framework -g
+CXXFLAGS = -g -O0 -D_REENTRANT -m64 -I../ -Wall
+LDFLAGS = -lboost_thread -lboost_date_time  -lboost_program_options -lboost_unit_test_framework -g 
 
 CXX = g++
 

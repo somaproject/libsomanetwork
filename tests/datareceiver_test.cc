@@ -12,6 +12,16 @@
 using boost::unit_test::test_suite;
 
 std::list<DataPacket_t*> rawDataBuffer; 
+void clearBuffer() {
+   std::list<DataPacket_t*>::iterator i ; 
+   for (i = rawDataBuffer.begin(); i != rawDataBuffer.end(); i++)
+     {
+       delete *i; 
+       
+     }
+   rawDataBuffer.clear(); 
+}
+
 void append(DataPacket_t * rdp)
 {
   rawDataBuffer.push_back(rdp); 
@@ -24,7 +34,7 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
 {
   // Can we send a single packet? this is the model for all future activity
   // 
-  rawDataBuffer.clear(); 
+  clearBuffer(); 
 
   // and then test them all. 
   int epollfd = epoll_create(EPOLLMAXCNT); 
@@ -51,7 +61,8 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
-  
+  clearBuffer(); 
+
 }
 
 BOOST_AUTO_TEST_CASE(outofordertest)
@@ -99,16 +110,17 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   for(int i = 0; i < 8; i++)
     {
       BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, i); 
+      delete rawDataBuffer.front(); 
       rawDataBuffer.pop_front(); 
     }
+  clearBuffer(); 
 
 }
 
 BOOST_AUTO_TEST_CASE(dupetest)
 {
   // we will send a series of packets with a dupe
-  
-  rawDataBuffer.clear(); 
+  clearBuffer(); 
 
   // and then test them all. 
   int epollfd = epoll_create(EPOLLMAXCNT); 
@@ -150,8 +162,11 @@ BOOST_AUTO_TEST_CASE(dupetest)
   for(int i = 0; i < 8; i++)
     {
       BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, i); 
+      delete rawDataBuffer.front(); 
       rawDataBuffer.pop_front(); 
+      
     }
+  clearBuffer(); 
 
 }
 
@@ -201,8 +216,11 @@ BOOST_AUTO_TEST_CASE(retxtest)
   for(int i = 0; i < rawDataBuffer.size(); i++)
     {
       BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, i); 
+      delete rawDataBuffer.front(); 
+     
       rawDataBuffer.pop_front(); 
+      
     }
-
+  clearBuffer();
 }
 

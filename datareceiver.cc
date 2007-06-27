@@ -71,10 +71,10 @@ DataReceiver::~DataReceiver()
 {
   
   // remove from epoll
-  int res = epoll_ctl(epollFD_, EPOLL_CTL_DEL, socket_, NULL); 
+  epoll_ctl(epollFD_, EPOLL_CTL_DEL, socket_, NULL); 
   
-    close(socket_); 
-
+  close(socket_); 
+  
 }
 
 
@@ -176,7 +176,7 @@ void DataReceiver::handleReceive()
 	    {
 	    // this was a duplicate packet; ignore
 	    dupeCount_++; 
-	    
+	    delete prd; 
 	    } 
 	  else 
 	    { 
@@ -187,7 +187,7 @@ void DataReceiver::handleReceive()
 
 	      *pkt = *prd; 
 	      missingPackets_.erase(m); 
-
+	      
 	      delete prd; 
 
 	      pktCount_++; 
@@ -219,31 +219,31 @@ void DataReceiver::updateOutQueue()
   int updateCount = 0;  // the number of new packets we've added to the queue
   // extract out
 
-  if ((*rawRxQueue_.front()).missing == true) {
-    if (rawRxQueue_.size() > 10) {
-      DataPacket_t * rdp = rawRxQueue_.front(); 
-      //sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
-      // we should figure out something smart to do here, but right
-      // now there's nothing
+//   if ((*rawRxQueue_.front()).missing == true) {
+//     if (rawRxQueue_.size() > 10) {
+//       DataPacket_t * rdp = rawRxQueue_.front(); 
+//       //sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
+//       // we should figure out something smart to do here, but right
+//       // now there's nothing
 
-    }
-  }
+//     }
+//   }
+
   while (not rawRxQueue_.empty() and 
-	 (*rawRxQueue_.front()).missing == false) 
+	 rawRxQueue_.front()->missing == false) 
     {
-    
       
-    DataPacket_t* rdp = rawRxQueue_.front(); 
-    
-    
-    putIn_(rdp); 
-    
-    rawRxQueue_.pop(); 
-    pendingCount_--; 	
-   
-    updateCount++ ; 
-    
-  }
+      DataPacket_t* rdp = rawRxQueue_.front(); 
+      
+      
+      putIn_(rdp); 
+      
+      rawRxQueue_.pop(); 
+      pendingCount_--; 	
+      
+      updateCount++ ; 
+      
+    }
   
 }
 

@@ -35,13 +35,13 @@ struct DataReceiverStats
   
   int source; 
   int type; 
-  int pktCount; 
-  int latestSeq;
-  int dupeCount; 
-  int pendingCount; 
-  int missingPacketCount;
-  int reTxRxCount; 
-  int outOfOrderCount; 
+  unsigned int pktCount; 
+  unsigned int latestSeq;
+  unsigned int dupeCount; 
+  unsigned int pendingCount; 
+  unsigned int missingPacketCount;
+  unsigned int reTxRxCount; 
+  unsigned int outOfOrderCount; 
 }; 
 
 int dataPortLookup(int type, int source); 
