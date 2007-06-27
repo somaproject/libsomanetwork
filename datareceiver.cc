@@ -1,7 +1,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include "datareceiver.h"
-
+#include "ports.h"
 
 DataReceiver::DataReceiver(int epollfd, int source, datatype_t type, 
 			   boost::function<void (DataPacket_t *)> rdp)
@@ -31,7 +31,7 @@ DataReceiver::DataReceiver(int epollfd, int source, datatype_t type,
   memset((char *) &si_me, sizeof(si_me), 0);
 
   si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(4000 + type_*64 + source_ ); 
+  si_me.sin_port = htons(dataPortLookup(type_, source_));
 
   si_me.sin_addr.s_addr = INADDR_ANY; 
   
@@ -88,7 +88,7 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
   unsigned int seqn = htonl(seq); 
   memcpy(&retxbuf[2], &seqn, 4); 
 
-  sfrom.sin_port = htons(4400); 
+  sfrom.sin_port = htons(DATARETXPORT); 
   sendto(socket_, &retxbuf[0], 6, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
 
 }

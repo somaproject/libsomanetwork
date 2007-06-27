@@ -1,7 +1,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include "eventreceiver.h"
-
+#include "ports.h"
 
 EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> erxp)
   : pktCount_(0),
@@ -26,7 +26,7 @@ EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> 
   memset((char *) &si_me, sizeof(si_me), 0);
 
   si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(5000); 
+  si_me.sin_port = htons(EVENTRXPORT); 
 
   si_me.sin_addr.s_addr = INADDR_ANY; 
   
@@ -80,7 +80,7 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
   unsigned int seqn = htonl(seq); 
   memcpy(&retxbuf[0], &seqn, 4); 
 
-  sfrom.sin_port = htons(5100); 
+  sfrom.sin_port = htons(EVENTRXRETXPORT); 
   sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
 
 }

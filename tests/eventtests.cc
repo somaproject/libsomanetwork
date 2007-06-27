@@ -12,7 +12,7 @@
 
 #include <netdb.h>
 #include <stdio.h>
-
+#include "ports.h"
 
 FakeEventServer::FakeEventServer() :
   running_(false)
@@ -78,7 +78,7 @@ void FakeEventServer::workthread()
   bcopy((char *)hp->h_addr, 
         (char *)&server.sin_addr,
 	hp->h_length);
-  server.sin_port = htons(5000);
+  server.sin_port = htons(EVENTRXPORT);
   length=sizeof(struct sockaddr_in);
   
   while (!fifo_.empty())
@@ -141,7 +141,7 @@ void FakeEventServer::retxthread(void) {
   memset((char *) &si_me, sizeof(si_me), 0);
   
   si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(5100);
+  si_me.sin_port = htons(EVENTRXRETXPORT);
   si_me.sin_addr.s_addr = INADDR_ANY; 
   
   int optval = 1; 
@@ -169,7 +169,7 @@ void FakeEventServer::retxthread(void) {
   bcopy((char *)hp->h_addr, 
         (char *)&server.sin_addr,
 	hp->h_length);
-  server.sin_port = htons(5000);
+  server.sin_port = htons(EVENTRXPORT);
   int length=sizeof(struct sockaddr_in);
   
   

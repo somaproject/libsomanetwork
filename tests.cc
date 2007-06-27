@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
+#include "ports.h"
 
 std::vector<char> fakeDataPacket(unsigned int seq, datatype_t typ, 
 				 datasource_t src)
@@ -147,7 +148,7 @@ void FakeDataServer::retxthread(void) {
   memset((char *) &si_me, sizeof(si_me), 0);
   
   si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(4400);
+  si_me.sin_port = htons(DATARETXPORT);
   si_me.sin_addr.s_addr = INADDR_ANY; 
   
   int optval = 1; 

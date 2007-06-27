@@ -54,7 +54,6 @@ class EventSender : PacketReceiver
   sockaddr_in saServer_; 
   void sendPacket(  EventTXPending_t * etp);
 
-  int responseSock_; 
   pendingQueue_t pendingRespQueue_; 
   boost::mutex appendMutex_;
 

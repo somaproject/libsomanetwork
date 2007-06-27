@@ -34,8 +34,7 @@ DATARXTEST = datareceiver.o datareceiver_test.o tests.o
 EVENTRXTEST = eventreceiver.o eventreceiver_test.o eventtests.o 
 EVENTTXTEST = eventsender.o eventsender_test.o
 
-runner: runner.o $(EVENTTXTEST)
-
+runner: runner.o $(DATARXTEST) 
 
 clean:
 	rm *.o
