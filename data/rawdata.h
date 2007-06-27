@@ -74,7 +74,4 @@ inline DataPacket_t * newDataPacket(boost::array<char, BUFSIZE> buffer)
   return prd; 
 }
 
-inline int dataPortLookup(int type, int source) {
-  return 4000  + type*64 + source;  
-}
 #endif // 

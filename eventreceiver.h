@@ -21,12 +21,11 @@
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
 #include "data/event.h"
+#include "packetreceiver.h"
 
 typedef std::queue<EventPacket_t *> eventPacketQueue_t; 
 
-
-
-class EventReceiver
+class EventReceiver : PacketReceiver
 {
   typedef std::map<eventseq_t, EventPacket_t*> missingPktHash_t;
   

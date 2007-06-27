@@ -1,0 +1,70 @@
+Event transmission uses the event transmission protocol, which consists of: 
+
+1. a nonce appended to an inbound list of events and addresses
+
+Ideally we'd like to aggregate events and then once every T send them across the bus, or something like that. 
+
+On some level it's crucial that event transmission never block. 
+
+Event transmission consists of sending a packet with a nonce and
+waiting for an ack, and if you don't get that ack, resending the
+original. Again, we'll want some sort of timeout detection here. 
+
+Assume we had some sort of fine-grained timeout mechanism. The algorithm would conceivably look like: 
+
+Send Packet
+Add Packet/Nonce to pending list
+when we receive a response, remove from this list. 
+
+for the time being, we won't actually do any retransmission, because
+we're lazy.
+
+EventSender(int epollfd)
+{
+   create a link to the responder
+	
+}
+
+
+sendEvent(EventTxList)
+processResponse(buffer)
+checkPending()
+
+sendEvent(EventTXList_t)
+   // sendEvent is thread-safe in that we acquire a mutex for the
+   relevant send structures prior to manipulating them
+   
+   
+   taken in an eventTxList_t and make a copy of it
+   
+   construct an EventTXPacket_t
+   
+   turn that into a buffer
+   // acquire mutex
+   attach the buffer, the nonce, and the time to a struct and put it in 
+   the "rx pending" list
+
+   actually send the buffer
+	    what if sending blocks? this thread still has the mutex! 
+	    but sending is blocking anyway; it's not like
+	    the other thread could actually do anything productive. 
+
+
+processResponse(buffer):
+   extract out Nonce
+   look up nonce in pending
+   remove nonce from pending, or count as error
+   
+
+checkPending():
+   to be called roughly every ~ 1 ms
+   for each element in the list:
+      if it's old, resend it
+
+Why do we have "time"? It's possible that we'll check pending after
+doing other network-y things, and not get a real 1 ms in
+there. Similary, if the following sequence of events occurs: 
+       T=0 us  send event
+       
+
+	 

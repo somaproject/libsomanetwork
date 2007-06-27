@@ -21,6 +21,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
 #include "data/rawdata.h"
+#include "packetreceiver.h"
 
 typedef std::queue<DataPacket_t*> rawQueue_t; 
 
@@ -45,7 +46,7 @@ struct DataReceiverStats
 
 int dataPortLookup(int type, int source); 
 
-class DataReceiver
+class DataReceiver : public PacketReceiver
 {
   
 public:

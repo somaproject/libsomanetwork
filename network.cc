@@ -28,7 +28,7 @@ void Network::workthread()
   while(running_) {
 
     epoll_event events[EPOLLMAXCNT]; 
-    const int epMaxWaitMS = 10000; 
+    const int epMaxWaitMS = 1; 
     int nfds = epoll_wait(epollfd_, events, EPOLLMAXCNT, 
 			  epMaxWaitMS); 
 
@@ -36,9 +36,9 @@ void Network::workthread()
     if (nfds > 0 ) {
       
       for(int evtnum = 0; evtnum < nfds; evtnum++) {
-	DataReceiver * drp  = (DataReceiver*)events[evtnum].data.ptr; 
+	PacketReceiver * pr  = (PacketReceiver*)events[evtnum].data.ptr; 
 	//std::cout << (long int)events[evtnum].data.ptr << std::endl; 
-	drp->handleReceive(); 
+	pr->handleReceive(); 
       }
 
     } else if (nfds < 0 ) {
