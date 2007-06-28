@@ -9,6 +9,7 @@
 #include "tspipefifo.h"
 #include "datareceiver.h"
 #include "eventreceiver.h"
+#include "eventsender.h"
 #include "data/event.h"
 #include "networkinterface.h"
 
@@ -19,7 +20,7 @@ class Network : public NetworkInterface
 {
 
  public:
-  Network(); 
+  Network(std::string SomaIP); 
   ~Network(); 
   
   void enableDataRX(datasource_t, datatype_t); 
@@ -27,6 +28,9 @@ class Network : public NetworkInterface
   
   DataPacket_t*  getNewData(void); 
   EventList_t * getNewEvents(void); 
+
+  eventtxnonce_t sendEvents(const EventTXList_t & el);
+
 
   int getDataFifoPipe(); 
   int getEventFifoPipe(); 
@@ -43,6 +47,8 @@ class Network : public NetworkInterface
 
   std::map<const datagen_t, DataReceiver*> dataReceivers_; 
   EventReceiver eventReceiver_; 
+  EventSender eventSender_; 
+
   void appendDataOut(DataPacket_t* out); 
   void appendEventOut(EventList_t * out); 
   bool running_; 

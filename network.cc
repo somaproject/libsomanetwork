@@ -3,12 +3,13 @@
 #include "network.h"
 #include "datareceiver.h"
 
-Network::Network() :
+Network::Network(std::string somaIP) :
   running_ (false), 
   pthrd_(NULL), 
   pDispatch_(new EventDispatcher()), 
   eventReceiver_(pDispatch_, 
-		 boost::bind(&Network::appendEventOut, this, _1) )
+		 boost::bind(&Network::appendEventOut, this, _1) ),
+  eventSender_(pDispatch_, somaIP)
 {
 
 
@@ -120,4 +121,11 @@ std::vector<DataReceiverStats>  Network::getDataStats()
     }
   return std::vector<DataReceiverStats>(drs); 
   
+}
+
+eventtxnonce_t Network::sendEvents(const EventTXList_t & el)
+{
+  eventSender_.sendEvents(el);  // the eventSender is thread-safe, so 
+  // this can be called from external functions
+
 }
