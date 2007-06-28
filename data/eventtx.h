@@ -34,7 +34,7 @@ inline std::vector<char> createEventTXBuffer(eventtxnonce_t nonce,
   eventtxnonce_t nnonce = htons(nonce); 
   memcpy(&buffer[bpos], &nnonce, sizeof(eventtxnonce_t)); 
   bpos += sizeof(nonce); 
-
+  
   //write the event count
 
   uint16_t nEventCount = htons(events.size()); 

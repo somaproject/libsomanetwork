@@ -23,7 +23,7 @@
 #include "data/event.h"
 #include "data/eventtx.h"
 #include "packetreceiver.h"
-
+#include "eventdispatcher.h"
 
 const int RETXTIME = 1000; // microseconds
 const int RETXCNT = 5; // try and send this many times, max
@@ -43,13 +43,14 @@ class EventSender : PacketReceiver
 {
 
  public:
-  EventSender(int epollfd, std::string somaIP); 
+  EventSender(eventDispatcherPtr_t, std::string somaIP); 
   ~EventSender(); 
   
-  void sendEvents(const EventTXList_t & el);
+  eventtxnonce_t sendEvents(const EventTXList_t & el);
   
   // internal functions
   void handleReceive(int fd); 
+  void handleNewEventIn(int fd); 
   void newResponse(); 
   void newEventIn(); 
   
@@ -58,9 +59,9 @@ class EventSender : PacketReceiver
   eventtxnonce_t getLastSentNonce() { return lastSentNonce_; } ; 
 
  private:
-  int epollFD_; 
+  eventDispatcherPtr_t pDispatch_; 
+
   eventtxnonce_t nonce_, lastSentNonce_; 
-  struct epoll_event  evSock_, evPipe_; 
   
   int sendSock_; 
   int pipeR_;

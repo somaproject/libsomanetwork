@@ -12,33 +12,6 @@
 
 using boost::unit_test::test_suite;
 
-const int EPOLLMAXCNT=64; 
-
-void fakeNetworkMainLoop(int epollfd)
-{
-  while(1) {
-    epoll_event events[EPOLLMAXCNT]; 
-    const int epMaxWaitMS = 1000; 
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, 
-			  epMaxWaitMS); 
-    
-    
-    if (nfds > 0 ) {
-      
-      for(int evtnum = 0; evtnum < nfds; evtnum++) {
-	PacketReceiver * pr  = (PacketReceiver*)events[evtnum].data.ptr; 
-	pr->handleReceive(events[evtnum].data.fd); 
-      }
-      
-    } else {
-      // otherwise, just a timeout
-    }
-    
-  }
-  
-  
-}
-
 BOOST_AUTO_TEST_CASE(simple)
 {
   // set up receiver:
@@ -46,14 +19,12 @@ BOOST_AUTO_TEST_CASE(simple)
   FakeEventRXServer fakeSoma(none, none); 
   fakeSoma.start(); 
 
-  // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
   
+  EventSender es(ped, "127.0.0.1"); 
   
-  EventSender es(epollfd, "127.0.0.1"); 
+  boost::thread fnml(boost::bind(&EventDispatcher::run, ped.get())); 
   
-  boost::thread fnml(boost::bind(&fakeNetworkMainLoop, epollfd)); 
-
   // generate an event list
 
   int nonce = 0x1234; 
@@ -77,13 +48,12 @@ BOOST_AUTO_TEST_CASE(simple)
 
   EventTXList_t etxl; 
   etxl.push_back(etx); 
-  es.sendEvents(etxl); 
+  eventtxnonce_t n = es.sendEvents(etxl); 
   
-  fakeSoma.shutdown(es.getLastSentNonce()); 
+  fakeSoma.shutdown(n); 
   EventTXList_t recvEvents = fakeSoma.getRXevents(); 
-  
   BOOST_CHECK_EQUAL(recvEvents.size(), etxl.size()); 
-
+  
   
 }
 

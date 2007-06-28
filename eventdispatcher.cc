@@ -119,4 +119,25 @@ void EventDispatcher::runonce()
 	  throw std::runtime_error("epoll_wait returned an unexpected error condition"); 
 	}
       }
+
+      boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
+      for(callbackList_t::iterator i = timeouts_.begin(); i != timeouts_.end(); i++)
+	{
+	  (*i)(0); 
+	}
+      
+}
+
+void EventDispatcher::addTimeout(eventCallback_t cb)
+{
+
+  boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
+  timeouts_.push_back(cb); 
+
+}
+
+void EventDispatcher::delTimeout(eventCallback_t cb)
+{
+  boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
+  //timeouts_.erase(cb); 
 }

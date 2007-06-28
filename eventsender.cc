@@ -1,9 +1,10 @@
 #include "eventsender.h"
 #include "ports.h"
 
-EventSender::EventSender(int epollfd, std::string somaIP) :
-  epollFD_(epollfd),
-  nonce_(0)
+EventSender::EventSender(eventDispatcherPtr_t edp, std::string somaIP) :
+  pDispatch_(edp),
+  nonce_(0), 
+  pPendingPacket_(0)
 {
 
   ////////////////////////////////////////
@@ -20,17 +21,11 @@ EventSender::EventSender(int epollfd, std::string somaIP) :
   saServer_.sin_port = htons(EVENTTXPORT);  
   inet_aton(somaIP.c_str(), &saServer_.sin_addr); 
   
-  ///////////////////////////////////////
-  // connect response socket to epollfd, with callback
-  //////////////////////////////////////
-  // try adding to epoll
-  evSock_.events = EPOLLIN; 
-  //evSock_.data.fd = sendSock_; //responseSock_;
-  evSock_.data.ptr = this; // store self!
-  int res = epoll_ctl(epollFD_, EPOLL_CTL_ADD, sendSock_, &evSock_); 
-  if (res == -1) {
-    std::cout << "ERROR" << std::endl; 
-  }
+  pDispatch_->addEvent(sendSock_, 
+		       boost::bind(std::mem_fun(&EventSender::handleReceive),
+				   this, _1)); 
+  
+
   ///////////////////////////////////////
   // connect pipe socket to epoll
   //////////////////////////////////////
@@ -41,22 +36,23 @@ EventSender::EventSender(int epollfd, std::string somaIP) :
   pipeR_ = pipes[0]; 
   pipeW_ = pipes[1]; 
 
-  // try adding to epoll
-  evPipe_.events = EPOLLIN; 
-  //evPipe_.data.fd = pipeR_; 
-  evPipe_.data.ptr = this; // store self!
-  res = epoll_ctl(epollFD_, EPOLL_CTL_ADD, pipeR_, &evPipe_); 
+  pDispatch_->addEvent(pipeR_, 
+		       boost::bind(std::mem_fun(&EventSender::handleNewEventIn),
+				   this, _1)); 
+  
   
   
 }
 
-void EventSender::sendEvents(const EventTXList_t & el)
+eventtxnonce_t EventSender::sendEvents(const EventTXList_t & el)
 {
   std::cout << "Appending events to list from master thread" << std::endl; 
   // convert events to a buffer
   EventTXPending_t * etp = new EventTXPending_t; 
-  etp->nonce = nonce_; 
-  etp->buffer = createEventTXBuffer(nonce_, el); 
+  eventtxnonce_t curnonce = nonce_; 
+  etp->nonce = curnonce; 
+  nonce_++; 
+  etp->buffer = createEventTXBuffer(etp->nonce, el); 
   gettimeofday(&(etp->inserttime), NULL); 
   etp->txcnt = 0; 
 
@@ -68,32 +64,24 @@ void EventSender::sendEvents(const EventTXList_t & el)
   // write to the pipe to wake up the TX handler
   char x = 0; 
   write(pipeW_, &x, 1); 
-  
+  return curnonce; 
 }
 
 void EventSender::handleReceive(int fd)
 {
-  std::cout << "handleReceive fd = " << fd << ' ' << pipeR_  << std::endl; 
+  newResponse(); 
+}
 
-  if (fd == sendSock_) {
-    // this is an event on the BSD socket, meaning inbound data
-    newResponse(); 
-  } 
-  else if (fd == pipeR_) {
-    // read the event
-    char x; 
-    read(pipeR_, &x, 1); // read from the queue 
-    newEventIn(); 
-  } else {
-  }
-  
+void EventSender::handleNewEventIn(int fd)
+{
+  char x; 
+  read(pipeR_, &x, 1); // read from the queue 
+  newEventIn(); 
   
 }
 
 void EventSender::newEventIn()
 {
-  std::cout << "newEventIn()" << std::endl; 
-
   // called when we are woken up from the pipe
   if ( pPendingPacket_ == 0) {
     // There's no pending packet, so we should send this new one
@@ -119,7 +107,6 @@ void EventSender::newResponse()
   
   int error = recvfrom(sendSock_, &recvbuffer[0], EBUFSIZE, 
 		       0, (sockaddr*)&sfrom, &fromlen); 
-  std::cout << "newResponse()" << std::endl; 
 
   if (error > 0) 
     {
@@ -187,15 +174,15 @@ void EventSender::checkPending()
 void EventSender::sendPendingEvent()
 {
   assert (pPendingPacket_ != NULL); // sanity check
-  
+
   sendto(sendSock_, &(pPendingPacket_->buffer[0]), 
 	 pPendingPacket_->buffer.size(),0, 
 	 (sockaddr*)&saServer_, sizeof(saServer_)); 
-  
+
   pPendingPacket_->txcnt++; 
   gettimeofday(&(pPendingPacket_->sendtime), NULL); 
   lastSentNonce_ = pPendingPacket_->nonce; 
-
+  
 }
 
 EventSender::~EventSender()
