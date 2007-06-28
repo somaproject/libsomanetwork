@@ -3,15 +3,11 @@
 #include "network.h"
 #include "datareceiver.h"
 
-
-const int EPOLLMAXCNT = 256; 
-
-
-
 Network::Network() :
   running_ (false), 
   pthrd_(NULL), 
-  eventReceiver_(epollfd_, 
+  pDispatch_(new EventDispatcher()), 
+  eventReceiver_(pDispatch_, 
 		 boost::bind(&Network::appendEventOut, this, _1) )
 {
 
@@ -27,43 +23,14 @@ void Network::run()
 }
 void Network::workthread()
 {
-  while(running_) {
-
-    epoll_event events[EPOLLMAXCNT]; 
-    const int epMaxWaitMS = 1; 
-    int nfds = epoll_wait(epollfd_, events, EPOLLMAXCNT, 
-			  epMaxWaitMS); 
-
-
-    if (nfds > 0 ) {
-      
-      for(int evtnum = 0; evtnum < nfds; evtnum++) {
-	// we treat each callback as ... ummm... 
-	boost::function<void> * func =  (boost::function<void> *)events[evtnum].data.ptr; 
-	(*func)(); 
-	
-      }
-
-    } else if (nfds < 0 ) {
-      if (errno == EINTR) {
-	std::cerr << "EINTR: The call was interrupted by a " 
-		  << "singal handler before any of the requested events "
-		  << "occured or THE TIMEOUT EXPIRED" << std::endl; 
-
-      } else {
-	throw std::runtime_error("epoll_wait returned an unexpected error condition"); 
-      }
-    } else {
-      // otherwise, just a timeout
-    }
-
-  }
+  pDispatch_->run(); 
   
 }
 
 void Network::shutdown()
 {
   running_ = false; 
+  pDispatch_->halt(); 
 
 }
 
@@ -124,12 +91,7 @@ void Network::enableDataRX(datasource_t src, datatype_t typ)
 
   datagen_t dg(src, typ); 
 
-  if (running_) {
-    std::runtime_error("cannot change DataRx state while running"); 
-  }
-
-
-   dataReceivers_[dg] = new DataReceiver(epollfd_, src, typ, 
+  dataReceivers_[dg] = new DataReceiver(pDispatch_, src, typ, 
   					boost::bind(&Network::appendDataOut, 
   						    this, _1) ); 
   
@@ -138,10 +100,6 @@ void Network::enableDataRX(datasource_t src, datatype_t typ)
 
 void Network::disableDataRX(datasource_t src, datatype_t typ)
 {
-  if (running_) {
-    throw std::runtime_error("cannot change DataRx state while running"); 
-  }
-
   // we really need a custom try/catch here 
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 

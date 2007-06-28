@@ -39,6 +39,8 @@ class Network : public NetworkInterface
   TSPipeFifo<DataPacket_t*> outputDataFifo_; 
   TSPipeFifo<EventList_t*> outputEventFifo_; 
 
+  eventDispatcherPtr_t pDispatch_; 
+
   std::map<const datagen_t, DataReceiver*> dataReceivers_; 
   EventReceiver eventReceiver_; 
   void appendDataOut(DataPacket_t* out); 
@@ -47,7 +49,8 @@ class Network : public NetworkInterface
   
   boost::thread *  pthrd_; 
   void workthread(void); 
-  EventDispatcher dispatch_; 
+
+  
 
 };
 
