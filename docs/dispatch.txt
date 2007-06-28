@@ -1,0 +1,53 @@
+This describes our attempt to create a thread-safe high-performance
+socket event dispatch system based around epoll and boost::function. 
+
+Requirements: 
+
+Adding and deleting callbacks will be thread-safe, but will have poor
+performance. That is, if in some other thread we have
+
+dispatch.running(); 
+
+we can call dispatch.addCallback(fd, callbackfunc)
+
+and know that it will at some point update to reflect the new
+callback. Deletes are similar.
+
+Internally we use a std::map<int fd, boost::function(callback)> to
+dispatch the results of the epoll. 
+
+From within a dispatch, we can also call requeue() with a function and
+a duration; said function will execute within ~ duration. This is
+accomplished by maintaining a list of timeouts.
+
+How does thread safety work? We know epoll set modifications are thread
+safe.
+
+the resulting pcode: 
+
+epoll_wait()
+{
+	acquire mutex
+	perform the relevant dispatch
+	release mutex; 
+	check timeout functions()
+}
+
+To add an event:
+acquire mutex
+modify the callback structure
+modify the fd
+release the mutex
+
+to delete an event: 
+acquire mutex
+delete callback from FD set
+delete the callback
+return the mutex
+
+----------------------------- 
+
+now to shutdown from another thread, we
+use our comm_fd and send a byte, causing a wakeup and thus making us
+check for running_;
+

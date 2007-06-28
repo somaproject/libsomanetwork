@@ -1,0 +1,10 @@
+This is the soma network interface library, which allows for
+multithreaded queuing and processing of soma events and datagrams.
+
+The code is organized as:
+
+include/
+src/ 
+tests/
+benchmark/ 
+doc/ 
