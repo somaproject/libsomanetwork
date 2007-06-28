@@ -45,9 +45,9 @@ class Network : public NetworkInterface
   void appendEventOut(EventList_t * out); 
   bool running_; 
   
-  int epollfd_; 
   boost::thread *  pthrd_; 
   void workthread(void); 
+  EventDispatcher dispatch_; 
 
 };
 

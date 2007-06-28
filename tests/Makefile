@@ -1,4 +1,4 @@
-CXXFLAGS = -g -O0 -m64 -I../ -Wall
+CXXFLAGS = -g -O0 -m64 -I../ 
 LDFLAGS = -lboost_thread -lboost_date_time  -lboost_program_options -lboost_unit_test_framework -g 
 
 CXX = g++
@@ -33,12 +33,12 @@ eventtests: eventtests.o
 
 runner.o: runner.cc
 
-DATARXTEST = datareceiver.o datareceiver_test.o tests.o
+DATARXTEST = datareceiver.o datareceiver_test.o tests.o eventdispatcher.o
 EVENTRXTEST = eventreceiver.o eventreceiver_test.o eventtests.o 
 EVENTTXTEST = eventsender.o eventsender_test.o
 DISPATCH = eventdispatcher.o dispatcher_test.o
 
-runner: runner.o $(DISPATCH) 
+runner: runner.o $(DATARXTEST)
 
 clean:
 	rm *.o

@@ -71,7 +71,29 @@ void EventDispatcher::run(void)
 
   while(running_)
     {
-      
+      runonce(); 
+    }
+}
+
+
+  
+void EventDispatcher::controlEvent(int fd)
+{
+  running_ = false; 
+
+}
+
+void EventDispatcher::halt()
+{
+  char x; 
+  write(controlFDw_, &x, 1); 
+
+}
+
+void EventDispatcher::runonce()
+{
+
+
       epoll_event events[EPOLLMAXCNT]; 
       const int epMaxWaitMS = 1; 
       int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
@@ -97,20 +119,4 @@ void EventDispatcher::run(void)
 	  throw std::runtime_error("epoll_wait returned an unexpected error condition"); 
 	}
       }
-    }
-}
-
-
-  
-void EventDispatcher::controlEvent(int fd)
-{
-  running_ = false; 
-
-}
-
-void EventDispatcher::halt()
-{
-  char x; 
-  write(controlFDw_, &x, 1); 
-
 }

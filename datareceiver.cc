@@ -1,9 +1,10 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include "datareceiver.h"
+#include "eventdispatcher.h"
 #include "ports.h"
 
-DataReceiver::DataReceiver(int epollfd, int source, datatype_t type, 
+DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t type, 
 			   boost::function<void (DataPacket_t *)> rdp)
   : source_ (source), 
     type_ (type), 
@@ -14,7 +15,7 @@ DataReceiver::DataReceiver(int epollfd, int source, datatype_t type,
     reTxRxCount_(0), 
     outOfOrderCount_(0),
     putIn_(rdp), 
-    epollFD_(epollfd)
+    pDispatch_(dispatch)
 {
 
   struct sockaddr_in si_me, si_other;
@@ -58,11 +59,11 @@ DataReceiver::DataReceiver(int epollfd, int source, datatype_t type,
     throw std::runtime_error("error binding socket"); 
   }
     
-  // try adding to epoll
-  ev_.events = EPOLLIN; 
-  ev_.data.fd = socket_;
-  ev_.data.ptr = this; // store self!
-  res = epoll_ctl(epollFD_, EPOLL_CTL_ADD, socket_, &ev_); 
+  // configure the RX dispatch
+  pDispatch_->addEvent(socket_, 
+		       boost::bind(std::mem_fun(&DataReceiver::handleReceive),
+				   this, _1)); 
+  
 
 }
 

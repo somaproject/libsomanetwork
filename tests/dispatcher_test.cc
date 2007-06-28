@@ -12,7 +12,8 @@
 
 using boost::unit_test::test_suite;
 
-std::list<std::vector<char> > buflist; 
+typedef std::list<std::vector<char> > buflist_t; 
+buflist_t buflist; 
 
 void append(int fd)
 {
@@ -27,14 +28,10 @@ void append(int fd)
 
 BOOST_AUTO_TEST_CASE( simpledispatch )
 {
-  buflist.clear(); 
-  
-
   /* Let's see if we can correctly receive some data
-
-  
   */ 
-  
+
+  buflist.clear(); 
   
   EventDispatcher ed; 
   int pipes[2]; 
@@ -52,11 +49,70 @@ BOOST_AUTO_TEST_CASE( simpledispatch )
       
       send(fdw, &x, 1, 0); 
     }
-  while(buflist.size() < 5) {
+  while(buflist.size() < 10) {
+    // THIS IS NOT THREAD SAFE, but i don't really care too much right now
   }
   ed.halt(); 
   thrd.join(); 
-  std::cout << buflist.size() << std::endl; 
-  std::cout << buflist.front().size() << std::endl;
+  BOOST_CHECK_EQUAL(buflist.size(), 10); 
+  BOOST_CHECK_EQUAL((unsigned int)buflist.front().size(), 1); 
 
+  buflist_t::iterator i; 
+  char pos = 0; 
+  for (i = buflist.begin(); i != buflist.end(); i++)
+    {
+      BOOST_CHECK_EQUAL((*i)[0], pos); 
+      pos++; 
+    }
 }
+
+
+BOOST_AUTO_TEST_CASE( livedelete )
+{
+  /* Let's see if we can correctly receive some data
+  */ 
+
+  buflist.clear(); 
+  
+  EventDispatcher ed; 
+  int pipes[2]; 
+  socketpair(AF_UNIX, SOCK_DGRAM, 0, pipes); 
+
+  int fdw = pipes[1]; 
+  int fdr = pipes[0]; 
+  
+  ed.addEvent(fdr, &append); 
+  // now we run in a single-threaded context
+  boost::thread thrd(boost::bind(&EventDispatcher::run, &ed)); 
+  for (int i = 0; i < 10; i++)
+    {
+      char x = (char)i; 
+      send(fdw, &x, 1, 0); 
+    }
+  while(buflist.size() < 10) {
+    // THIS IS NOT THREAD SAFE, but i don't really care too much right now
+  }
+  
+  ed.delEvent(fdr); 
+  sleep(1); 
+  for (int i = 0; i < 10; i++)
+    {
+      char x = (char)i; 
+      send(fdw, &x, 1, 0); 
+    }
+  // sleep for a second
+  sleep(1); 
+  ed.halt(); 
+  thrd.join(); 
+  BOOST_CHECK_EQUAL(buflist.size(), 10); 
+  BOOST_CHECK_EQUAL((unsigned int)buflist.front().size(), 1); 
+
+  buflist_t::iterator i; 
+  char pos = 0; 
+  for (i = buflist.begin(); i != buflist.end(); i++)
+    {
+      BOOST_CHECK_EQUAL((*i)[0], pos); 
+      pos++; 
+    }
+}
+

@@ -7,6 +7,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "datareceiver.h"
+#include "eventdispatcher.h"
 #include "tests.h"
 
 using boost::unit_test::test_suite;
@@ -27,9 +28,6 @@ void append(DataPacket_t * rdp)
   rawDataBuffer.push_back(rdp); 
 }
 
-const int EPOLLMAXCNT=64; 
-
-
 BOOST_AUTO_TEST_CASE( simpledatatest )
 {
   // Can we send a single packet? this is the model for all future activity
@@ -37,30 +35,24 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   clearBuffer(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 10;
   datatype_t typ = RAW; 
   
-  DataReceiver dr(epollfd, src, typ, &append); 
+  DataReceiver dr(ped, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
   const int SEQ = 1000; 
   server.appendSeqsToSend(SEQ); 
+  
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
-  
   server.start(); 
-  int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-  
-  for(int evtnum = 0; evtnum < nfds; evtnum++) {
-    DataReceiver * drp  = (DataReceiver*)events[evtnum].data.ptr; 
-    drp->handleReceive(); 
-  }
-  
+  ped->runonce(); 
+
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
+
   clearBuffer(); 
 
 }
@@ -72,11 +64,12 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   rawDataBuffer.clear(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
+
   datasource_t src = 30;
   datatype_t  typ = TSPIKE; 
   
-  DataReceiver dr(epollfd, src, typ, &append); 
+  DataReceiver dr(ped, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -94,18 +87,11 @@ BOOST_AUTO_TEST_CASE(outofordertest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
-  
   server.start(); 
   for (int i = 0; i < 8; i++) {
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-  
-    for(int evtnum = 0; evtnum < nfds; evtnum++) {
-      DataReceiver * drp  = (DataReceiver*)events[evtnum].data.ptr; 
-      drp->handleReceive(); 
-    }
+    ped->runonce(); 
   }  
+
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 8); 
   for(int i = 0; i < 8; i++)
     {
@@ -123,11 +109,12 @@ BOOST_AUTO_TEST_CASE(dupetest)
   clearBuffer(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
+
   datasource_t src = 30;
   datatype_t typ = TSPIKE; 
   
-  DataReceiver dr(epollfd, src, typ, &append); 
+  DataReceiver dr(ped, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -151,13 +138,9 @@ BOOST_AUTO_TEST_CASE(dupetest)
   
   server.start(); 
   for (int i = 0; i < 9; i++) {
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-
-    for(int evtnum = 0; evtnum < nfds; evtnum++) {
-      DataReceiver * drp  = (DataReceiver*)events[evtnum].data.ptr; 
-      drp->handleReceive(); 
-    }
+    ped->runonce(); 
   }  
+
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 8); 
   for(int i = 0; i < 8; i++)
     {
@@ -177,11 +160,12 @@ BOOST_AUTO_TEST_CASE(retxtest)
   rawDataBuffer.clear(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 30;
   datatype_t typ = RAW; 
+  int epollfd = epoll_create(EPOLLMAXCNT);
   
-  DataReceiver dr(epollfd, src, typ, &append); 
+  DataReceiver dr(ped, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -205,12 +189,7 @@ BOOST_AUTO_TEST_CASE(retxtest)
   
   server.start(); 
   for (int i = 0; i < 10; i++) {
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-
-    for(int evtnum = 0; evtnum < nfds; evtnum++) {
-      DataReceiver * drp  = (DataReceiver*)events[evtnum].data.ptr; 
-      drp->handleReceive(); 
-    }
+    ped->runonce(); 
   }  
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 10); 
   for(int i = 0; i < rawDataBuffer.size(); i++)

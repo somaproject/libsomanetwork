@@ -22,6 +22,7 @@
 
 #include "data/rawdata.h"
 #include "packetreceiver.h"
+#include "eventdispatcher.h"
 
 typedef std::queue<DataPacket_t*> rawQueue_t; 
 
@@ -50,7 +51,8 @@ class DataReceiver : public PacketReceiver
 {
   
 public:
-  DataReceiver(int epollfd, int source, datatype_t type,
+  DataReceiver(eventDispatcherPtr_t pDispatch, 
+	       int source, datatype_t type,
 	       boost::function<void (DataPacket_t *)> rdp); 
   ~DataReceiver(); 
   int getBufferSize(void) 
@@ -96,7 +98,7 @@ private:
   void updateOutQueue(void); 
   
   boost::mutex statusMutex_;
-  
+  eventDispatcherPtr_t pDispatch_;    
 }; 
 
 

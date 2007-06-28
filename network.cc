@@ -11,7 +11,6 @@ const int EPOLLMAXCNT = 256;
 Network::Network() :
   running_ (false), 
   pthrd_(NULL), 
-  epollfd_(epoll_create(EPOLLMAXCNT)),
   eventReceiver_(epollfd_, 
 		 boost::bind(&Network::appendEventOut, this, _1) )
 {
