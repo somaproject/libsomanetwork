@@ -3,7 +3,8 @@
 #include "eventreceiver.h"
 #include "ports.h"
 
-EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> erxp)
+EventReceiver::EventReceiver(eventDispatcherPtr_t ed, 
+			     boost::function<void (EventList_t *)> erxp)
   : pktCount_(0),
     latestSeq_(0), 
     dupeCount_(0), 
@@ -11,7 +12,7 @@ EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> 
     reTxRxCount_(0), 
     outOfOrderCount_(0),
     putIn_(erxp), 
-    epollFD_(epollfd)
+    pDispatch_(ed)
 {
 
   struct sockaddr_in si_me, si_other;
@@ -22,7 +23,7 @@ EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> 
     throw std::runtime_error("could not create socket"); 
 
   }
-
+  
   memset((char *) &si_me, sizeof(si_me), 0);
 
   si_me.sin_family = AF_INET;
@@ -53,21 +54,18 @@ EventReceiver::EventReceiver(int epollfd, boost::function<void (EventList_t *)> 
     throw std::runtime_error("error binding socket"); 
   }
     
-  // try adding to epoll
-  ev_.events = EPOLLIN; 
-  ev_.data.fd = socket_;
-  ev_.data.ptr = this; // store self!
-  res = epoll_ctl(epollFD_, EPOLL_CTL_ADD, socket_, &ev_); 
-
+  // try adding to dispatcher
+  pDispatch_->addEvent(socket_, 
+		       boost::bind(std::mem_fun(&EventReceiver::handleReceive),
+				   this, _1)); 
+  
 }
 
 
 EventReceiver::~EventReceiver()
 {
   
-  // remove from epoll
-  int res = epoll_ctl(epollFD_, EPOLL_CTL_DEL, socket_, NULL); 
-  
+  pDispatch_->delEvent(socket_); 
   close(socket_); 
 
 }

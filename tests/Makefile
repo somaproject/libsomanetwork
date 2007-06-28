@@ -34,11 +34,11 @@ eventtests: eventtests.o
 runner.o: runner.cc
 
 DATARXTEST = datareceiver.o datareceiver_test.o tests.o eventdispatcher.o
-EVENTRXTEST = eventreceiver.o eventreceiver_test.o eventtests.o 
-EVENTTXTEST = eventsender.o eventsender_test.o
+EVENTRXTEST = eventreceiver.o eventreceiver_test.o eventtests.o  eventdispatcher.o
+EVENTTXTEST = eventsender.o eventsender_test.o eventdispatcher.o
 DISPATCH = eventdispatcher.o dispatcher_test.o
 
-runner: runner.o $(DATARXTEST)
+runner: runner.o $(EVENTRXTEST) $(DATARXTEST) $(DISPATCH)
 
 clean:
 	rm *.o

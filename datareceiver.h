@@ -84,10 +84,6 @@ private:
   int reTxRxCount_; 
   int outOfOrderCount_; 
   boost::function<void (DataPacket_t *)>  putIn_; 
-  int epollFD_; 
-  //ptime firstPacket_, lastPacket_;
-  struct epoll_event  ev_; 
-
 
   // received queue
   rawQueue_t rawRxQueue_; 

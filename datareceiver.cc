@@ -72,8 +72,7 @@ DataReceiver::~DataReceiver()
 {
   
   // remove from epoll
-  epoll_ctl(epollFD_, EPOLL_CTL_DEL, socket_, NULL); 
-  
+  pDispatch_->delEvent(socket_); 
   close(socket_); 
   
 }

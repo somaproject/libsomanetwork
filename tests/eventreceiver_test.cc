@@ -19,8 +19,6 @@ void append(EventList_t * elp)
   eventListBuffer.push_back(elp); 
 }
 
-const int EPOLLMAXCNT=64; 
-
 void verifyEventListBuffer(std::vector<std::vector<char> > & inputbufs)
 {
 
@@ -59,9 +57,8 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   eventListBuffer.clear(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
-  
-  EventReceiver er(epollfd, &append); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
+  EventReceiver er(ped, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -78,17 +75,9 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   eso.second =   lens; 
   server.appendSeqsToSend(eso); 
 
-
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
-  
   server.start(); 
-  int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-  for(int evtnum = 0; evtnum < nfds; evtnum++) {
-    EventReceiver * drp  = (EventReceiver*)events[evtnum].data.ptr; 
-    drp->handleReceive(); 
-  }
-
+  ped->runonce(); 
+  
   BOOST_CHECK_EQUAL(eventListBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(eventListBuffer.front()->size(), 4+8+12+20+30); 
 
@@ -110,9 +99,9 @@ BOOST_AUTO_TEST_CASE( multieventtest )
   eventListBuffer.clear(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
-  
-  EventReceiver er(epollfd, &append); 
+
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
+  EventReceiver er(ped, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -140,17 +129,10 @@ BOOST_AUTO_TEST_CASE( multieventtest )
     server.appendSeqsToSend(eso); 
   }
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
-  
   server.start(); 
 
   for (int i = 0; i < 10; i++){ 
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-    for(int evtnum = 0; evtnum < nfds; evtnum++) {
-      EventReceiver * drp  = (EventReceiver*)events[evtnum].data.ptr; 
-      drp->handleReceive(); 
-    }
+    ped->runonce(); 
   }
   
   // assert data values
@@ -167,9 +149,8 @@ BOOST_AUTO_TEST_CASE( outofordertest )
   eventListBuffer.clear(); 
 
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
-  
-  EventReceiver er(epollfd, &append); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
+  EventReceiver er(ped, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -201,18 +182,10 @@ BOOST_AUTO_TEST_CASE( outofordertest )
     server.appendSeqsToSend(eso); 
   }
 
-
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
-  
   server.start(); 
 
   for (int i = 0; i < 10; i++){ 
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-    for(int evtnum = 0; evtnum < nfds; evtnum++) {
-      EventReceiver * drp  = (EventReceiver*)events[evtnum].data.ptr; 
-      drp->handleReceive(); 
-    }
+    ped->runonce(); 
   }
   
   // assert data values
@@ -244,9 +217,8 @@ BOOST_AUTO_TEST_CASE( droptest )
   eventListBuffer.clear(); 
   
   // and then test them all. 
-  int epollfd = epoll_create(EPOLLMAXCNT); 
-  
-  EventReceiver er(epollfd, &append); 
+  eventDispatcherPtr_t ped(new EventDispatcher()); 
+  EventReceiver er(ped, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -281,17 +253,10 @@ BOOST_AUTO_TEST_CASE( droptest )
   }
 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
-  
   server.start(); 
 
   for (int i = 0; i < 10; i++){ 
-    int nfds = epoll_wait(epollfd, events, EPOLLMAXCNT, -1);
-    for(int evtnum = 0; evtnum < nfds; evtnum++) {
-      EventReceiver * drp  = (EventReceiver*)events[evtnum].data.ptr; 
-      drp->handleReceive(); 
-    }
+    ped->runonce(); 
   }
   
   // assert data values
