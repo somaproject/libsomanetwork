@@ -1,3 +1,7 @@
+#
+# This is partly based on
+# http://www.openismus.com/documents/linux/building_libraries/building_libraries.shtml
+# and 
 # Prelude . 
 AC_INIT([somanetwork], [1.0], [bugs@soma.mit.edu])
 AC_CONFIG_SRCDIR([src/network.cc])
@@ -69,6 +73,11 @@ AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_UNIT_TEST_FRAMEWORK
 AX_BOOST_THREAD
 
+# glib for benchmark
+PKG_CHECK_MODULES(BENCH, gtkmm-2.4 >= 2.10 glibmm-2.4 >= 2.13.0 )
+AC_SUBST(BENCH_CFLAGS)
+AC_SUBST(BENCH_LIBS)
+
 AM_PROG_LIBTOOL
 AM_SANITY_CHECK
 
@@ -79,7 +88,7 @@ dnl -----------------------------------------------
 dnl Generates Makefile's, configuration files and scripts
 dnl -----------------------------------------------
 
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile benchmarks/Makefile somanetwork-1.0.pc])
 
 AC_OUTPUT
 

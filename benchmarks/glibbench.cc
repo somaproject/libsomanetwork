@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
     }
 
   
-  network =  new Network(); 
+  network =  new Network("127.0.0.1"); 
   
   for (int i = startchan; 
        i <= endchan; i++) {

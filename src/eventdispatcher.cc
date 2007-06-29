@@ -12,9 +12,6 @@ EventDispatcher::EventDispatcher() :
   addEvent(controlFDr_,
 	   boost::bind(std::mem_fun(&EventDispatcher::controlEvent), this, _1)); 
 
-  //boost::bind(*this, &EventDispatcher::controlEvent)); /
-
-
 }
 
 EventDispatcher::~EventDispatcher()
@@ -139,5 +136,13 @@ void EventDispatcher::addTimeout(eventCallback_t cb)
 void EventDispatcher::delTimeout(eventCallback_t cb)
 {
   boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
-  //timeouts_.erase(cb); 
+  // now find and delete the callback; is O(n); 
+//   callbackList_t::iterator i = find(timeouts_.begin(), timeouts_.end(), 
+// 				    cb); 
+//   if (i == timeouts_.end() )
+//     {
+//       throw std::runtime_error("requested callback was not present in timeout list"); 
+//     }
+//   timeouts_.erase(i); 
+	
 }

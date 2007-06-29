@@ -4,8 +4,6 @@
 #include <map>
 #include <utility>
 #include <sys/epoll.h>
-
-
 #include "tspipefifo.h"
 #include "datareceiver.h"
 #include "eventreceiver.h"

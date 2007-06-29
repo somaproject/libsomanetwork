@@ -50,7 +50,11 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am_runner_OBJECTS = runner-datareceiver_test.$(OBJEXT) \
-	runner-tests.$(OBJEXT) runner-runner.$(OBJEXT)
+	runner-dispatcher_test.$(OBJEXT) \
+	runner-eventreceiver_test.$(OBJEXT) \
+	runner-eventsender_test.$(OBJEXT) runner-eventtests.$(OBJEXT) \
+	runner-tspipefifo_test.$(OBJEXT) runner-tests.$(OBJEXT) \
+	runner-runner.$(OBJEXT)
 runner_OBJECTS = $(am_runner_OBJECTS)
 runner_DEPENDENCIES = ../src/libsomanetwork-1.0.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -78,6 +82,8 @@ AUTOCONF = ${SHELL} /home/jonas/soma/network/missing --run autoconf
 AUTOHEADER = ${SHELL} /home/jonas/soma/network/missing --run autoheader
 AUTOMAKE = ${SHELL} /home/jonas/soma/network/missing --run automake-1.9
 AWK = mawk
+BENCH_CFLAGS = -DPNG_NO_MMX_CODE -I/usr/include/gtkmm-2.4 -I/usr/lib/gtkmm-2.4/include -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/gdkmm-2.4 -I/usr/lib/gdkmm-2.4/include -I/usr/include/pangomm-1.4 -I/usr/include/atkmm-1.6 -I/usr/include/gtk-2.0 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/lib/gtk-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/atk-1.0  
+BENCH_LIBS = -lgtkmm-2.4 -lgdkmm-2.4 -latkmm-1.6 -lgtk-x11-2.0 -lpangomm-1.4 -lcairomm-1.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lfontconfig -lXext -lXrender -lXinerama -lXi -lXrandr -lXcursor -lXfixes -lpango-1.0 -lcairo -lX11 -lgmodule-2.0 -ldl -lglibmm-2.4 -lgobject-2.0 -lsigc-2.0 -lglib-2.0  
 BOOST_CPPFLAGS = -pthread -I/usr/include
 BOOST_LDFLAGS = -L/usr/lib
 BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options
@@ -128,6 +134,7 @@ PACKAGE_STRING = somanetwork 1.0
 PACKAGE_TARNAME = somanetwork
 PACKAGE_VERSION = 1.0
 PATH_SEPARATOR = :
+PKG_CONFIG = /usr/bin/pkg-config
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/bash
@@ -184,7 +191,7 @@ target_alias =
 # 
 AM_CXXFLAGS = $(BOOST_CPPFLAGS)
 AM_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB) $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
-runner_SOURCES = datareceiver_test.cc tests.cc runner.cc 
+runner_SOURCES = datareceiver_test.cc dispatcher_test.cc eventreceiver_test.cc eventsender_test.cc eventtests.cc tspipefifo_test.cc  tests.cc runner.cc 
 runner_LDADD = ../src/libsomanetwork-1.0.la
 runner_CXXFLAGS = -I../src/
 all: all-am
@@ -238,8 +245,13 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/runner-datareceiver_test.Po
+include ./$(DEPDIR)/runner-dispatcher_test.Po
+include ./$(DEPDIR)/runner-eventreceiver_test.Po
+include ./$(DEPDIR)/runner-eventsender_test.Po
+include ./$(DEPDIR)/runner-eventtests.Po
 include ./$(DEPDIR)/runner-runner.Po
 include ./$(DEPDIR)/runner-tests.Po
+include ./$(DEPDIR)/runner-tspipefifo_test.Po
 
 .cc.o:
 	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -275,6 +287,76 @@ runner-datareceiver_test.obj: datareceiver_test.cc
 #	source='datareceiver_test.cc' object='runner-datareceiver_test.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-datareceiver_test.obj `if test -f 'datareceiver_test.cc'; then $(CYGPATH_W) 'datareceiver_test.cc'; else $(CYGPATH_W) '$(srcdir)/datareceiver_test.cc'; fi`
+
+runner-dispatcher_test.o: dispatcher_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-dispatcher_test.o -MD -MP -MF "$(DEPDIR)/runner-dispatcher_test.Tpo" -c -o runner-dispatcher_test.o `test -f 'dispatcher_test.cc' || echo '$(srcdir)/'`dispatcher_test.cc; \
+	then mv -f "$(DEPDIR)/runner-dispatcher_test.Tpo" "$(DEPDIR)/runner-dispatcher_test.Po"; else rm -f "$(DEPDIR)/runner-dispatcher_test.Tpo"; exit 1; fi
+#	source='dispatcher_test.cc' object='runner-dispatcher_test.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-dispatcher_test.o `test -f 'dispatcher_test.cc' || echo '$(srcdir)/'`dispatcher_test.cc
+
+runner-dispatcher_test.obj: dispatcher_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-dispatcher_test.obj -MD -MP -MF "$(DEPDIR)/runner-dispatcher_test.Tpo" -c -o runner-dispatcher_test.obj `if test -f 'dispatcher_test.cc'; then $(CYGPATH_W) 'dispatcher_test.cc'; else $(CYGPATH_W) '$(srcdir)/dispatcher_test.cc'; fi`; \
+	then mv -f "$(DEPDIR)/runner-dispatcher_test.Tpo" "$(DEPDIR)/runner-dispatcher_test.Po"; else rm -f "$(DEPDIR)/runner-dispatcher_test.Tpo"; exit 1; fi
+#	source='dispatcher_test.cc' object='runner-dispatcher_test.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-dispatcher_test.obj `if test -f 'dispatcher_test.cc'; then $(CYGPATH_W) 'dispatcher_test.cc'; else $(CYGPATH_W) '$(srcdir)/dispatcher_test.cc'; fi`
+
+runner-eventreceiver_test.o: eventreceiver_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-eventreceiver_test.o -MD -MP -MF "$(DEPDIR)/runner-eventreceiver_test.Tpo" -c -o runner-eventreceiver_test.o `test -f 'eventreceiver_test.cc' || echo '$(srcdir)/'`eventreceiver_test.cc; \
+	then mv -f "$(DEPDIR)/runner-eventreceiver_test.Tpo" "$(DEPDIR)/runner-eventreceiver_test.Po"; else rm -f "$(DEPDIR)/runner-eventreceiver_test.Tpo"; exit 1; fi
+#	source='eventreceiver_test.cc' object='runner-eventreceiver_test.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-eventreceiver_test.o `test -f 'eventreceiver_test.cc' || echo '$(srcdir)/'`eventreceiver_test.cc
+
+runner-eventreceiver_test.obj: eventreceiver_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-eventreceiver_test.obj -MD -MP -MF "$(DEPDIR)/runner-eventreceiver_test.Tpo" -c -o runner-eventreceiver_test.obj `if test -f 'eventreceiver_test.cc'; then $(CYGPATH_W) 'eventreceiver_test.cc'; else $(CYGPATH_W) '$(srcdir)/eventreceiver_test.cc'; fi`; \
+	then mv -f "$(DEPDIR)/runner-eventreceiver_test.Tpo" "$(DEPDIR)/runner-eventreceiver_test.Po"; else rm -f "$(DEPDIR)/runner-eventreceiver_test.Tpo"; exit 1; fi
+#	source='eventreceiver_test.cc' object='runner-eventreceiver_test.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-eventreceiver_test.obj `if test -f 'eventreceiver_test.cc'; then $(CYGPATH_W) 'eventreceiver_test.cc'; else $(CYGPATH_W) '$(srcdir)/eventreceiver_test.cc'; fi`
+
+runner-eventsender_test.o: eventsender_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-eventsender_test.o -MD -MP -MF "$(DEPDIR)/runner-eventsender_test.Tpo" -c -o runner-eventsender_test.o `test -f 'eventsender_test.cc' || echo '$(srcdir)/'`eventsender_test.cc; \
+	then mv -f "$(DEPDIR)/runner-eventsender_test.Tpo" "$(DEPDIR)/runner-eventsender_test.Po"; else rm -f "$(DEPDIR)/runner-eventsender_test.Tpo"; exit 1; fi
+#	source='eventsender_test.cc' object='runner-eventsender_test.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-eventsender_test.o `test -f 'eventsender_test.cc' || echo '$(srcdir)/'`eventsender_test.cc
+
+runner-eventsender_test.obj: eventsender_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-eventsender_test.obj -MD -MP -MF "$(DEPDIR)/runner-eventsender_test.Tpo" -c -o runner-eventsender_test.obj `if test -f 'eventsender_test.cc'; then $(CYGPATH_W) 'eventsender_test.cc'; else $(CYGPATH_W) '$(srcdir)/eventsender_test.cc'; fi`; \
+	then mv -f "$(DEPDIR)/runner-eventsender_test.Tpo" "$(DEPDIR)/runner-eventsender_test.Po"; else rm -f "$(DEPDIR)/runner-eventsender_test.Tpo"; exit 1; fi
+#	source='eventsender_test.cc' object='runner-eventsender_test.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-eventsender_test.obj `if test -f 'eventsender_test.cc'; then $(CYGPATH_W) 'eventsender_test.cc'; else $(CYGPATH_W) '$(srcdir)/eventsender_test.cc'; fi`
+
+runner-eventtests.o: eventtests.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-eventtests.o -MD -MP -MF "$(DEPDIR)/runner-eventtests.Tpo" -c -o runner-eventtests.o `test -f 'eventtests.cc' || echo '$(srcdir)/'`eventtests.cc; \
+	then mv -f "$(DEPDIR)/runner-eventtests.Tpo" "$(DEPDIR)/runner-eventtests.Po"; else rm -f "$(DEPDIR)/runner-eventtests.Tpo"; exit 1; fi
+#	source='eventtests.cc' object='runner-eventtests.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-eventtests.o `test -f 'eventtests.cc' || echo '$(srcdir)/'`eventtests.cc
+
+runner-eventtests.obj: eventtests.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-eventtests.obj -MD -MP -MF "$(DEPDIR)/runner-eventtests.Tpo" -c -o runner-eventtests.obj `if test -f 'eventtests.cc'; then $(CYGPATH_W) 'eventtests.cc'; else $(CYGPATH_W) '$(srcdir)/eventtests.cc'; fi`; \
+	then mv -f "$(DEPDIR)/runner-eventtests.Tpo" "$(DEPDIR)/runner-eventtests.Po"; else rm -f "$(DEPDIR)/runner-eventtests.Tpo"; exit 1; fi
+#	source='eventtests.cc' object='runner-eventtests.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-eventtests.obj `if test -f 'eventtests.cc'; then $(CYGPATH_W) 'eventtests.cc'; else $(CYGPATH_W) '$(srcdir)/eventtests.cc'; fi`
+
+runner-tspipefifo_test.o: tspipefifo_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-tspipefifo_test.o -MD -MP -MF "$(DEPDIR)/runner-tspipefifo_test.Tpo" -c -o runner-tspipefifo_test.o `test -f 'tspipefifo_test.cc' || echo '$(srcdir)/'`tspipefifo_test.cc; \
+	then mv -f "$(DEPDIR)/runner-tspipefifo_test.Tpo" "$(DEPDIR)/runner-tspipefifo_test.Po"; else rm -f "$(DEPDIR)/runner-tspipefifo_test.Tpo"; exit 1; fi
+#	source='tspipefifo_test.cc' object='runner-tspipefifo_test.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-tspipefifo_test.o `test -f 'tspipefifo_test.cc' || echo '$(srcdir)/'`tspipefifo_test.cc
+
+runner-tspipefifo_test.obj: tspipefifo_test.cc
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-tspipefifo_test.obj -MD -MP -MF "$(DEPDIR)/runner-tspipefifo_test.Tpo" -c -o runner-tspipefifo_test.obj `if test -f 'tspipefifo_test.cc'; then $(CYGPATH_W) 'tspipefifo_test.cc'; else $(CYGPATH_W) '$(srcdir)/tspipefifo_test.cc'; fi`; \
+	then mv -f "$(DEPDIR)/runner-tspipefifo_test.Tpo" "$(DEPDIR)/runner-tspipefifo_test.Po"; else rm -f "$(DEPDIR)/runner-tspipefifo_test.Tpo"; exit 1; fi
+#	source='tspipefifo_test.cc' object='runner-tspipefifo_test.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -c -o runner-tspipefifo_test.obj `if test -f 'tspipefifo_test.cc'; then $(CYGPATH_W) 'tspipefifo_test.cc'; else $(CYGPATH_W) '$(srcdir)/tspipefifo_test.cc'; fi`
 
 runner-tests.o: tests.cc
 	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(runner_CXXFLAGS) $(CXXFLAGS) -MT runner-tests.o -MD -MP -MF "$(DEPDIR)/runner-tests.Tpo" -c -o runner-tests.o `test -f 'tests.cc' || echo '$(srcdir)/'`tests.cc; \

@@ -8,12 +8,10 @@ But to the rest of the application, Network looks like your standard single-thre
 Why pipes? Obviously, condion variables are the superior solution
 here. In fact, i'm still not convinced that using pipes (and the
 associated kernel trap) won't be awful for performace. But currently,
-linux has no capacity to block on multiple conditonals, and glib has
-no way of incorporating conditionals into the primary event loop (that
-I can find).
+linux has no capacity to block on both conditionals and sockets. There
+are future options such as kevents, but they are still very immature. 
 
 Pipes represent a language-neutral platform-neutral solution. 
-
 
 To configure network, we have:
 
@@ -35,12 +33,7 @@ There's the question of "do we extract one datagram or all datagrams?". I'm not 
 Network only understands the sequence and type/src id of each
 datagram, and nothing beyond that. Thus we pass out: 
 
-rawData:
-  seq : uint32
-  src : byte
-  typ : uint8
-  data: char* 
-
+dataPackets
 rawData* dataPop()
 bvmethod, which will return either Null (if there is no data) or a pointer to a new data object. 
 
@@ -54,17 +47,11 @@ status:
 
 there's a readStatus() function which returns a pre-defined status object, containing something that has yet to be defined. 
 
---------------------------------------------------------------------------
+-------------------------------------------------------------
 internal guts: 
+-------------------------------------------------------------
 
-we're using boost's threads. yea, I like pain. 
+We use our event dispatcher, and create eventsender and eventreceiver
+on the stack; they are always enabled and ready to send events (etc); 
 
-Epoll is actually neat for this due to the user-specific data component that lives in the kernel. So all we really do here is: 
-
-1. create DataReceiver
-2. extract its socket descriptor
-3. add it to the event set
-4. when we run()
-
-epoll() then calls the relevant callback that the kernel pointer points to
-
+There are no data events created by default. 

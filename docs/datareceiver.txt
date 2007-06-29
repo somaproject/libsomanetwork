@@ -1,9 +1,6 @@
 The data receiver handles packet retransmission and the like. 
 
-Constructor: 
-	     epollfd: the epoll file descriptor that we will add ourselves to
-	     type, source : the type and source to listen to
-	     rdp: the output function to call with our processed packets
+    	     rdp: the output function to call with our processed packets
 	     
 
 1. has an internal queue for received data
