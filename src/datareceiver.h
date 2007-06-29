@@ -20,7 +20,7 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
-#include "data/rawdata.h"
+#include "datapacket.h"
 #include "packetreceiver.h"
 #include "eventdispatcher.h"
 

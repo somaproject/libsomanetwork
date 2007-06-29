@@ -1,8 +1,9 @@
 #ifndef NETWORKINTERFACE_H 
 #define NETWORKINTERFACE_H
 
-#include "data/event.h"
-#include "data/rawdata.h"
+#include "event.h"
+#include "datapacket.h"
+#include "eventtx.h"
 #include "datareceiver.h"
 
 class NetworkInterface
@@ -24,6 +25,8 @@ class NetworkInterface
   virtual void shutdown() = 0; 
   
   virtual std::vector<DataReceiverStats>  getDataStats() = 0; 
+
+  virtual eventtxnonce_t sendEvents(const EventTXList_t & el) = 0; 
 
 }; 
 

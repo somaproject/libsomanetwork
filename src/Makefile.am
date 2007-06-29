@@ -6,7 +6,7 @@ cc_sources = datareceiver.cc eventdispatcher.cc eventreceiver.cc eventsender.cc 
 
 
 library_includedir=$(includedir)/$(GENERIC_LIBRARY_NAME)-$(GENERIC_API_VERSION)/$(GENERIC_LIBRARY_NAME)
-library_include_HEADERS = $(h_sources)
+library_include_HEADERS = network.h event.h eventx.h rawdata.h tspike.h
 
 lib_LTLIBRARIES= libsomanetwork-1.0.la
 libsomanetwork_1_0_la_SOURCES= $(h_sources) $(cc_sources)

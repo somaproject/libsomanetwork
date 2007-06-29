@@ -8,7 +8,7 @@
 #include "datareceiver.h"
 #include "eventreceiver.h"
 #include "eventsender.h"
-#include "data/event.h"
+#include "event.h"
 #include "networkinterface.h"
 
 typedef std::pair<datasource_t, datatype_t> datagen_t; 
