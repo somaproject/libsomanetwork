@@ -1,8 +1,8 @@
-dnl --------------------------------
-dnl Initialization macros.
-dnl --------------------------------
+# Prelude . 
+AC_INIT([somanetwork], [1.0], [bugs@soma.mit.edu])
+AC_CONFIG_SRCDIR([src/network.cc])
 
-AC_INIT(src/network.h)
+
 AM_CONFIG_HEADER(config.h)
 
 dnl -----------------------------------------------
@@ -51,14 +51,24 @@ AC_SUBST(GENERIC_VERSION)
 
 VERSION=$GENERIC_VERSION
 
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
+AM_INIT_AUTOMAKE([foreign])
+AC_CONFIG_MACRO_DIR([m4]) # not strictly needed yet, but let's be future-proof
 
-dnl -----------------------------------------------
-dnl Checks for programs.
-dnl -----------------------------------------------
+
+# -----------------------------------------------
+# Checks for programs.
+# -----------------------------------------------
 
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_LIBTOOL
+
+# Boost!!! 
+AX_BOOST_BASE([1.33.1])
+AX_BOOST_PROGRAM_OPTIONS
+AX_BOOST_UNIT_TEST_FRAMEWORK
+AX_BOOST_THREAD
+
 AM_PROG_LIBTOOL
 AM_SANITY_CHECK
 
@@ -69,7 +79,7 @@ dnl -----------------------------------------------
 dnl Generates Makefile's, configuration files and scripts
 dnl -----------------------------------------------
 
-AC_OUTPUT(Makefile \
-          somanetwork-1.0.pc \
-          src/Makefile
-)
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+
+AC_OUTPUT
+
