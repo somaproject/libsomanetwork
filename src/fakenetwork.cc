@@ -4,8 +4,6 @@
 #include "fakenetwork.h"
 
 
-const int EPOLLMAXCNT = 256; 
-
 FakeNetwork::FakeNetwork() :
   running_ (false), 
   pthrd_(NULL)
@@ -104,4 +102,11 @@ std::vector<DataReceiverStats>  FakeNetwork::getDataStats()
   std::vector<DataReceiverStats> drs; 
   return std::vector<DataReceiverStats>(drs); 
   
+}
+
+eventtxnonce_t FakeNetwork::sendEvents(const EventTXList_t & el)
+{
+
+
+
 }

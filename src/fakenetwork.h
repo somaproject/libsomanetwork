@@ -9,7 +9,7 @@
 #include "tspipefifo.h"
 #include "datareceiver.h"
 #include "eventreceiver.h"
-#include "data/event.h"
+#include "event.h"
 #include "networkinterface.h"
 
 
@@ -36,6 +36,8 @@ class FakeNetwork : public NetworkInterface
   void appendDataOut(DataPacket_t * out); 
   void appendEventOut(EventList_t * out); 
   
+  eventtxnonce_t sendEvents(const EventTXList_t & el);
+
   std::vector<DataReceiverStats>  getDataStats(); 
   
  private: 

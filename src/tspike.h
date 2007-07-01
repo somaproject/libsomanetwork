@@ -2,7 +2,7 @@
 #define TSPIKE_TYPE_H
 #include <stdint.h>
 #include <iostream>
-#include "rawdata.h"
+#include "datapacket.h"
 #include <byteswap.h>
 #include <arpa/inet.h>
 
