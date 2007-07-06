@@ -38,9 +38,14 @@ build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
+<<<<<<< .mine
+	$(top_srcdir)/configure config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
+=======
 	$(srcdir)/somanetwork-1.0.pc.in $(top_srcdir)/configure \
 	COPYING INSTALL config.guess config.sub depcomp install-sh \
 	ltmain.sh missing
+>>>>>>> .r2229
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
@@ -86,14 +91,14 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/jonas/soma/network/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /home/jonas/soma/network.trunk/missing --run aclocal-1.9
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/jonas/soma/network/missing --run tar
+AMTAR = ${SHELL} /home/jonas/soma/network.trunk/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/jonas/soma/network/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/jonas/soma/network/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/jonas/soma/network/missing --run automake-1.9
+AUTOCONF = ${SHELL} /home/jonas/soma/network.trunk/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/jonas/soma/network.trunk/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/jonas/soma/network.trunk/missing --run automake-1.9
 AWK = mawk
 BENCH_CFLAGS = -DPNG_NO_MMX_CODE -I/usr/include/gtkmm-2.4 -I/usr/lib/gtkmm-2.4/include -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/gdkmm-2.4 -I/usr/lib/gdkmm-2.4/include -I/usr/include/pangomm-1.4 -I/usr/include/atkmm-1.6 -I/usr/include/gtk-2.0 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/lib/gtk-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/pango-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/libpng12 -I/usr/include/atk-1.0  
 BENCH_LIBS = -lgtkmm-2.4 -lgdkmm-2.4 -latkmm-1.6 -lgtk-x11-2.0 -lpangomm-1.4 -lcairomm-1.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lfontconfig -lXext -lXrender -lXinerama -lXi -lXrandr -lXcursor -lXfixes -lpango-1.0 -lcairo -lX11 -lgmodule-2.0 -ldl -lglibmm-2.4 -lgobject-2.0 -lsigc-2.0 -lglib-2.0  
@@ -138,7 +143,7 @@ LIBS =
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/jonas/soma/network/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/jonas/soma/network.trunk/missing --run makeinfo
 OBJEXT = o
 PACKAGE = somanetwork
 PACKAGE_BUGREPORT = bugs@soma.mit.edu
@@ -184,7 +189,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /home/jonas/soma/network/install-sh
+install_sh = /home/jonas/soma/network.trunk/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
