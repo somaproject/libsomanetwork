@@ -23,7 +23,6 @@ Gtk::Main * app;
 
 bool DataRxCallback(Glib::IOCondition io_condition)
 {
-
   if (t1.is_neg_infinity()) 
     {
       t1 = microsec_clock::local_time(); 
@@ -132,7 +131,7 @@ int main(int argc, char * argv[])
   
   
   // connect the signal handler
-  int read_fd = network->getEventFifoPipe(); 
+  int read_fd = network->getDataFifoPipe(); 
   
   Glib::signal_io().connect(sigc::ptr_fun(DataRxCallback), 
 			    read_fd, Glib::IO_IN);
