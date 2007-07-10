@@ -103,7 +103,6 @@ void EventDispatcher::runonce()
 	for(int evtnum = 0; evtnum < nfds; evtnum++) {
 	  int fd = events[evtnum].data.fd; 
 	  callbackTable_[fd](fd); 
-	  
 	}
 	
       } else if (nfds < 0 ) {
