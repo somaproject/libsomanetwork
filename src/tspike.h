@@ -9,8 +9,6 @@
 /*
 Type declaration for Tetrode Spike data packet.
 
-
-
 */
 
 const int TSPIKEWAVE_LEN = 32; 
@@ -45,7 +43,7 @@ TSpike_t rawToTSpike(const DataPacket_t * rd)
     uint64_t time; 
     memcpy(&time,  &(rd->body[4]), 8); 
 
-    ts.time = htonll(time); 
+    ts.time = ntohll(time); 
     TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
     size_t bpos = (size_t) &rd->body[12]; 
     for (int i = 0; i < 4; i++)
@@ -68,11 +66,12 @@ TSpike_t rawToTSpike(const DataPacket_t * rd)
 	
 	
       }
-    return ts; 
+
   } else {
-    std::cout << " omg recovered spike is missing!" << std::endl;
-    return ts; 
+    std::cout << "recovered spike is missing!" << std::endl;
   }
+
+  return ts; 
 
 }
 
@@ -84,7 +83,7 @@ inline DataPacket_t * rawFromTSpike(const TSpike_t & ts)
   rdp->typ = TSPIKE; 
   rdp->seq = 0; 
   rdp->missing = false; 
-  rdp->body[0] = 0; 
+  rdp->body[0] = datatypeToChar(TSPIKE);  
   rdp->body[1] = ts.src;
   rdp->body[2] = 0; 
   rdp->body[3] = 0; 
