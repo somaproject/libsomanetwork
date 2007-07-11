@@ -1,4 +1,3 @@
-#include <data/event.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -13,6 +12,7 @@
 #include "ports.h"
 #include "tests.h"
 #include "eventtests.h"
+#include "event.h"
 
 FakeEventRXServer::FakeEventRXServer(skipMap_t norx, skipMap_t fail) :
   norxMap_(norx), 

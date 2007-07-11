@@ -2,12 +2,11 @@
 #define TESTS_H
 
 #include <vector>
-#include <data/rawdata.h>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <data/rawdata.h>
+#include "datapacket.h"
 #include <queue>
 
 std::vector<char> fakeDataPacket(unsigned int seq, char src, char typ); 
@@ -23,6 +22,7 @@ class FakeDataServer
   void appendSeqsToSend(sequence_t x);
   void start(); 
   void shutdown(); 
+
  private:
   datasource_t src_; 
   datatype_t typ_; 

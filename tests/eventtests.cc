@@ -1,6 +1,6 @@
 #include "tests.h"
 #include "eventtests.h"
-#include <data/event.h>
+#include <event.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/socket.h>

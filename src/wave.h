@@ -6,7 +6,6 @@
 #include "datapacket.h"
 #include <byteswap.h>
 #include <arpa/inet.h>
-#include <wave>
 
 /* 
 
@@ -31,41 +30,49 @@ Wave_t rawToWave(const DataPacket_t * dp)
   Wave_t w; 
 
   if (! dp->missing) {
-    w.src = rd->body[1]; 
+    w.src = dp->body[1]; 
 
     // extract out len
     uint16_t nlen, hlen; 
-    memcpy(&nlen, &rd->body[2], sizeof(nlen)); 
+    memcpy(&nlen, &dp->body[2], sizeof(nlen)); 
     hlen = ntohs(nlen); 
 
     // extract out selected channel
     uint16_t nchan, hchan; 
-    memcpy(&nchan, &rd->body[4], sizeof(nchan)); 
+    memcpy(&nchan, &dp->body[4], sizeof(nchan)); 
     hchan = ntohs(nchan); 
     w.selchan = hchan; 
 
     // extract out the sampling rate (only an integer)
     uint16_t nsamp, hsamp; 
-    memcpy(&nsamp, &rd->body[6], sizeof(samp)); 
+    memcpy(&nsamp, &dp->body[6], sizeof(hsamp)); 
     hsamp = ntohs(nsamp); 
     w.samprate = hsamp; 
 
+    // extract out the filterid
+    uint16_t nfilterid, hfilterid; 
+    memcpy(&nfilterid, &dp->body[8], sizeof(nfilterid)); 
+    hfilterid = ntohs(nfilterid); 
+    w.filterid = hfilterid; 
+
     // extract out the time
     uint64_t ntime, htime; 
-    memcpy(&ntime, &rd->body[8], sizeof(ntime)); 
+    memcpy(&ntime, &dp->body[10], sizeof(ntime)); 
     htime = ntohll(ntime); 
     w.time = htime; 
 
-    w.reserve(hlen);
+
+
+    w.wave.resize(hlen);
     
-    size_t bpos = 8+8; 
+    size_t bpos = 10+8; 
     
     for (int i = 0; i < hlen; i++ )
       {
 	int32_t x; 
-	memcpy(&x, &rd->body[bpos], sizeof(x)); 
+	memcpy(&x, &dp->body[bpos], sizeof(x)); 
 	bpos += 4; 
-	w[i] = ntohl(x); 
+	w.wave[i] = ntohl(x); 
       }
     
   } else {
@@ -84,7 +91,7 @@ inline DataPacket_t * rawFromWave(const Wave_t & w)
   DataPacket_t * rdp = new DataPacket_t; 
   
   rdp->src = w.src; 
-  rdp->type = WAVE; 
+  rdp->typ = WAVE; 
   rdp->seq = 0; 
   rdp->missing = false; 
 
@@ -93,8 +100,8 @@ inline DataPacket_t * rawFromWave(const Wave_t & w)
   rdp->body[1] = w.src; 
 
   // input packet len
-  hlen = w.wave.size(); 
   uint16_t nlen, hlen; 
+  hlen = w.wave.size(); 
   nlen = htons(hlen); 
   memcpy(&rdp->body[2], &nlen, sizeof(nlen)); 
   
@@ -102,34 +109,41 @@ inline DataPacket_t * rawFromWave(const Wave_t & w)
   uint16_t nchan, hchan; 
   hchan = w.selchan; 
   nchan = htons(hchan); 
-  memcpy(&rd->body[4], &nchan, sizeof(nchan)); 
+  memcpy(&rdp->body[4], &nchan, sizeof(nchan)); 
 
   // extract out the sampling rate (only an integer)
-  hsamp = w.samprate; 
   uint16_t nsamp, hsamp; 
+  hsamp = w.samprate; 
   nsamp = htons(hsamp); 
-  memcpy(&rd->body[6], &nsamp,  sizeof(nsamp)); 
+  memcpy(&rdp->body[6], &nsamp,  sizeof(nsamp)); 
 
-  
+  // extract out the filter id
+  uint16_t nfilterid, hfilterid; 
+  hfilterid = w.filterid; 
+  nfilterid = htons(hfilterid); 
+  memcpy(&rdp->body[8], &nfilterid,  sizeof(nfilterid)); 
+
+   
   // extract out the time
-  htime = w.time; 
   uint64_t ntime, htime; 
+  htime = w.time; 
   ntime = ntohll(htime); 
-  memcpy(&rd->body[8], &ntime, sizeof(ntime)); 
+  memcpy(&rdp->body[10], &ntime, sizeof(ntime)); 
 
   // put in the primary packet data
 
-  size_t bpos = 8+8; 
+  size_t bpos = 10+8; 
   
   for (int i = 0; i < hlen; i++ )
     {
       int32_t x;
       x = htonl(w.wave[i]); 
-      memcpy(&rd->body[bpos], &x, sizeof(x)); 
+      memcpy(&rdp->body[bpos], &x, sizeof(x)); 
       bpos += 4; 
-      w[i] = htonl(x); 
     }
 
   return rdp; 
 
 }
+
+#endif // WAVE_TYPE_H

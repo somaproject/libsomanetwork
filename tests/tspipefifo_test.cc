@@ -6,7 +6,6 @@
 #include <boost/bind.hpp>
 #include <iostream>
 #include <boost/array.hpp>
-#include <asio.hpp>
 
 using boost::unit_test::test_suite;
 

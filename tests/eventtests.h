@@ -2,7 +2,7 @@
 #define EVENTTEST_H
 
 #include <vector>
-#include <data/event.h>
+#include <event.h>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
@@ -12,7 +12,7 @@
 #include <iostream>
 #include <queue>
 #include <list>
-#include <data/eventtx.h>
+#include <eventtx.h>
 
 
 typedef std::pair<eventseq_t, std::vector<char> > eventsetout_t; 
