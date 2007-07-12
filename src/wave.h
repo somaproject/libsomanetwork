@@ -13,6 +13,8 @@ Type declaration for Data packet
 
 */ 
 
+const int WAVEBUF_LEN = 128; 
+
 struct Wave_t
 {
   uint8_t src; 
@@ -20,7 +22,7 @@ struct Wave_t
   uint16_t samprate; 
   uint16_t selchan; 
   uint16_t filterid; 
-  std::vector<int32_t> wave; 
+  int32_t wave[WAVEBUF_LEN]; 
 
 }; 
 
@@ -36,6 +38,10 @@ Wave_t rawToWave(const DataPacket_t * dp)
     uint16_t nlen, hlen; 
     memcpy(&nlen, &dp->body[2], sizeof(nlen)); 
     hlen = ntohs(nlen); 
+
+    if (hlen > WAVEBUF_LEN) { 
+      hlen = WAVEBUF_LEN; 
+    }
 
     // extract out selected channel
     uint16_t nchan, hchan; 
@@ -61,11 +67,8 @@ Wave_t rawToWave(const DataPacket_t * dp)
     htime = ntohll(ntime); 
     w.time = htime; 
 
-
-
-    w.wave.resize(hlen);
-    
     size_t bpos = 10+8; 
+    
     
     for (int i = 0; i < hlen; i++ )
       {
@@ -101,7 +104,7 @@ inline DataPacket_t * rawFromWave(const Wave_t & w)
 
   // input packet len
   uint16_t nlen, hlen; 
-  hlen = w.wave.size(); 
+  hlen = WAVEBUF_LEN; 
   nlen = htons(hlen); 
   memcpy(&rdp->body[2], &nlen, sizeof(nlen)); 
   
