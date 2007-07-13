@@ -8,10 +8,12 @@
 
 
 const int BUFSIZE = 1024; 
-const int HDRLEN = 6;
+const int HDRLEN = 4;
 
 typedef unsigned char datasource_t; 
-enum datatype_t {TSPIKE, WAVE, RAW};
+enum datatype_t {TSPIKE = 0, 
+		 WAVE = 1, 
+		 RAW = 2};
 
 inline char datatypeToChar(datatype_t x)
 {
@@ -60,6 +62,19 @@ struct DataPacket_t
 
 inline DataPacket_t * newDataPacket(boost::array<char, BUFSIZE> buffer) 
 {
+  /* 
+     This function takes in a raw UDP packet off the wire (as a buffer)
+     and extracts out the header data, including:
+        sequence ID
+	type
+	source
+	
+     It then copies the frame minus sequence header into 
+     the "body" field
+     
+  */
+
+
   DataPacket_t * prd = new DataPacket_t; 
     
   prd->seq = ntohl(*((int *) &buffer[0])); 

@@ -35,7 +35,12 @@ struct TSpike_t
 inline 
 TSpike_t rawToTSpike(const DataPacket_t * rd)
 {
-    TSpike_t ts; 
+  /* 
+     We examine a datapacket's body and extract out all associated data
+     necessary to recreate the TSpike
+  */
+
+  TSpike_t ts; 
   if (! rd->missing) {
 
     ts.src = rd->body[1]; 
@@ -77,6 +82,11 @@ TSpike_t rawToTSpike(const DataPacket_t * rd)
 
 inline DataPacket_t * rawFromTSpike(const TSpike_t & ts)
 {
+  /*
+    Take a TSpike and construct an associated DataPacket. 
+    the seq field is set to zero. 
+
+  */ 
   
   DataPacket_t * rdp = new DataPacket_t; 
   rdp->src = ts.src; 
