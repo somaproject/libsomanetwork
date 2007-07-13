@@ -20,9 +20,9 @@ BOOST_AUTO_TEST_CASE(wave_toraw)
   w.selchan = 0x4567; 
   w.filterid = 0x1234; 
   // fil the wave with 128 words
-  for (int i = 0; i < 128; i++)
+  for (int i = 0; i < WAVEBUF_LEN; i++)
     {
-      w.wave.push_back(i * 1000); 
+      w.wave[i] = (i * 1000); 
     }
   
   DataPacket_t * dpt = rawFromWave(w); 
