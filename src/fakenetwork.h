@@ -1,5 +1,5 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#ifndef FAKENETWORK_H
+#define FAKENETWORK_H
 
 #include <map>
 #include <utility>
@@ -53,5 +53,5 @@ class FakeNetwork : public NetworkInterface
 
 };
 
-#endif // NETWORK_H
+#endif // FAKENETWORK_H
 

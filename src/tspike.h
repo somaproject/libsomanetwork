@@ -18,7 +18,7 @@ struct TSpikeWave_t {
   uint8_t valid; 
   int32_t threshold; 
   int32_t wave[TSPIKEWAVE_LEN]; 
-}; 
+};
 
 
 struct TSpike_t
@@ -30,7 +30,7 @@ struct TSpike_t
   TSpikeWave_t a; 
   TSpikeWave_t b; 
 
-}; 
+};
 
 inline 
 TSpike_t rawToTSpike(const DataPacket_t * rd)
