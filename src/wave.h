@@ -93,45 +93,47 @@ inline DataPacket_t * rawFromWave(const Wave_t & w)
   
   DataPacket_t * rdp = new DataPacket_t; 
   
-  rdp->src = w.src; 
-  rdp->typ = WAVE; 
-  rdp->seq = 0; 
-  rdp->missing = false; 
+  rdp->src = w.src;
+  rdp->typ = WAVE;
+  rdp->seq = 0;
+  rdp->missing = false;
 
+  // zero packet
+  bzero(&(rdp->body[0]), BUFSIZE-HDRLEN); 
   // initial header word
-  rdp->body[0] = datatypeToChar(WAVE); 
-  rdp->body[1] = w.src; 
+  rdp->body[0] = datatypeToChar(WAVE);
+  rdp->body[1] = w.src;
 
   // input packet len
-  uint16_t nlen, hlen; 
-  hlen = WAVEBUF_LEN; 
-  nlen = htons(hlen); 
-  memcpy(&rdp->body[2], &nlen, sizeof(nlen)); 
+  uint16_t nlen, hlen;
+  hlen = WAVEBUF_LEN;
+  nlen = htons(hlen);
+  memcpy(&rdp->body[2], &nlen, sizeof(nlen));
   
   // extract out selected channel
-  uint16_t nchan, hchan; 
-  hchan = w.selchan; 
-  nchan = htons(hchan); 
-  memcpy(&rdp->body[4], &nchan, sizeof(nchan)); 
+  uint16_t nchan, hchan;
+  hchan = w.selchan;
+  nchan = htons(hchan);
+  memcpy(&(rdp->body[4]), &nchan, sizeof(nchan));
 
   // extract out the sampling rate (only an integer)
-  uint16_t nsamp, hsamp; 
-  hsamp = w.samprate; 
-  nsamp = htons(hsamp); 
-  memcpy(&rdp->body[6], &nsamp,  sizeof(nsamp)); 
+  uint16_t nsamp, hsamp;
+  hsamp = w.samprate;
+  nsamp = htons(hsamp);
+  memcpy(&rdp->body[6], &nsamp,  sizeof(nsamp));
 
   // extract out the filter id
-  uint16_t nfilterid, hfilterid; 
-  hfilterid = w.filterid; 
-  nfilterid = htons(hfilterid); 
-  memcpy(&rdp->body[8], &nfilterid,  sizeof(nfilterid)); 
+  uint16_t nfilterid, hfilterid;
+  hfilterid = w.filterid;
+  nfilterid = htons(hfilterid);
+  memcpy(&rdp->body[8], &nfilterid,  sizeof(nfilterid));
 
    
   // extract out the time
-  uint64_t ntime, htime; 
-  htime = w.time; 
-  ntime = ntohll(htime); 
-  memcpy(&rdp->body[10], &ntime, sizeof(ntime)); 
+  uint64_t ntime, htime;
+  htime = w.time;
+  ntime = ntohll(htime);
+  memcpy(&rdp->body[10], &ntime, sizeof(ntime));
 
   // put in the primary packet data
 
@@ -140,9 +142,9 @@ inline DataPacket_t * rawFromWave(const Wave_t & w)
   for (int i = 0; i < hlen; i++ )
     {
       int32_t x;
-      x = htonl(w.wave[i]); 
-      memcpy(&rdp->body[bpos], &x, sizeof(x)); 
-      bpos += 4; 
+      x = htonl(w.wave[i]);
+      memcpy(&rdp->body[bpos], &x, sizeof(x));
+      bpos += sizeof(x);
     }
 
   return rdp; 

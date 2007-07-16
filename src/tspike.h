@@ -98,6 +98,7 @@ inline DataPacket_t * rawFromTSpike(const TSpike_t & ts)
   rdp->body[2] = 0; 
   rdp->body[3] = 0; 
   uint64_t htime = htonll(ts.time); 
+  bzero(&(rdp->body[0]), BUFSIZE-HDRLEN); 
   memcpy((void*)(&rdp->body[4]), &htime, sizeof(htime)); 
   
 
