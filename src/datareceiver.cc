@@ -26,8 +26,6 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
     throw std::runtime_error("could not create socket"); 
 
   }
-  std::cout << "DataReceiver created with src=" 
-	    << (int)source << " typ=" << (int)type << std::endl; 
 
   memset((char *) &si_me, sizeof(si_me), 0);
 
@@ -43,7 +41,14 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
   int res = setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, 
 	     &optval, sizeof (optval)); 
   if (res < 0) {
-    throw std::runtime_error("error settng socket to reuse"); 
+    throw std::runtime_error("error setting socket to reuse"); 
+  }
+
+  optval = 1; 
+  res = setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, 
+	     &optval, sizeof (optval)); 
+  if (res < 0) {
+    throw std::runtime_error("error setting the broadcast bit"); 
   }
 
   optval = 500000; 
@@ -65,6 +70,8 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
 		       boost::bind(std::mem_fun(&DataReceiver::handleReceive),
 				   this, _1)); 
   
+  std::cout << "DataReceiver created with src=" 
+	    << (int)source << " typ=" << (int)type << std::endl; 
 
 }
 
@@ -97,7 +104,7 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 
 void DataReceiver::handleReceive(int fd)
 {
-  
+
   boost::mutex::scoped_lock lock( statusMutex_ );
 
   boost::array<char, BUFSIZE> recvbuffer; 

@@ -56,7 +56,7 @@ Network::~Network()
 
 
 void Network::appendDataOut(DataPacket_t* out) {
-
+  
   outputDataFifo_.append(out); 
   
 }
