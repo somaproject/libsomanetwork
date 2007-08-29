@@ -1,0 +1,6 @@
+This is a test of our ability to use the network object to receive
+events from the soma backplane. All we do is instantiate the network
+object and then try and recover 1e6 events, and then: 
+  * produce a histogram of src/cmd tuples
+  * report the number of dropped packets
+

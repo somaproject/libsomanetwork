@@ -119,10 +119,10 @@ void EventReceiver::handleReceive(int fd)
       else if (pEventPacket->seq > latestSeq_ + 1)
 	{
 	  // we're missing a packet; add in blanks with "missing" set
-	  std::cout << "We're missing a packet; we got seq="
-		    <<  pEventPacket->seq << " instead of " 
-		    << latestSeq_ + 1  
-		    << std::endl; 
+// 	  std::cout << "We're missing a packet; we got seq="
+// 		    <<  pEventPacket->seq << " instead of " 
+// 		    << latestSeq_ + 1  
+// 		    << std::endl; 
 
 	  eventseq_t missingSeq;
 	  for (int i = 0; i < (pEventPacket->seq - (latestSeq_ +1)); i++) 
@@ -237,21 +237,19 @@ void EventReceiver::updateOutQueue()
   
 }
 
-// EventReceiverStats EventReceiver::getStats()
-// {
-//   // This is now thread safe thanks to the mutex
+EventReceiverStats EventReceiver::getStats()
+ {
+   // This is now thread safe thanks to the mutex
 
-//   boost::mutex::scoped_lock lock( statusMutex_ );
-//   EventReceiverStats st; 
-//   st.source = source_; 
-//   st.type = type_; 
-//   st.pktCount = pktCount_; 
-//   st.latestSeq = latestSeq_; 
-//   st.dupeCount = dupeCount_; 
-//   st.pendingCount = pendingCount_;
+  boost::mutex::scoped_lock lock( statusMutex_ );
+  EventReceiverStats st; 
+  st.pktCount = pktCount_; 
+  st.latestSeq = latestSeq_; 
+  st.dupeCount = dupeCount_; 
+  st.pendingCount = pendingCount_;
   
-//   st.missingPacketCount = missingPackets_.size(); 
-//   st.reTxRxCount = 	      reTxRxCount_; 
-//   st.outOfOrderCount = outOfOrderCount_; 
-//   return EventReceiverStats(st); 
-// }
+  st.missingPacketCount = missingPackets_.size(); 
+  st.reTxRxCount = 	      reTxRxCount_; 
+  st.outOfOrderCount = outOfOrderCount_; 
+  return EventReceiverStats(st); 
+}

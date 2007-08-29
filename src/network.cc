@@ -38,8 +38,9 @@ void Network::shutdown()
 Network::~Network()
 {
   shutdown(); 
-  pthrd_->join(); 
-
+  if (running_) {
+    pthrd_->join(); 
+  }
   // delete the data receivers that remain
   std::map<const datagen_t, DataReceiver*>::iterator i;
   for (i = dataReceivers_.begin(); i != dataReceivers_.end(); 
@@ -49,9 +50,6 @@ Network::~Network()
       delete (*i).second; 
     }
   
-  
-  // 
-
 }
 
 
@@ -121,6 +119,13 @@ std::vector<DataReceiverStats>  Network::getDataStats()
     }
   return std::vector<DataReceiverStats>(drs); 
   
+}
+
+EventReceiverStats Network::getEventStats()
+{
+
+  return eventReceiver_.getStats(); 
+
 }
 
 eventtxnonce_t Network::sendEvents(const EventTXList_t & el)

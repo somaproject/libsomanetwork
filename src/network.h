@@ -36,7 +36,8 @@ class Network : public NetworkInterface
   void shutdown(); 
   
   std::vector<DataReceiverStats>  getDataStats(); 
-  
+  EventReceiverStats getEventStats(); 
+
  private: 
   TSPipeFifo<DataPacket_t*> outputDataFifo_; 
   TSPipeFifo<EventList_t*> outputEventFifo_; 

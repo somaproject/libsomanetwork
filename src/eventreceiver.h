@@ -26,6 +26,18 @@
 
 typedef std::queue<EventPacket_t *> eventPacketQueue_t; 
 
+struct EventReceiverStats
+{
+  unsigned int pktCount; 
+  unsigned int latestSeq;
+  unsigned int dupeCount; 
+  unsigned int pendingCount; 
+  unsigned int missingPacketCount;
+  unsigned int reTxRxCount; 
+  unsigned int outOfOrderCount; 
+}; 
+
+
 class EventReceiver : PacketReceiver
 {
   typedef std::map<eventseq_t, EventPacket_t*> missingPktHash_t;
@@ -36,11 +48,11 @@ public:
   ~EventReceiver(); 
 
   int getSocket() { return socket_;}
-  //DataReceiverStats getStats(); 
 
   void handleReceive(int fd);   
-private:
+  EventReceiverStats getStats(); 
 
+private:
 
   void sendReTxReq(eventseq_t seq, sockaddr_in sfrom); 
   
