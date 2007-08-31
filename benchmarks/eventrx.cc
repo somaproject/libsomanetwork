@@ -8,7 +8,6 @@
 
 typedef std::map<eventcmd_t, int> eventmap_t; 
 
-
 int main(void)
 {
 

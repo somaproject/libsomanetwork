@@ -41,13 +41,19 @@ EventReceiver::EventReceiver(eventDispatcherPtr_t ed,
     throw std::runtime_error("error settng socket to reuse"); 
   }
 
-  optval = 500000; 
+  optval = 4000000; 
   res = setsockopt (socket_, SOL_SOCKET, SO_RCVBUF, 
 		    (const void *) &optval, sizeof(optval)); 
   if (res < 0) {
     throw std::runtime_error("error settng receive buffer size"); 
-
   }
+
+  socklen_t optlen;   
+  res = getsockopt(socket_, SOL_SOCKET, SO_RCVBUF, 
+		   (void *) &optval, &optlen); 
+
+  std::cout << "EventReceiver allocated " << optval
+	    << " bytes in the rx buffer" << std::endl; 
 
   res =  bind(socket_, (sockaddr*)&si_me, sizeof(si_me)); 
   if (res < 0) {
@@ -79,8 +85,8 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
   memcpy(&retxbuf[0], &seqn, 4); 
 
   sfrom.sin_port = htons(EVENTRXRETXPORT); 
-  sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
-
+  //sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
+  // DEBUGGING.
 }
 
 
@@ -119,10 +125,6 @@ void EventReceiver::handleReceive(int fd)
       else if (pEventPacket->seq > latestSeq_ + 1)
 	{
 	  // we're missing a packet; add in blanks with "missing" set
-// 	  std::cout << "We're missing a packet; we got seq="
-// 		    <<  pEventPacket->seq << " instead of " 
-// 		    << latestSeq_ + 1  
-// 		    << std::endl; 
 
 	  eventseq_t missingSeq;
 	  for (int i = 0; i < (pEventPacket->seq - (latestSeq_ +1)); i++) 
