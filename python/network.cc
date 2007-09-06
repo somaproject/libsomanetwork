@@ -23,7 +23,7 @@ struct PyEvent_t {
   eventsource_t src; 
   uint16_t data[EVENTLEN-1]; 
 };
- 
+
 
 class PyNetwork {
 
@@ -50,6 +50,7 @@ private:
   boost::mutex eventsAvailableMutex_; 
   boost::python::list eventListToPyList(); 
   void eventListToPyListP(  boost::python::list *); 
+
   void rxEventsThread(); 
   bool acceptEvent(Event_t event); 
   boost::thread * pRXEventsThread_; 
@@ -59,13 +60,20 @@ private:
 PyNetwork::PyNetwork(std::string txt)  :
   network_(txt), 
   rxall_ (false), 
-  pyEventListCnt_(0)
+  pyEventListCnt_(0), 
+  pRXEventsThread_(0), 
 {
   name_ = txt; 
 }
 
 PyNetwork::~PyNetwork() {
+  
   network_.shutdown(); 
+  if(pRXEventsThread_) {
+    pRXEventsThread_.join(); 
+    delete pRXEventsThread_; 
+  }
+
   EventReceiverStats ers = network_.getEventStats(); 
   std::cout << "Event stats:" << std::endl; 
   std::cout << "--------------------------------------------------------"
@@ -114,7 +122,7 @@ void PyNetwork::eventListToPyListP(boost::python::list * pylist)
   for(std::list<PyEvent_t>::iterator i = pyEventList_.begin(); 
       i != pyEventList_.end(); i++)
      {
-       pylist->append(*i); 
+       pylist->append(make_tuple(i->cmd, i->src)); 
      }
    pyEventList_.clear();
 
@@ -128,12 +136,12 @@ boost::python::list PyNetwork::getEvents()
 
   boost::python::list l; 
   //// wait on condition variablle
-  Py_BEGIN_ALLOW_THREADS; 
+  //Py_BEGIN_ALLOW_THREADS; 
   boost::mutex::scoped_lock lock(eventsAvailableMutex_); 
   eventsAvailable_.wait(lock); 
 
 
-  Py_END_ALLOW_THREADS; 
+  //Py_END_ALLOW_THREADS; 
   
   
   eventListToPyListP(&l); 
@@ -220,7 +228,8 @@ void PyNetwork::rxEventsThread()
 		  for (int eword = 0; eword < EVENTLEN-1; eword++) {
 		    pe.data[eword] = e.data[eword];
 		  }
-
+		  
+		  // now instead we try a tuple? 
 		  boost::mutex::scoped_lock lock(pyEventListMutex_); 
 		  
 		  pyEventList_.push_back(pe); 

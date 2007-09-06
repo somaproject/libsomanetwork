@@ -21,11 +21,11 @@
 #
 # LAST MODIFICATION
 #
-#   2005-05-20
+#   2007-07-24
 #
 # COPYLEFT
 #
-#   Copyright (c) 2005 Michael Tindal <mtindal@paradoxpoint.com>
+#   Copyright (c) 2007 Michael Tindal
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as
@@ -85,7 +85,7 @@ if test "$ac_cv_boost_python" = "yes"; then
      ax_boost_python_lib=boost_python-$with_boost_python
    fi])
   for ax_lib in $ax_python_lib $ax_boost_python_lib boost_python; do
-    AC_CHECK_LIB($ax_lib, main, [BOOST_PYTHON_LIB=$ax_lib break])
+    AC_CHECK_LIB($ax_lib, exit, [BOOST_PYTHON_LIB=$ax_lib break])
   done
   AC_SUBST(BOOST_PYTHON_LIB)
 fi

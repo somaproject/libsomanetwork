@@ -6,7 +6,7 @@ import time
 import cProfile
 import gc
 
-gc.disable()
+#gc.disable()
 
 def main():
     pn = network.Network("testing")

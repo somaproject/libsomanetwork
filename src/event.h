@@ -69,7 +69,7 @@ inline EventPacket_t * newEventPacket(boost::array<char, EBUFSIZE> buffer,
 	  evt.src = buffer[bpos]; 
 	  bpos++; 
 
-	  memcpy(&evt.data[0], &buffer[bpos], EVENTLEN*sizeof(uint16_t)); 
+	  memcpy(&evt.data[0], &buffer[bpos], (EVENTLEN-1)*sizeof(uint16_t)); 
 	  bpos += (EVENTLEN-1)*sizeof(uint16_t); 
 	  pEventList->push_back(evt); 
 	}
