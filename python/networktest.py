@@ -17,8 +17,12 @@ def main():
     els = []
     L = 100
     print "attempting ", L, " getEvents cycles"
+    starttime = 0
+    
     for i in range(L):
         els += pn.getEvents()
-
+        
+        print i,  time.time() - starttime 
+        starttime = time.time()
 
 main()
