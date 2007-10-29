@@ -3,8 +3,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = src tests benchmarks
 
-AM_CXXFLAGS = $(BOOST_CPPFLAGS) -pthread 
-AM_LDFLAGS = $(BOOST_LDFLAGS) $(BOOST_THREAD_LIB)
+AM_CXXFLAGS = $(BOOST_CPPFLAGS) $(FAKESRC_CFLAGS) -pthread 
+AM_LDFLAGS = $(BOOST_LDFLAGS) $(FAKESRC_LIBS) $(BOOST_THREAD_LIB)
 
 
 pkgconfigdir = $(libdir)/pkgconfig

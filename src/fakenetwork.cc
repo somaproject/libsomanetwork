@@ -106,7 +106,17 @@ std::vector<DataReceiverStats>  FakeNetwork::getDataStats()
 
 eventtxnonce_t FakeNetwork::sendEvents(const EventTXList_t & el)
 {
+  // here's where we need to do actual work to place these on the relevant 
+  // bus
+
+  signalEventTX_.emit(el); 
 
 
+}
+
+signalEventTX_t & FakeNetwork::signalEventTX()
+{
+
+  return signalEventTX_; 
 
 }

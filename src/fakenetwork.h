@@ -11,9 +11,23 @@
 #include "eventreceiver.h"
 #include "event.h"
 #include "networkinterface.h"
+#include <sigc++/sigc++.h>
+/* 
+There's the tricky problem of how to handine inbound events in the 
+fake network interface, which will be appended as a EventTXList_t  
+via sendEvents. We elect to use a sigc++ callback such that 
+the resulting event processing (and manipulation of the network)
+will take place in the calling thread; and then potentially block 
+on the response. 
+
+
+*/
 
 
 typedef std::pair<datasource_t, datatype_t> datagen_t; 
+
+typedef sigc::signal<void, const EventTXList_t &> signalEventTX_t; 
+
 
 class FakeNetwork : public NetworkInterface
 {
@@ -37,6 +51,7 @@ class FakeNetwork : public NetworkInterface
   void appendEventOut(EventList_t * out); 
   
   eventtxnonce_t sendEvents(const EventTXList_t & el);
+  signalEventTX_t & signalEventTX();  // returns ref to the relevant signal
 
   std::vector<DataReceiverStats>  getDataStats(); 
   
@@ -50,6 +65,7 @@ class FakeNetwork : public NetworkInterface
   boost::mutex appendMutex_; 
   void workthread(void); 
   
+  signalEventTX_t signalEventTX_; 
 
 };
 
