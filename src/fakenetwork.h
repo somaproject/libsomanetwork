@@ -40,7 +40,7 @@ class FakeNetwork : public NetworkInterface
   void disableDataRX(datasource_t, datatype_t); 
   
   pDataPacket_t  getNewData(void); 
-  EventList_t * getNewEvents(void); 
+  pEventList_t getNewEvents(void); 
 
   int getDataFifoPipe(); 
   int getEventFifoPipe(); 
@@ -48,7 +48,7 @@ class FakeNetwork : public NetworkInterface
   void shutdown(); 
 
   void appendDataOut(pDataPacket_t out); 
-  void appendEventOut(EventList_t * out); 
+  void appendEventOut(pEventList_t out); 
   
   eventtxnonce_t sendEvents(const EventTXList_t & el);
   signalEventTX_t & signalEventTX();  // returns ref to the relevant signal
@@ -57,7 +57,7 @@ class FakeNetwork : public NetworkInterface
   
  private: 
   TSPipeFifo<pDataPacket_t> outputDataFifo_; 
-  TSPipeFifo<EventList_t*> outputEventFifo_; 
+  TSPipeFifo<pEventList_t> outputEventFifo_; 
 
   bool running_; 
 

@@ -59,7 +59,7 @@ void Network::appendDataOut(pDataPacket_t out) {
   
 }
 
-void Network::appendEventOut(EventList_t* out) {
+void Network::appendEventOut(pEventList_t out) {
 
   outputEventFifo_.append(out); 
   
@@ -70,7 +70,7 @@ pDataPacket_t Network::getNewData(void)
   return outputDataFifo_.pop(); 
 }
 
-EventList_t* Network::getNewEvents(void)
+pEventList_t Network::getNewEvents(void)
 {
   return outputEventFifo_.pop(); 
 }

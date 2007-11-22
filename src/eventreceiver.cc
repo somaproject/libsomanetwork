@@ -4,7 +4,7 @@
 #include "ports.h"
 
 EventReceiver::EventReceiver(eventDispatcherPtr_t ed, 
-			     boost::function<void (EventList_t *)> erxp)
+			     boost::function<void (pEventList_t)> erxp)
   : pktCount_(0),
     latestSeq_(0), 
     dupeCount_(0), 
@@ -105,7 +105,7 @@ void EventReceiver::handleReceive(int fd)
     {
 
       // do we always extract out the events? 
-      EventPacket_t * pEventPacket = newEventPacket(recvbuffer, len); 
+      pEventPacket_t pEventPacket = newEventPacket(recvbuffer, len); 
       
       if ( pktCount_ == 0 or pEventPacket->seq == latestSeq_ + 1)
 	{
@@ -125,7 +125,7 @@ void EventReceiver::handleReceive(int fd)
 	  eventseq_t missingSeq;
 	  for (int i = 0; i < (pEventPacket->seq - (latestSeq_ +1)); i++) 
 	    {
-	      EventPacket_t * missingPkt = new EventPacket_t; 
+	      pEventPacket_t missingPkt( new EventPacket_t); 
 	      missingSeq =  latestSeq_ + i + 1; 
 	      missingPkt->seq = missingSeq; 
 	      missingPkt->missing = true; 
@@ -167,7 +167,7 @@ void EventReceiver::handleReceive(int fd)
 	  else 
 	    { 
 	      // get the iterator 
-	     EventPacket_t * pkt = (*m).second; 
+	     pEventPacket_t pkt = (*m).second; 
 
 	      // copy the received packet into the one 
 	     // that's currently in the retx buffer
@@ -175,7 +175,7 @@ void EventReceiver::handleReceive(int fd)
 	     *pkt = *pEventPacket; 
 	     missingPackets_.erase(m); 
 	     
-	     delete pEventPacket; 
+	     pEventPacket.reset(); 
 	     
 	     pktCount_++; 
 	     if (recvbuffer[6] != 0) {
@@ -218,14 +218,14 @@ void EventReceiver::updateOutQueue()
     {
     
       
-      EventPacket_t * pep = queue_.front(); 
+      pEventPacket_t pep = queue_.front(); 
     
       
       putIn_(pep->events); 
       
       queue_.pop(); 
       
-      delete pep; // we've passed on the internal events
+      pep.reset();
 
       pendingCount_--; 	
       

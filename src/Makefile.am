@@ -2,7 +2,7 @@
 
 h_sources = datareceiver.h eventdispatcher.h eventreceiver.h eventsender.h network.h networkinterface.h packetreceiver.h ports.h tspipefifo.h 
 
-cc_sources = datareceiver.cc eventdispatcher.cc eventreceiver.cc eventsender.cc network.cc fakenetwork.cc tspike.cc wave.cc 
+cc_sources = datareceiver.cc eventdispatcher.cc eventreceiver.cc eventsender.cc network.cc fakenetwork.cc tspike.cc wave.cc event.cc
 
 
 library_includedir=$(includedir)/$(GENERIC_LIBRARY_NAME)-$(GENERIC_API_VERSION)/$(GENERIC_LIBRARY_NAME)

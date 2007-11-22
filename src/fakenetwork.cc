@@ -51,7 +51,7 @@ void FakeNetwork::appendDataOut(pDataPacket_t out) {
   
 }
 
-void FakeNetwork::appendEventOut(EventList_t* out) {
+void FakeNetwork::appendEventOut(pEventList_t out) {
   boost::mutex::scoped_lock lock(appendMutex_);
 
   outputEventFifo_.append(out); 
@@ -68,7 +68,7 @@ pDataPacket_t FakeNetwork::getNewData(void)
 
 }
 
-EventList_t* FakeNetwork::getNewEvents(void)
+pEventList_t FakeNetwork::getNewEvents(void)
 {
   boost::mutex::scoped_lock lock(appendMutex_);
 

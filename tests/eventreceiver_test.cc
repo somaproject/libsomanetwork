@@ -14,9 +14,9 @@ BOOST_AUTO_TEST_SUITE(datareceiver_test)
 
 using boost::unit_test::test_suite;
 
-std::list<EventList_t*> eventListBuffer; 
+std::list<pEventList_t> eventListBuffer; 
 
-void append(EventList_t * elp)
+void append(pEventList_t elp)
 {
   eventListBuffer.push_back(elp); 
 }
@@ -24,7 +24,7 @@ void append(EventList_t * elp)
 void verifyEventListBuffer(std::vector<std::vector<char> > & inputbufs)
 {
 
-  std::list<EventList_t *>::iterator elbuf = eventListBuffer.begin(); 
+  std::list<pEventList_t >::iterator elbuf = eventListBuffer.begin(); 
   
   for (std::vector<std::vector<char> >::iterator esch = inputbufs.begin(); 
        esch != inputbufs.end(); esch++)

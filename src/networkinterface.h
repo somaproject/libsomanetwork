@@ -17,7 +17,7 @@ class NetworkInterface
   virtual void disableDataRX(datasource_t, datatype_t) = 0; 
   
   virtual pDataPacket_t  getNewData(void) = 0; 
-  virtual EventList_t * getNewEvents(void) = 0; 
+  virtual pEventList_t  getNewEvents(void) = 0; 
 
   virtual int getDataFifoPipe() = 0; 
   virtual int getEventFifoPipe() = 0;

@@ -25,7 +25,7 @@ class Network : public NetworkInterface
   void disableDataRX(datasource_t, datatype_t); 
   
   pDataPacket_t  getNewData(void); 
-  EventList_t * getNewEvents(void); 
+  pEventList_t getNewEvents(void); 
 
   eventtxnonce_t sendEvents(const EventTXList_t & el);
 
@@ -40,7 +40,7 @@ class Network : public NetworkInterface
 
  private: 
   TSPipeFifo<pDataPacket_t> outputDataFifo_; 
-  TSPipeFifo<EventList_t*> outputEventFifo_; 
+  TSPipeFifo<pEventList_t> outputEventFifo_; 
 
   eventDispatcherPtr_t pDispatch_; 
 
@@ -49,7 +49,7 @@ class Network : public NetworkInterface
   EventSender eventSender_; 
 
   void appendDataOut(pDataPacket_t out); 
-  void appendEventOut(EventList_t * out); 
+  void appendEventOut(pEventList_t out); 
   bool running_; 
   
   boost::thread *  pthrd_; 

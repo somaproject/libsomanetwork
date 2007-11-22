@@ -14,7 +14,7 @@ int main(void)
   std::string SOMAIP("10.0.0.2"); 
 
   Network somanetwork(SOMAIP); 
-  std::list < EventList_t * > pell; 
+  std::list < pEventList_t > pell; 
 
   std::cout << "Network object created" << std::endl; 
   // now, try and get events: 
@@ -61,7 +61,7 @@ int main(void)
 
   std::cout << "That's " << pell.size() << " event lists " << std::endl; 
   
-  std::list < EventList_t * >::iterator pel; 
+  std::list < pEventList_t >::iterator pel; 
   
   eventmap_t eventmap; 
 

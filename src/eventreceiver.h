@@ -24,7 +24,7 @@
 #include "packetreceiver.h"
 #include "eventdispatcher.h" 
 
-typedef std::queue<EventPacket_t *> eventPacketQueue_t; 
+typedef std::queue<pEventPacket_t> eventPacketQueue_t; 
 
 struct EventReceiverStats
 {
@@ -40,11 +40,11 @@ struct EventReceiverStats
 
 class EventReceiver : PacketReceiver
 {
-  typedef std::map<eventseq_t, EventPacket_t*> missingPktHash_t;
+  typedef std::map<eventseq_t, pEventPacket_t> missingPktHash_t;
   
 public:
   EventReceiver(eventDispatcherPtr_t ed, 
-		boost::function<void (EventList_t *)> erxp); 
+		boost::function<void (pEventList_t)> erxp); 
   ~EventReceiver(); 
 
   int getSocket() { return socket_;}
@@ -65,7 +65,7 @@ private:
   int reTxRxCount_; 
   int outOfOrderCount_; 
 
-  boost::function<void (EventList_t *)>  putIn_; 
+  boost::function<void (pEventList_t)>  putIn_; 
   eventDispatcherPtr_t pDispatch_; 
 
   // received queue
