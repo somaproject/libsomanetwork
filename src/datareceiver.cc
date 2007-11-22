@@ -5,7 +5,7 @@
 #include "ports.h"
 
 DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t type, 
-			   boost::function<void (DataPacket_t *)> rdp)
+			   boost::function<void (pDataPacket_t)> rdp)
   : source_ (source), 
     type_ (type), 
     pktCount_(0),
@@ -120,7 +120,7 @@ void DataReceiver::handleReceive(int fd)
     } else
     {
 
-      DataPacket_t * prd = newDataPacket(recvbuffer); 
+      pDataPacket_t prd = newDataPacket(recvbuffer); 
 
       if (prd->src != source_ or prd->typ != type_) {
 	std::cerr  << "Error receiving packet " 
@@ -146,7 +146,7 @@ void DataReceiver::handleReceive(int fd)
 	  sequence_t missingSeq;
 	  for (int i = 0; i < (prd->seq - (latestSeq_ +1)); i++) 
 	    {
-	      DataPacket_t * missingPkt = new DataPacket_t; 
+	      pDataPacket_t missingPkt(new DataPacket_t); 
 	      missingSeq =  latestSeq_ + i + 1; 
 	      missingPkt-> seq = missingSeq; 
 	      missingPkt->typ = type_; 
@@ -184,20 +184,18 @@ void DataReceiver::handleReceive(int fd)
 	    {
 	    // this was a duplicate packet; ignore
 	    dupeCount_++; 
-	    delete prd; 
+	    
 	    } 
 	  else 
 	    { 
 	      // get the iterator 
-	      DataPacket_t* pkt = (*m).second; 
+	      pDataPacket_t pkt((*m).second); 
 
 	      // copy the received packet into the one that's currently in the retx buffer
 
 	      *pkt = *prd; 
 	      missingPackets_.erase(m); 
 	      
-	      delete prd; 
-
 	      pktCount_++; 
 	      if (recvbuffer[6] != 0) {
 		reTxRxCount_++;
@@ -241,7 +239,7 @@ void DataReceiver::updateOutQueue()
 	 rawRxQueue_.front()->missing == false) 
     {
       
-      DataPacket_t* rdp = rawRxQueue_.front(); 
+      pDataPacket_t rdp(rawRxQueue_.front()); 
       
       putIn_(rdp); 
       rawRxQueue_.pop(); 

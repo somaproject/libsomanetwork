@@ -53,7 +53,7 @@ Network::~Network()
 }
 
 
-void Network::appendDataOut(DataPacket_t* out) {
+void Network::appendDataOut(pDataPacket_t out) {
   
   outputDataFifo_.append(out); 
   
@@ -65,7 +65,7 @@ void Network::appendEventOut(EventList_t* out) {
   
 }
 
-DataPacket_t* Network::getNewData(void)
+pDataPacket_t Network::getNewData(void)
 {
   return outputDataFifo_.pop(); 
 }
@@ -103,7 +103,7 @@ void Network::disableDataRX(datasource_t src, datatype_t typ)
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 
   std::map<const datagen_t, DataReceiver*>::iterator i = dataReceivers_.find(dg); 
-  // UM THIS IS BROKEN WHAT ARE WE SUPPOSED TO DO WITH i? 
+  //FIXME: UM THIS IS BROKEN WHAT ARE WE SUPPOSED TO DO WITH IT? 
 
   delete dr;   
 }

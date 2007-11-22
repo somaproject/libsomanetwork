@@ -32,6 +32,7 @@ class FakeEventServer
   void shutdown(); 
 
   void setSkip(eventseq_t s); 
+  bool workthreaddone(); 
 
  private:
 
@@ -45,9 +46,12 @@ class FakeEventServer
   retxLUT_t retxLUT_; 
   void workthread(); 
   void retxthread(); 
+  boost::mutex workdonemutex_; 
+  bool workdone_; 
 
   std::list<eventseq_t> skiplist_; 
-  
+
+
 };
 
 typedef std::map<eventtxnonce_t, int> skipMap_t; 

@@ -24,7 +24,7 @@ class Network : public NetworkInterface
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 
   
-  DataPacket_t*  getNewData(void); 
+  pDataPacket_t  getNewData(void); 
   EventList_t * getNewEvents(void); 
 
   eventtxnonce_t sendEvents(const EventTXList_t & el);
@@ -39,7 +39,7 @@ class Network : public NetworkInterface
   EventReceiverStats getEventStats(); 
 
  private: 
-  TSPipeFifo<DataPacket_t*> outputDataFifo_; 
+  TSPipeFifo<pDataPacket_t> outputDataFifo_; 
   TSPipeFifo<EventList_t*> outputEventFifo_; 
 
   eventDispatcherPtr_t pDispatch_; 
@@ -48,7 +48,7 @@ class Network : public NetworkInterface
   EventReceiver eventReceiver_; 
   EventSender eventSender_; 
 
-  void appendDataOut(DataPacket_t* out); 
+  void appendDataOut(pDataPacket_t out); 
   void appendEventOut(EventList_t * out); 
   bool running_; 
   

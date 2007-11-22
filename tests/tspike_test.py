@@ -22,7 +22,7 @@ tspike_desc = n.dtype([('typ', n.uint8),
 
 
 if __name__ == "__main__":
-    N = 100000
+    N = 10000
 
     x = n.zeros(N, dtype=tspike_desc)
     r = x.tostring()
@@ -42,4 +42,4 @@ if __name__ == "__main__":
                 x[i][s]['wave'][k] = j * i * 0x12345 +  (k)
     print len(r)/N
 
-    x.tofile('frompy.dat')
+    x.tofile('tspikes.frompy.dat')

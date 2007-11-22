@@ -15,7 +15,8 @@
 #include "ports.h"
 
 FakeEventServer::FakeEventServer() :
-  running_(false)
+  running_(false), 
+  workdone_(false)
 {
 
 
@@ -97,11 +98,21 @@ void FakeEventServer::workthread()
  					       skiplist_.end(), 
  					       seq); 
       if (result == skiplist_.end()) {
+	std::cout << " workthread sending " << seq << std::endl; 
 	n=sendto(sendsock_, &(dp)[0],
 		 dp.size(), 0, (sockaddr*)&server,
 		 length);
       }
+      usleep(10000);
     }
+  boost::mutex::scoped_lock lock(workdonemutex_); 
+  workdone_ = true; 
+  
+}
+
+bool FakeEventServer::workthreaddone() {
+  boost::mutex::scoped_lock lock(workdonemutex_); 
+  return workdone_; 
 }
 
 void FakeEventServer::shutdown()
@@ -195,7 +206,6 @@ void FakeEventServer::retxthread(void) {
       seq_host = ntohl(seq); 
 
       std::vector<char> dp = retxLUT_[seq_host]; 
-      std::cout << "received retx req for " << seq_host << std::endl; 
       int n = sendto(sendsock_, &(dp)[0],
 		     dp.size(), 0, (sockaddr*)&server,
 		     length);

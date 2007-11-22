@@ -10,6 +10,8 @@
 #include "eventtests.h"
 #include "tests.h"
 
+BOOST_AUTO_TEST_SUITE(datareceiver_test)
+
 using boost::unit_test::test_suite;
 
 std::list<EventList_t*> eventListBuffer; 
@@ -52,8 +54,9 @@ void verifyEventListBuffer(std::vector<std::vector<char> > & inputbufs)
 
 BOOST_AUTO_TEST_CASE( simpleeventtest )
 {
-  //Can we send a single packet? this is the model for all future activity
-  
+  // 
+  // Can we send a single packet? this is the model for all later tests
+  // 
   eventListBuffer.clear(); 
 
   // and then test them all. 
@@ -131,7 +134,8 @@ BOOST_AUTO_TEST_CASE( multieventtest )
 
   server.start(); 
 
-  for (int i = 0; i < 10; i++){ 
+  /// wait for the primary rx to complete
+  while ( !server.workthreaddone()) {
     ped->runonce(); 
   }
   
@@ -144,8 +148,11 @@ BOOST_AUTO_TEST_CASE( multieventtest )
 
 BOOST_AUTO_TEST_CASE( outofordertest )
 {
-  // if we send packets out of order, do we deal 
-  
+  //
+  // Check for proper handling of soma-device tx of out-of-order
+  // packets
+  // 
+
   eventListBuffer.clear(); 
 
   // and then test them all. 
@@ -184,28 +191,13 @@ BOOST_AUTO_TEST_CASE( outofordertest )
 
   server.start(); 
 
-  for (int i = 0; i < 10; i++){ 
+  while ( !server.workthreaddone()) {
     ped->runonce(); 
   }
-  
+      
   // assert data values
   BOOST_CHECK_EQUAL(eventListBuffer.size(), 10); 
-  // compare lengths
-//   std::list<EventList_t*>::iterator elb = eventListBuffer.begin(); 
-//   for (int i = 0; i < 10; i++){
-//     std::cout << outlist[i].size() << ": "; 
-//     int total = 0; 
-//     for (int j = 0; j < outlist[i].size(); j++)
-//       {
-// 	std::cout << (int)outlist[i][j]  << ' '; 
-// 	total += outlist[i][j]; 
-//       }
 
-//     std::cout << " (total = " << total << " ";  
-//     std::cout << " verses " << (*elb)->size() << ")" << std::endl; 
-//     elb++; 
-    
-//   }
   verifyEventListBuffer(outlist); 
 
 }
@@ -255,29 +247,18 @@ BOOST_AUTO_TEST_CASE( droptest )
 
   server.start(); 
 
-  for (int i = 0; i < 10; i++){ 
+
+  while ( !server.workthreaddone()) {
     ped->runonce(); 
   }
+
   
   // assert data values
   BOOST_CHECK_EQUAL(eventListBuffer.size(), 10); 
-  // compare lengths
-  //   std::list<EventList_t*>::iterator elb = eventListBuffer.begin(); 
-  //   for (int i = 0; i < 10; i++){
-  //     std::cout << outlist[i].size() << ": "; 
-  //     int total = 0; 
-  //     for (int j = 0; j < outlist[i].size(); j++)
-  //       {
-  // 	std::cout << (int)outlist[i][j]  << ' '; 
-  // 	total += outlist[i][j]; 
-  //       }
   
-  //     std::cout << " (total = " << total << " ";  
-  //     std::cout << " verses " << (*elb)->size() << ")" << std::endl; 
-  //     elb++; 
-  
-  //   }
   verifyEventListBuffer(outlist); 
 
 }
 
+
+BOOST_AUTO_TEST_SUITE_END()

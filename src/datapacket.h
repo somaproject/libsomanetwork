@@ -2,6 +2,7 @@
 #define RAWDATA_H
 
 #include <boost/array.hpp>
+#include <boost/shared_ptr.hpp>
 #include <byteswap.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -61,7 +62,8 @@ struct DataPacket_t
 
 typedef boost::shared_ptr<DataPacket_t> pDataPacket_t; 
 
-inline DataPacket_t * newDataPacket(boost::array<char, BUFSIZE> buffer) 
+inline
+pDataPacket_t newDataPacket(boost::array<char, BUFSIZE> buffer) 
 {
   /* 
      This function takes in a raw UDP packet off the wire (as a buffer)
@@ -76,7 +78,7 @@ inline DataPacket_t * newDataPacket(boost::array<char, BUFSIZE> buffer)
   */
 
 
-  DataPacket_t * prd = new DataPacket_t; 
+  pDataPacket_t prd(new DataPacket_t); 
     
   prd->seq = ntohl(*((int *) &buffer[0])); 
   prd->typ = charToDatatype(buffer[4]); 

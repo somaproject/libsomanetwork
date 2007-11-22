@@ -36,7 +36,7 @@ bool DataRxCallback(Glib::IOCondition io_condition)
       char x; 
       read(network->getDataFifoPipe(), &x, 1); 
       
-      DataPacket_t * rdp = network->getNewData(); 
+      pDataPacket_t rdp = network->getNewData(); 
       char chan = rdp->src; 
       pktcnt--; 
       rxCnt[chan - startchan]++; 

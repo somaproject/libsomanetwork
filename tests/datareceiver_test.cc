@@ -12,28 +12,28 @@
 
 using boost::unit_test::test_suite;
 
-std::list<DataPacket_t*> rawDataBuffer; 
+
+BOOST_AUTO_TEST_SUITE(datareceivertest)
+
+
+std::list<pDataPacket_t> rawDataBuffer; 
+
 void clearBuffer() {
-   std::list<DataPacket_t*>::iterator i ; 
-   for (i = rawDataBuffer.begin(); i != rawDataBuffer.end(); i++)
-     {
-       delete *i; 
-       
-     }
-   rawDataBuffer.clear(); 
+  rawDataBuffer.clear(); 
 }
 
-void append(DataPacket_t * rdp)
+void append(pDataPacket_t rdp)
 {
   rawDataBuffer.push_back(rdp); 
 }
 
 BOOST_AUTO_TEST_CASE( simpledatatest )
 {
+  //
   // Can we send a single packet? this is the model for all future activity
   // 
   clearBuffer(); 
-
+  
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 10;
@@ -46,15 +46,15 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   const int SEQ = 1000; 
   server.appendSeqsToSend(SEQ); 
   
-
+  
   server.start(); 
   ped->runonce(); 
-
+  
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
-
+  
   clearBuffer(); 
-
+  
 }
 
 BOOST_AUTO_TEST_CASE(outofordertest)
@@ -62,10 +62,10 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   // we will send a series of packets out order; 
   
   rawDataBuffer.clear(); 
-
+  
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
-
+  
   datasource_t src = 30;
   datatype_t  typ = TSPIKE; 
   
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
-
+  
   std::vector<sequence_t> seqs; 
   seqs.push_back(0); 
   seqs.push_back(1); 
@@ -96,7 +96,6 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   for(int i = 0; i < 8; i++)
     {
       BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, i); 
-      delete rawDataBuffer.front(); 
       rawDataBuffer.pop_front(); 
     }
   clearBuffer(); 
@@ -145,7 +144,6 @@ BOOST_AUTO_TEST_CASE(dupetest)
   for(int i = 0; i < 8; i++)
     {
       BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, i); 
-      delete rawDataBuffer.front(); 
       rawDataBuffer.pop_front(); 
       
     }
@@ -158,7 +156,7 @@ BOOST_AUTO_TEST_CASE(retxtest)
   // omit sending completely, and verify that we get thee relevant retx req
   
   rawDataBuffer.clear(); 
-
+  
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 30;
@@ -169,7 +167,7 @@ BOOST_AUTO_TEST_CASE(retxtest)
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
-
+  
   std::vector<sequence_t> seqs; 
   seqs.push_back(0); 
   seqs.push_back(1); 
@@ -191,15 +189,16 @@ BOOST_AUTO_TEST_CASE(retxtest)
   for (int i = 0; i < 10; i++) {
     ped->runonce(); 
   }  
+  
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 10); 
   for(int i = 0; i < rawDataBuffer.size(); i++)
     {
       BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, i); 
-      delete rawDataBuffer.front(); 
-     
+      
       rawDataBuffer.pop_front(); 
       
     }
   clearBuffer();
 }
 
+BOOST_AUTO_TEST_SUITE_END()

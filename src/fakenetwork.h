@@ -39,7 +39,7 @@ class FakeNetwork : public NetworkInterface
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 
   
-  DataPacket_t*  getNewData(void); 
+  pDataPacket_t  getNewData(void); 
   EventList_t * getNewEvents(void); 
 
   int getDataFifoPipe(); 
@@ -47,7 +47,7 @@ class FakeNetwork : public NetworkInterface
   void run(); 
   void shutdown(); 
 
-  void appendDataOut(DataPacket_t * out); 
+  void appendDataOut(pDataPacket_t out); 
   void appendEventOut(EventList_t * out); 
   
   eventtxnonce_t sendEvents(const EventTXList_t & el);
@@ -56,7 +56,7 @@ class FakeNetwork : public NetworkInterface
   std::vector<DataReceiverStats>  getDataStats(); 
   
  private: 
-  TSPipeFifo<DataPacket_t*> outputDataFifo_; 
+  TSPipeFifo<pDataPacket_t> outputDataFifo_; 
   TSPipeFifo<EventList_t*> outputEventFifo_; 
 
   bool running_; 

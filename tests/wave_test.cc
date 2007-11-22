@@ -1,7 +1,7 @@
 
 #include <boost/test/auto_unit_test.hpp>
-#include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/fstream.hpp"   
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <iostream>    
 #include <fstream>                    
 #include "wave.h"
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(wave_toraw)
       w.wave[i] = (i * 1000); 
     }
   
-  DataPacket_t * dpt = rawFromWave(w); 
+  pDataPacket_t dpt = rawFromWave(w); 
   
   Wave_t wr = rawToWave(dpt); 
   

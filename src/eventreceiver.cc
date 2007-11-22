@@ -52,9 +52,6 @@ EventReceiver::EventReceiver(eventDispatcherPtr_t ed,
   res = getsockopt(socket_, SOL_SOCKET, SO_RCVBUF, 
 		   (void *) &optval, &optlen); 
 
-  std::cout << "EventReceiver allocated " << optval
-	    << " bytes in the rx buffer" << std::endl; 
-
   res =  bind(socket_, (sockaddr*)&si_me, sizeof(si_me)); 
   if (res < 0) {
     throw std::runtime_error("error binding socket"); 
@@ -85,8 +82,7 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
   memcpy(&retxbuf[0], &seqn, 4); 
 
   sfrom.sin_port = htons(EVENTRXRETXPORT); 
-  //sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
-  // DEBUGGING.
+  sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
 }
 
 

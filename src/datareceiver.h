@@ -24,12 +24,12 @@
 #include "packetreceiver.h"
 #include "eventdispatcher.h"
 
-typedef std::queue<DataPacket_t*> rawQueue_t; 
+typedef std::queue<pDataPacket_t> dataPacketpQueue_t; 
 
 
 // missing packet type
 typedef std::map<sequence_t, 
-		   DataPacket_t*> missingPktHash_t;
+		   pDataPacket_t> missingPktHash_t;
 
 struct DataReceiverStats
 {
@@ -53,7 +53,7 @@ class DataReceiver : public PacketReceiver
 public:
   DataReceiver(eventDispatcherPtr_t pDispatch, 
 	       int source, datatype_t type,
-	       boost::function<void (DataPacket_t *)> rdp); 
+	       boost::function<void (pDataPacket_t)> rdp); 
   ~DataReceiver(); 
   int getBufferSize(void) 
     {  
@@ -83,10 +83,10 @@ private:
   int pendingCount_; 
   int reTxRxCount_; 
   int outOfOrderCount_; 
-  boost::function<void (DataPacket_t *)>  putIn_; 
+  boost::function<void (pDataPacket_t)>  putIn_; 
 
   // received queue
-  rawQueue_t rawRxQueue_; 
+  dataPacketpQueue_t rawRxQueue_; 
   
   // missing packet hash
   missingPktHash_t missingPackets_; 
@@ -99,6 +99,6 @@ private:
 
 
 
-DataPacket_t *  newDataPacket(boost::array<char, BUFSIZE> buffer) ; 
+pDataPacket_t  newDataPacket(boost::array<char, BUFSIZE> buffer) ; 
  
 #endif // DATARECEIVER_H
