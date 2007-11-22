@@ -32,6 +32,12 @@ struct TSpike_t
 
 };
 
+inline
+TSpike_t rawToTSpike(const pDataPacket_t rd)
+{
+  return rawToTSpike(rd.get());
+}
+
 inline 
 TSpike_t rawToTSpike(const DataPacket_t * rd)
 {

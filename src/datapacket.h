@@ -59,6 +59,7 @@ struct DataPacket_t
   boost::array<char, BUFSIZE - HDRLEN> body;
 }; 
 
+typedef boost::shared_ptr<DataPacket_t> pDataPacket_t; 
 
 inline DataPacket_t * newDataPacket(boost::array<char, BUFSIZE> buffer) 
 {

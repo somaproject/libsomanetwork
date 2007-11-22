@@ -27,6 +27,12 @@ struct Wave_t
 }; 
 
 inline
+Wave_t rawToWave(const pDataPacket_t rd)
+{
+  return rawToWave(rd.get());
+}
+
+inline
 Wave_t rawToWave(const DataPacket_t * dp)
 {
   Wave_t w; 
