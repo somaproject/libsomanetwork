@@ -1,0 +1,12 @@
+Source: libsomanetwork
+Section: unknown
+Priority: extra
+Maintainer: Stuart Layton <Slayton@mit.edu>
+Build-Depends: debhelper (>= 5), libboost-dev
+Standards-Version: 3.7.2
+
+Package: libsomanetwork
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Soma Network Library
+ TO DO: Write long description

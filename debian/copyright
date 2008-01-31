@@ -1,0 +1,22 @@
+This package was debianized by Stuart Layton <slayton@mit.edu>
+Thu, 31 Jan 2008 13:50:57 -0500.
+
+It was downloaded from https://soma.mit.edu/svn/software/network/trunk
+
+Upstream Author(s): 
+
+    Eric Jonas jonas@mit.edu
+
+Copyright: 
+
+    Copyright (C) 2008 MIT
+
+License:
+
+    GPLv2
+
+The Debian packaging is (C) 2008, Stuart Layton slayton@mit.edu  and
+is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.
