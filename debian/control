@@ -1,8 +1,8 @@
 Source: libsomanetwork
-Section: unknown
+Section: Physionics Software
 Priority: extra
 Maintainer: Stuart Layton <Slayton@mit.edu>
-Build-Depends: debhelper (>= 5), libboost-dev
+Build-Depends: debhelper (>= 5), libboost-dev, libgtkmm-2.4, libgtkmm-2.4-dev, libglademm-2.4, libxt, 
 Standards-Version: 3.7.2
 
 Package: libsomanetwork
