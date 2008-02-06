@@ -1,12 +1,12 @@
 Source: libsomanetwork
-Section: Physionics Software
+Section: Soma Software
 Priority: extra
-Maintainer: Stuart Layton <Slayton@mit.edu>
-Build-Depends: debhelper (>= 5), libboost-dev
+Maintainer: Stuart Layton <slayton@mit.edu>
+Build-Depends: debhelper (>= 5), autotools-dev
 Standards-Version: 3.7.2
 
 Package: libsomanetwork
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Soma Network Library
- TO DO: Write long description
+Description: Soma networking libraries
+ <insert long description, indented with spaces>

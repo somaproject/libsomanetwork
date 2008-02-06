@@ -2,5 +2,5 @@ libsomanetwork (1.0-1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
- -- acq <acq@unknown>  Thu, 31 Jan 2008 13:50:57 -0500
+ -- Stuart Layton <slayton@mit.edu>  Wed, 06 Feb 2008 16:42:54 -0500
 
