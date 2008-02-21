@@ -23,7 +23,7 @@ int main(void)
   somanetwork.run(); 
 
 
-  int PKTCNT = 100000; 
+  int PKTCNT = 10000; 
   for (int i = 0; i < PKTCNT; i++) {
     char dummy; 
     read(eventpipe, &dummy, 1);  // will block
