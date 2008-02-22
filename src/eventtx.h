@@ -11,10 +11,14 @@ const int ADDRSHORTS = 5;
 
 typedef uint16_t eventtxnonce_t; 
 
-struct EventTX_t
+class EventTX_t
 {
+ public:
   boost::array<bool, ADDRBITS> destaddr; 
   Event_t event; 
+  EventTX_t() {
+    bzero(&destaddr, sizeof(destaddr)); 
+  }
 }; 
 
 typedef std::vector<EventTX_t> EventTXList_t; 
