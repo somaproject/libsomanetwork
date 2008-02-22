@@ -55,10 +55,11 @@ inline std::vector<char> createEventTXBuffer(eventtxnonce_t nonce,
 	  uint16_t addrblock = 0; 
 	  for (int b = 0; b < 16; b++)
 	    {
+	      addrblock = addrblock << 1; 
+
 	      if(e->destaddr[i*16 + 15 - b]){
 		addrblock |= 1; 
 	      }
-	      addrblock = addrblock << 1; 
 	    }
 	  uint16_t naddrblock = htons(addrblock); 
 	  memcpy(&buffer[bpos], &naddrblock, sizeof(naddrblock)); 
