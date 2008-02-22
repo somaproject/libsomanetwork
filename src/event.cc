@@ -34,9 +34,14 @@ pEventPacket_t newEventPacket(boost::array<char, EBUFSIZE> buffer,
 
 	  evt.src = buffer[bpos]; 
 	  bpos++; 
-
-	  memcpy(&evt.data[0], &buffer[bpos], (EVENTLEN-1)*sizeof(uint16_t)); 
-	  bpos += (EVENTLEN-1)*sizeof(uint16_t); 
+	  for (int dword = 0; dword < (EVENTLEN-1); ++dword) 
+	    {
+	      uint16_t nedata; 
+	      memcpy(&nedata, &buffer[bpos], (EVENTLEN-1)*sizeof(uint16_t)); 
+	      evt.data[dword] = ntohs(nedata); 
+	      
+	      bpos += 2; 
+	    }
 	  pEventList->push_back(evt); 
 	}
     }
