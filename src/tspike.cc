@@ -21,6 +21,8 @@ TSpike_t rawToTSpike(pDataPacket_t rd)
     for (int i = 0; i < 4; i++)
       {
 	TSpikeWave_t * tsp= ptrs[i]; 
+	bpos += 2; // FIXME need to decode valid and srcchan
+
 	tsp->filtid = *((uint8_t*)bpos); 
 	bpos++; 
 	

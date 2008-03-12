@@ -104,7 +104,7 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 
 void DataReceiver::handleReceive(int fd)
 {
-
+  //std::cout << "DataReceiver::handleRecive(" << fd << ") " << std::endl; 
   boost::mutex::scoped_lock lock( statusMutex_ );
 
   boost::array<char, BUFSIZE> recvbuffer; 
@@ -123,8 +123,9 @@ void DataReceiver::handleReceive(int fd)
       pDataPacket_t prd = newDataPacket(recvbuffer); 
 
       if (prd->src != source_ or prd->typ != type_) {
-	std::cerr  << "Error receiving packet " 
-		   << (int) prd->src << " != " << source_  << " or " 
+	std::cerr  << "Incorrect packet header " << std::endl  
+		   << "pkt source " << (int) prd->src 
+		   << " != destination src" << source_  << " or " 
 		   << (int) prd->typ << " != " << type_  << std::endl; 
       }
 
