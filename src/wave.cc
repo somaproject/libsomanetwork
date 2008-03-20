@@ -22,25 +22,31 @@ Wave_t rawToWave(pDataPacket_t dp)
     hchan = ntohs(nchan); 
     w.selchan = hchan; 
 
-    // extract out the sampling rate (only an integer)
-    uint16_t nsamp, hsamp; 
-    memcpy(&nsamp, &dp->body[6], sizeof(hsamp)); 
-    hsamp = ntohs(nsamp); 
-    w.samprate = hsamp; 
+    // extract out the sampling rate numerator
+    uint16_t nsampnum, hsampnum; 
+    memcpy(&nsampnum, &dp->body[6], sizeof(hsampnum)); 
+    hsampnum = ntohs(nsampnum); 
+    w.sampratenum = hsampnum; 
+
+    // extract out the sampling rate denominator
+    uint16_t nsampden, hsampden; 
+    memcpy(&nsampden, &dp->body[8], sizeof(hsampden)); 
+    hsampden = ntohs(nsampden); 
+    w.samprateden = hsampden; 
 
     // extract out the filterid
     uint16_t nfilterid, hfilterid; 
-    memcpy(&nfilterid, &dp->body[8], sizeof(nfilterid)); 
+    memcpy(&nfilterid, &dp->body[10], sizeof(nfilterid)); 
     hfilterid = ntohs(nfilterid); 
     w.filterid = hfilterid; 
 
     // extract out the time
     uint64_t ntime, htime; 
-    memcpy(&ntime, &dp->body[10], sizeof(ntime)); 
+    memcpy(&ntime, &dp->body[12], sizeof(ntime)); 
     htime = ntohll(ntime); 
     w.time = htime; 
 
-    size_t bpos = 10+8; 
+    size_t bpos = 12+8; 
     
     
     for (int i = 0; i < hlen; i++ )
@@ -90,27 +96,33 @@ pDataPacket_t rawFromWave(const Wave_t & w)
   memcpy(&(rdp->body[4]), &nchan, sizeof(nchan));
 
   // extract out the sampling rate (only an integer)
-  uint16_t nsamp, hsamp;
-  hsamp = w.samprate;
-  nsamp = htons(hsamp);
-  memcpy(&rdp->body[6], &nsamp,  sizeof(nsamp));
+  uint16_t nsampnum, hsampnum;
+  hsampnum = w.sampratenum;
+  nsampnum = htons(hsampnum);
+  memcpy(&rdp->body[6], &nsampnum,  sizeof(nsampnum));
+
+  // extract out the sampling rate (only an integer)
+  uint16_t nsampden, hsampden;
+  hsampden = w.samprateden;
+  nsampden = htons(hsampden);
+  memcpy(&rdp->body[8], &nsampden,  sizeof(nsampden));
 
   // extract out the filter id
   uint16_t nfilterid, hfilterid;
   hfilterid = w.filterid;
   nfilterid = htons(hfilterid);
-  memcpy(&rdp->body[8], &nfilterid,  sizeof(nfilterid));
+  memcpy(&rdp->body[10], &nfilterid,  sizeof(nfilterid));
 
    
   // extract out the time
   uint64_t ntime, htime;
   htime = w.time;
   ntime = ntohll(htime);
-  memcpy(&rdp->body[10], &ntime, sizeof(ntime));
+  memcpy(&rdp->body[12], &ntime, sizeof(ntime));
 
   // put in the primary packet data
 
-  size_t bpos = 10+8; 
+  size_t bpos = 12+8; 
   
   for (int i = 0; i < hlen; i++ )
     {

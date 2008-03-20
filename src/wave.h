@@ -19,7 +19,8 @@ struct Wave_t
 {
   uint8_t src; 
   uint64_t time; 
-  uint16_t samprate; 
+  uint16_t sampratenum; 
+  uint16_t samprateden; 
   uint16_t selchan; 
   uint16_t filterid; 
   int32_t wave[WAVEBUF_LEN]; 
