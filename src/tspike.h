@@ -16,7 +16,7 @@ const int TSPIKEWAVE_LEN = 32;
 struct TSpikeWave_t {
   uint8_t srcchan; 
   uint8_t valid; 
-  uint16_t filtid; 
+  uint32_t filtid; 
   int32_t threshold; 
   int32_t wave[TSPIKEWAVE_LEN]; 
 };

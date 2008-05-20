@@ -20,11 +20,13 @@ TSpike_t rawToTSpike(pDataPacket_t rd)
     size_t bpos = (size_t) &rd->body[12]; 
     for (int i = 0; i < 4; i++)
       {
-	TSpikeWave_t * tsp= ptrs[i]; 
 	bpos += 2; // FIXME need to decode valid and srcchan
 
-	tsp->filtid = *((uint16_t*)bpos); 
-	bpos += 2; 
+	TSpikeWave_t * tsp= ptrs[i]; 
+
+	tsp->filtid = ntohl(*((uint32_t*)bpos)); 
+	bpos += 4; 
+
 	
 	tsp->threshold = ntohl(*((uint32_t *)bpos)); 
 	bpos += sizeof(tsp->threshold); 
@@ -34,8 +36,6 @@ TSpike_t rawToTSpike(pDataPacket_t rd)
 	    bpos += sizeof(tsp->wave[0]); 
 	    
 	  }
-	
-	
       }
 
   } else {
@@ -79,8 +79,8 @@ pDataPacket_t rawFromTSpike(const TSpike_t & ts)
       memcpy((void*)bpos, &tswp->valid, 1); // FIXME
       bpos++; 
 
-      memcpy((void*)bpos, &tswp->filtid, 2); 
-      bpos +=2; 
+      memcpy((void*)bpos, &tswp->filtid, 4); 
+      bpos +=4; 
 	
       int32_t nthreshold = htonl(tswp->threshold); 
       memcpy((void*)bpos, &nthreshold, sizeof(nthreshold)); 
