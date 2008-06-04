@@ -9,5 +9,3 @@ Package: libsomanetwork
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Soma networking libraries
-This library provides the framework over which soma and soma software 
-communicate over the network.
