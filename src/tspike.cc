@@ -11,23 +11,27 @@ TSpike_t rawToTSpike(pDataPacket_t rd)
   if (! rd->missing) {
 
     ts.src = rd->body[1]; 
-    
+    // ignore chanlen
+
     uint64_t time; 
     memcpy(&time,  &(rd->body[4]), 8); 
-
     ts.time = ntohll(time); 
+
     TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
     size_t bpos = (size_t) &rd->body[12]; 
     for (int i = 0; i < 4; i++)
       {
-	bpos += 2; // FIXME need to decode valid and srcchan
+	
 
 	TSpikeWave_t * tsp= ptrs[i]; 
+
+	bpos++; 
+	tsp->valid = *((uint32_t*)bpos); 
+	bpos++; 
 
 	tsp->filtid = ntohl(*((uint32_t*)bpos)); 
 	bpos += 4; 
 
-	
 	tsp->threshold = ntohl(*((uint32_t *)bpos)); 
 	bpos += sizeof(tsp->threshold); 
 	for(int j = 0; j < TSPIKEWAVE_LEN; j++)
@@ -79,7 +83,8 @@ pDataPacket_t rawFromTSpike(const TSpike_t & ts)
       memcpy((void*)bpos, &tswp->valid, 1); // FIXME
       bpos++; 
 
-      memcpy((void*)bpos, &tswp->filtid, 4); 
+      int32_t nfiltid = htonl(tswp->filtid); 
+      memcpy((void*)bpos, &nfiltid, 4); 
       bpos +=4; 
 	
       int32_t nthreshold = htonl(tswp->threshold); 

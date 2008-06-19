@@ -59,7 +59,6 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
 
   }
 
-  
   res =  bind(socket_, (sockaddr*)&si_me, sizeof(si_me)); 
   if (res < 0) {
     throw std::runtime_error("error binding socket"); 
