@@ -14,7 +14,7 @@ int main(void)
   std::string SOMAIP("10.0.0.2"); 
 
   Network somanetwork(SOMAIP); 
-  std::list < pEventList_t > pell; 
+  std::list < pEventPacket_t > pell; 
 
   std::cout << "Network object created" << std::endl; 
   // now, try and get events: 
@@ -61,32 +61,32 @@ int main(void)
 
   std::cout << "That's " << pell.size() << " event lists " << std::endl; 
   
-  std::list < pEventList_t >::iterator pel; 
+  std::list < pEventPacket_t >::iterator pel; 
   
   eventmap_t eventmap; 
 
-  for (pel = pell.begin(); pel != pell.end(); pel++) {
-    EventList_t::iterator pe; 
-    for (pe = (*pel)->begin(); pe != (*pel)->end(); pe++)
-      {
-	Event_t evt = *pe; 
-	if (eventmap.find(evt.cmd) != eventmap.end() ){
-	  // this exists; inc; 
-	  eventmap[evt.cmd] += 1; 
-	} else {
-	  // need to insert
-	  eventmap[evt.cmd] = 1; 
-	}
-      }
-  }
+//   for (pel = pell.begin(); pel != pell.end(); pel++) {
+//     EventList_t::iterator pe; 
+//     for (pe = (*pel)->begin(); pe != (*pel)->end(); pe++)
+//       {
+// 	Event_t evt = *pe; 
+// 	if (eventmap.find(evt.cmd) != eventmap.end() ){
+// 	  // this exists; inc; 
+// 	  eventmap[evt.cmd] += 1; 
+// 	} else {
+// 	  // need to insert
+// 	  eventmap[evt.cmd] = 1; 
+// 	}
+//       }
+//   }
   
-  std::cout << "event command frequency" << std::endl; 
-  // print the results:
-  for (eventmap_t::iterator em = eventmap.begin(); 
-       em != eventmap.end(); em++)
-    {
-      std::cout << (int) em->first << ' ' << (int) em->second <<  std::endl; 
+//   std::cout << "event command frequency" << std::endl; 
+//   // print the results:
+//   for (eventmap_t::iterator em = eventmap.begin(); 
+//        em != eventmap.end(); em++)
+//     {
+//       std::cout << (int) em->first << ' ' << (int) em->second <<  std::endl; 
 
-    }
+//     }
 
 }

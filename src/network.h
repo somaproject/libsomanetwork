@@ -11,8 +11,6 @@
 #include "event.h"
 #include "networkinterface.h"
 
-typedef std::pair<datasource_t, datatype_t> datagen_t; 
-
 class Network : public NetworkInterface
 
 {
@@ -23,9 +21,10 @@ class Network : public NetworkInterface
   
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 
-  
+  void disableAllDataRX(); 
+
   pDataPacket_t  getNewData(void); 
-  pEventList_t getNewEvents(void); 
+  pEventPacket_t getNewEvents(void); 
 
   eventtxnonce_t sendEvents(const EventTXList_t & el);
 
@@ -38,9 +37,13 @@ class Network : public NetworkInterface
   std::vector<DataReceiverStats>  getDataStats(); 
   EventReceiverStats getEventStats(); 
 
+  void resetDataStats(); 
+  void resetEventStats(); 
+
+
  private: 
   TSPipeFifo<pDataPacket_t> outputDataFifo_; 
-  TSPipeFifo<pEventList_t> outputEventFifo_; 
+  TSPipeFifo<pEventPacket_t> outputEventFifo_; 
 
   eventDispatcherPtr_t pDispatch_; 
 
@@ -49,7 +52,7 @@ class Network : public NetworkInterface
   EventSender eventSender_; 
 
   void appendDataOut(pDataPacket_t out); 
-  void appendEventOut(pEventList_t out); 
+  void appendEventOut(pEventPacket_t out); 
   bool running_; 
   
   boost::thread *  pthrd_; 

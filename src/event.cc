@@ -91,9 +91,11 @@ std::vector<char> createEventBuffer(int seq, std::list<EventList_t> els)
 
 	  memcpy(&buffer[bpos], &(pevt->src), 1); 
 	  bpos++; 
-
-	  memcpy(&buffer[bpos], &(pevt->data[0]), 10); 
-	  bpos += 10; 
+	  for (int j = 0; j < 5; j++) {
+	    uint16_t ndata = htons(pevt->data[j]); 
+	    memcpy(&buffer[bpos], &(ndata), sizeof(ndata)); 
+	    bpos +=2; 
+	  }
 	}
       
     }

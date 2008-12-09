@@ -65,6 +65,7 @@ public:
   int getPendingCount() { return pendingCount_; }
   int getSocket() { return socket_;}
   DataReceiverStats getStats(); 
+  void resetStats(); 
 
   void handleReceive(int fd);   
 private:

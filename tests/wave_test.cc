@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE(wave_toraw)
   Wave_t w; 
   w.src = 120; 
   w.time = 0x123456789ABCDEF; 
-  w.samprate = 0xCD12; 
+  w.sampratenum = 0xCD12; 
   w.selchan = 0x4567; 
   w.filterid = 0x1234; 
   // fil the wave with 128 words
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(wave_toraw)
   BOOST_CHECK_EQUAL(wr.src, w.src); 
   BOOST_CHECK_EQUAL(wr.time, w.time); 
 
-  BOOST_CHECK_EQUAL(wr.samprate, w.samprate); 
+  BOOST_CHECK_EQUAL(wr.sampratenum, w.sampratenum); 
   
   BOOST_CHECK_EQUAL(wr.selchan, w.selchan); 
 

@@ -20,16 +20,17 @@ void Network::run()
   running_ = true; 
   pthrd_ = new boost::thread(boost::bind(&Network::workthread,
 					 this));
-  
 }
 void Network::workthread()
 {
+
   pDispatch_->run(); 
   
 }
 
 void Network::shutdown()
 {
+  //std::cout << "NETWORK SHUTDOWN" << std::endl; 
   running_ = false; 
   pDispatch_->halt(); 
 
@@ -49,9 +50,22 @@ Network::~Network()
       
       delete (*i).second; 
     }
+
   
 }
 
+void Network::disableAllDataRX()
+{
+  std::map<const datagen_t, DataReceiver*>::iterator i;
+  for (i = dataReceivers_.begin(); i != dataReceivers_.end(); 
+       i++) 
+    {
+      
+      delete (*i).second; 
+    }
+  dataReceivers_.clear(); 
+
+}
 
 void Network::appendDataOut(pDataPacket_t out) {
   
@@ -59,7 +73,7 @@ void Network::appendDataOut(pDataPacket_t out) {
   
 }
 
-void Network::appendEventOut(pEventList_t out) {
+void Network::appendEventOut(pEventPacket_t out) {
 
   outputEventFifo_.append(out); 
   
@@ -70,7 +84,7 @@ pDataPacket_t Network::getNewData(void)
   return outputDataFifo_.pop(); 
 }
 
-pEventList_t Network::getNewEvents(void)
+pEventPacket_t Network::getNewEvents(void)
 {
   return outputEventFifo_.pop(); 
 }
@@ -103,8 +117,8 @@ void Network::disableDataRX(datasource_t src, datatype_t typ)
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 
   std::map<const datagen_t, DataReceiver*>::iterator i = dataReceivers_.find(dg); 
-  //FIXME: UM THIS IS BROKEN WHAT ARE WE SUPPOSED TO DO WITH IT? 
-
+  dataReceivers_.erase(i); 
+  
   delete dr;   
 }
 
@@ -134,3 +148,17 @@ eventtxnonce_t Network::sendEvents(const EventTXList_t & el)
   // this can be called from external functions
 
 }
+
+void Network::resetDataStats() 
+{
+
+
+}
+
+
+void Network::resetEventStats()
+{
+
+
+}
+

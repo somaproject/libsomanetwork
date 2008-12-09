@@ -44,7 +44,7 @@ class EventReceiver : PacketReceiver
   
 public:
   EventReceiver(eventDispatcherPtr_t ed, 
-		boost::function<void (pEventList_t)> erxp); 
+		boost::function<void (pEventPacket_t)> erxp); 
   ~EventReceiver(); 
 
   int getSocket() { return socket_;}
@@ -65,7 +65,7 @@ private:
   int reTxRxCount_; 
   int outOfOrderCount_; 
 
-  boost::function<void (pEventList_t)>  putIn_; 
+  boost::function<void (pEventPacket_t)>  putIn_; 
   eventDispatcherPtr_t pDispatch_; 
 
   // received queue

@@ -1,6 +1,6 @@
-libsomanetwork (1.0-1) unstable; urgency=low
+libsomanetwork (1.0-5ubuntu2) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Fake Audio Data Transmitter Added
 
- -- Stuart Layton <slayton@mit.edu>  Wed, 06 Feb 2008 16:42:54 -0500
+ -- Stuart Layton <slayton@mit.edu>  Wed, 17 Sep 2008 16:42:54 -0500
 

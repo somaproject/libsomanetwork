@@ -1,0 +1,31 @@
+The Synthetic Soma benchmark attempt... an out-of-process data
+transmission interface that should ideally be maximally threaded and
+transmit a ton of UDP data ASAP
+
+Right now we transmit identical data
+
+We support sending between 0 and 63 TSPIKEs at ideally 1 kHz
+We also send event packets with timing data, optionally
+
+The tough part will be internally rate-metering our TX rate. Oh, and set
+the process priority to real time. 
+
+P-code:
+
+start N threads
+for each thread
+get time of day
+send packet
+
+thread groups are always at the same rate
+
+--tspike=0-15 --tspikerate=1000
+--wave=0-12 --waverate=100
+
+--threads = # of threads
+
+--tgtip == target IP
+
+-- how to handle retx requests? Just a separate individual thread
+
+

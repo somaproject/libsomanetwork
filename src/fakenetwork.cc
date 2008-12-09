@@ -8,7 +8,7 @@ FakeNetwork::FakeNetwork() :
   running_ (false), 
   pthrd_(NULL)
 {
-
+  
 
 }
 
@@ -38,20 +38,28 @@ void FakeNetwork::shutdown()
 FakeNetwork::~FakeNetwork()
 {
   shutdown(); 
-  pthrd_->join(); 
-
+  if (pthrd_) {
+    pthrd_->join(); 
+  }
 
 }
 
 
 void FakeNetwork::appendDataOut(pDataPacket_t out) {
   boost::mutex::scoped_lock lock(appendMutex_);
-  
-  outputDataFifo_.append(out); 
-  
+  bool isvalid = false; 
+  for (std::set<datagen_t>::iterator mp = dataReceivers_.begin(); 
+       mp != dataReceivers_.end(); mp++) {
+    if (mp->first == out->src and mp->second == out->typ) {
+      
+      outputDataFifo_.append(out); 
+      break; 
+    }
+  }
+
 }
 
-void FakeNetwork::appendEventOut(pEventList_t out) {
+void FakeNetwork::appendEventOut(pEventPacket_t out) {
   boost::mutex::scoped_lock lock(appendMutex_);
 
   outputEventFifo_.append(out); 
@@ -68,7 +76,7 @@ pDataPacket_t FakeNetwork::getNewData(void)
 
 }
 
-pEventList_t FakeNetwork::getNewEvents(void)
+pEventPacket_t FakeNetwork::getNewEvents(void)
 {
   boost::mutex::scoped_lock lock(appendMutex_);
 
@@ -87,20 +95,19 @@ int FakeNetwork::getEventFifoPipe()
 
 void FakeNetwork::enableDataRX(datasource_t src, datatype_t typ)
 {
-
+  dataReceivers_.insert(std::make_pair(src, typ)); 
 }
 
 void FakeNetwork::disableDataRX(datasource_t src, datatype_t typ)
 {
+  dataReceivers_.erase(std::make_pair(src, typ)); 
 
 }
 
 std::vector<DataReceiverStats>  FakeNetwork::getDataStats()
 {
 
-  std::map<const datagen_t, DataReceiver*>::iterator i;
-  std::vector<DataReceiverStats> drs; 
-  return std::vector<DataReceiverStats>(drs); 
+  return currentStats_; 
   
 }
 
@@ -108,9 +115,8 @@ eventtxnonce_t FakeNetwork::sendEvents(const EventTXList_t & el)
 {
   // here's where we need to do actual work to place these on the relevant 
   // bus
-
+  
   signalEventTX_.emit(el); 
-
 
 }
 
@@ -120,3 +126,39 @@ signalEventTX_t & FakeNetwork::signalEventTX()
   return signalEventTX_; 
 
 }
+
+
+void FakeNetwork::disableAllDataRX()
+{
+  dataReceivers_.clear(); 
+}
+
+
+void FakeNetwork::setDataStats(std::vector<DataReceiverStats> ds)
+{
+
+  currentStats_ = ds; 
+}
+
+
+  
+void FakeNetwork::resetDataStats() 
+{
+
+
+}
+
+
+void FakeNetwork::resetEventStats()
+{
+
+
+}
+
+
+EventReceiverStats FakeNetwork::getEventStats() 
+{
+
+
+}
+

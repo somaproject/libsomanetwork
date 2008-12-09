@@ -2,10 +2,11 @@
 #include <network.h>
 #include <boost/program_options.hpp>
 
-#include <unistd.h>     /* standard unix functions, like getpid()       */
-#include <sys/types.h>  /* various type definitions, like pid_t         */
-#include <signal.h>     /* signal name macros, and the kill() prototype */
-
+#include <unistd.h>   
+#include <sys/types.h>  
+#include <signal.h>   
+#include <string>
+#include "range.h" 
 #include <gtkmm/main.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -14,11 +15,15 @@ namespace po = boost::program_options;
 Network *  network; 
 Glib::RefPtr<Glib::IOChannel> iochannel;
 using namespace boost::posix_time; 
+using namespace std; 
 
 ptime t1(neg_infin); 
-std::vector<int> rxCnt; 
-int pktcnt = 0; 
-int startchan, endchan;
+typedef std::pair<datasource_t, datatype_t> dpair_t; 
+
+std::map<dpair_t, int> rxCnt; 
+std::map<dpair_t, int> rxCntMax; 
+int totalpktcnt = 0; 
+
 Gtk::Main * app; 
 
 bool DataRxCallback(Glib::IOCondition io_condition)
@@ -37,12 +42,16 @@ bool DataRxCallback(Glib::IOCondition io_condition)
       read(network->getDataFifoPipe(), &x, 1); 
       
       pDataPacket_t rdp = network->getNewData(); 
-      char chan = rdp->src; 
-      pktcnt--; 
-      rxCnt[chan - startchan]++; 
-      if (pktcnt < 0) {
+      dpair_t pair = make_pair(rdp->src, rdp->typ);  
+      rxCnt[pair]++; 
+      if (rxCnt[pair] <= rxCntMax[pair]) {
+	totalpktcnt--; 
+      }
+
+      if (totalpktcnt <= 0) {
 	app->quit(); 
       }
+      
     }
   
   return true; 
@@ -92,15 +101,13 @@ int main(int argc, char * argv[])
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help", "produce help message")
-    ("startchan", po::value<int>()->default_value(0), 
-     "first channel to receive for")
-    ("endchan", po::value<int>()->default_value(0), 
-     "last channel to receive for")
+    ("tspikes", po::value<std::string>(), 
+     "range of tspike sources (inclusive)")
+    ("tspikes-count", po::value<int>()->default_value(100), 
+     "The # of TSpikes to receive per source")
     ("disableretx", po::value<int>()->default_value(0),
      "Request packet retransmission, 1=yes")
-    ("packetcount", po::value<int>()->default_value(1000),
-     "Wait for this many packets total"); 
-
+    ; 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
@@ -109,26 +116,31 @@ int main(int argc, char * argv[])
     std::cout << desc << std::endl;
     return 1;
   }
+  
 
-  startchan = vm["startchan"].as<int>();
-  endchan = vm["endchan"].as<int>(); 
+  std::vector<dpair_t> datasources; 
 
-  int N = endchan - startchan + 1; 
-  pktcnt = vm["packetcount"].as<int>(); 
 
-  std::cout << "Configuring rx for " << N << " receivers" << std::endl; 
+  std::vector<int> tchans = parserange(vm["tspikes"].as<string>()); 
+  for (int i = 0; i < tchans.size(); i++) { 
+    dpair_t dp = make_pair(i, charToDatatype(0)); 
+    datasources.push_back(dp); 
+    int num = vm["tspikes-count"].as<int>(); 
+    
+    totalpktcnt += num; 
+    rxCntMax[dp] = num; 
+    rxCnt[dp] = 0; 
+  }
 
-  for (int i = 0; i < N; i++)
-    {
-      rxCnt.push_back(0); 
-    }
-
+  std::cout << "Configuring rx for " << tchans.size() << " TSpike receivers" << std::endl; 
+  
   
   network =  new Network("127.0.0.1"); 
-  
-  for (int i = startchan; 
-       i <= endchan; i++) {
-    network->enableDataRX(i, charToDatatype(0)); // always assume type 0
+
+  // enable tspikes
+
+  for (int i = 0; i < datasources.size(); i++) {
+    network->enableDataRX(datasources[i].first, datasources[i].second); 
   }
   
   network->run(); 
@@ -149,10 +161,11 @@ int main(int argc, char * argv[])
   ptime t2(microsec_clock::local_time()); 
   network->shutdown(); 
   
-  for (int i = vm["startchan"].as<int>(); 
-       i <= vm["endchan"].as<int>(); i++) {
-    int cnt = rxCnt[i - vm["startchan"].as<int>()]; 
-    std::cout << "channel " << i  << " : " << 
+  for (int i = 0; i < datasources.size(); i++) {
+    int cnt = rxCnt[datasources[i]]; 
+
+    std::cout << "datasource  src=" << (int) datasources[i].first 
+	      << " typ=" << (int) datasources[i].second << " : " << 
       float(cnt) / (t2 -t1).total_microseconds()*1e6 
 	      << " packets / second" << std::endl;
   }

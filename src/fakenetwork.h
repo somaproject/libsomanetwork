@@ -2,6 +2,7 @@
 #define FAKENETWORK_H
 
 #include <map>
+#include <set>
 #include <utility>
 #include <sys/epoll.h>
 #include <fstream>
@@ -24,8 +25,6 @@ on the response.
 */
 
 
-typedef std::pair<datasource_t, datatype_t> datagen_t; 
-
 typedef sigc::signal<void, const EventTXList_t &> signalEventTX_t; 
 
 
@@ -38,9 +37,10 @@ class FakeNetwork : public NetworkInterface
   
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 
+  void disableAllDataRX(); 
   
   pDataPacket_t  getNewData(void); 
-  pEventList_t getNewEvents(void); 
+  pEventPacket_t getNewEvents(void); 
 
   int getDataFifoPipe(); 
   int getEventFifoPipe(); 
@@ -48,26 +48,37 @@ class FakeNetwork : public NetworkInterface
   void shutdown(); 
 
   void appendDataOut(pDataPacket_t out); 
-  void appendEventOut(pEventList_t out); 
+  void appendEventOut(pEventPacket_t out); 
   
   eventtxnonce_t sendEvents(const EventTXList_t & el);
   signalEventTX_t & signalEventTX();  // returns ref to the relevant signal
 
-  std::vector<DataReceiverStats>  getDataStats(); 
-  
+  void setDataStats(std::vector<DataReceiverStats> ds); 
+  std::vector<DataReceiverStats> getDataStats(); 
+  void resetDataStats(); 
+
+  EventReceiverStats getEventStats(); 
+
+  void resetEventStats(); 
+
  private: 
   TSPipeFifo<pDataPacket_t> outputDataFifo_; 
-  TSPipeFifo<pEventList_t> outputEventFifo_; 
+  TSPipeFifo<pEventPacket_t> outputEventFifo_; 
 
   bool running_; 
 
-  boost::thread *  pthrd_; 
+  boost::thread * pthrd_; 
   boost::mutex appendMutex_; 
   void workthread(void); 
   
   signalEventTX_t signalEventTX_; 
+  std::set<datagen_t> dataReceivers_; 
+  
+  std::vector<DataReceiverStats>  currentStats_; 
 
 };
+
+typedef boost::shared_ptr<FakeNetwork> pFakeNetwork_t; 
 
 #endif // FAKENETWORK_H
 

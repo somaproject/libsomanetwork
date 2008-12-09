@@ -18,6 +18,7 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
     pDispatch_(dispatch)
 {
 
+
   struct sockaddr_in si_me, si_other;
   int  slen=sizeof(si_other);
     
@@ -69,9 +70,6 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
 		       boost::bind(std::mem_fun(&DataReceiver::handleReceive),
 				   this, _1)); 
   
-  std::cout << "DataReceiver created with src=" 
-	    << (int)source << " typ=" << (int)type << std::endl; 
-
 }
 
 
@@ -103,7 +101,6 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 
 void DataReceiver::handleReceive(int fd)
 {
-  //std::cout << "DataReceiver::handleRecive(" << fd << ") " << std::endl; 
   boost::mutex::scoped_lock lock( statusMutex_ );
 
   boost::array<char, BUFSIZE> recvbuffer; 
@@ -123,9 +120,9 @@ void DataReceiver::handleReceive(int fd)
 
       if (prd->src != source_ or prd->typ != type_) {
 	std::cerr  << "Incorrect packet header " << std::endl  
-		   << "pkt source " << (int) prd->src 
-		   << " != destination src" << source_  << " or " 
-		   << (int) prd->typ << " != " << type_  << std::endl; 
+		   << "either pkt source " << (int) prd->src 
+		   << " != datarx src " << source_  << " or pkt typ " 
+		   << (int) prd->typ << " != datarx typ " << type_  << std::endl; 
       }
 
       if ( pktCount_ == 0 or prd->seq == latestSeq_ + 1)
@@ -269,4 +266,10 @@ DataReceiverStats DataReceiver::getStats()
   st.reTxRxCount = 	      reTxRxCount_; 
   st.outOfOrderCount = outOfOrderCount_; 
   return DataReceiverStats(st); 
+}
+
+void DataReceiver::resetStats()
+{
+
+
 }

@@ -4,7 +4,7 @@
 #include "ports.h"
 
 EventReceiver::EventReceiver(eventDispatcherPtr_t ed, 
-			     boost::function<void (pEventList_t)> erxp)
+			     boost::function<void (pEventPacket_t)> erxp)
   : pktCount_(0),
     latestSeq_(0), 
     dupeCount_(0), 
@@ -221,10 +221,10 @@ void EventReceiver::updateOutQueue()
       pEventPacket_t pep = queue_.front(); 
     
       
-      putIn_(pep->events); 
+      putIn_(pep); 
       
       queue_.pop(); 
-      
+
       pep.reset();
 
       pendingCount_--; 	

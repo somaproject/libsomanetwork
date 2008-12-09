@@ -22,7 +22,7 @@ struct Wave_t
   uint16_t sampratenum; 
   uint16_t samprateden; 
   uint16_t selchan; 
-  uint16_t filterid; 
+  uint32_t filterid; 
   int32_t wave[WAVEBUF_LEN]; 
 
 }; 

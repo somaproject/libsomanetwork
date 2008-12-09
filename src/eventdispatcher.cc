@@ -65,9 +65,9 @@ void EventDispatcher::delEvent(int fd)
 void EventDispatcher::run(void)
 {
   running_ = true; 
-  std::cout << "EventDispatcher::run() running" << std::endl; 
   while(running_)
     {
+
       runonce(); 
     }
 }
@@ -96,10 +96,13 @@ void EventDispatcher::runonce()
       int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
 			    epMaxWaitMS); 
 
+
       if (nfds > 0 ) {
 	boost::mutex::scoped_lock lock( cbTableMutex_ );
+
 	for(int evtnum = 0; evtnum < nfds; evtnum++) {
 	  int fd = events[evtnum].data.fd; 
+	  
 	  callbackTable_[fd](fd); 
 	}
 	

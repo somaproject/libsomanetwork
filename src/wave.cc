@@ -35,18 +35,18 @@ Wave_t rawToWave(pDataPacket_t dp)
     w.samprateden = hsampden; 
 
     // extract out the filterid
-    uint16_t nfilterid, hfilterid; 
+    uint32_t nfilterid, hfilterid; 
     memcpy(&nfilterid, &dp->body[10], sizeof(nfilterid)); 
-    hfilterid = ntohs(nfilterid); 
+    hfilterid = ntohl(nfilterid); 
     w.filterid = hfilterid; 
 
     // extract out the time
     uint64_t ntime, htime; 
-    memcpy(&ntime, &dp->body[12], sizeof(ntime)); 
+    memcpy(&ntime, &dp->body[14], sizeof(ntime)); 
     htime = ntohll(ntime); 
     w.time = htime; 
 
-    size_t bpos = 12+8; 
+    size_t bpos = 14+8; 
     
     
     for (int i = 0; i < hlen; i++ )
@@ -108,9 +108,9 @@ pDataPacket_t rawFromWave(const Wave_t & w)
   memcpy(&rdp->body[8], &nsampden,  sizeof(nsampden));
 
   // extract out the filter id
-  uint16_t nfilterid, hfilterid;
+  uint32_t nfilterid, hfilterid;
   hfilterid = w.filterid;
-  nfilterid = htons(hfilterid);
+  nfilterid = htonl(hfilterid);
   memcpy(&rdp->body[10], &nfilterid,  sizeof(nfilterid));
 
    
@@ -118,11 +118,11 @@ pDataPacket_t rawFromWave(const Wave_t & w)
   uint64_t ntime, htime;
   htime = w.time;
   ntime = ntohll(htime);
-  memcpy(&rdp->body[12], &ntime, sizeof(ntime));
+  memcpy(&rdp->body[14], &ntime, sizeof(ntime));
 
   // put in the primary packet data
 
-  size_t bpos = 12+8; 
+  size_t bpos = 14+8; 
   
   for (int i = 0; i < hlen; i++ )
     {

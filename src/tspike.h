@@ -35,6 +35,9 @@ struct TSpike_t
 
 
 TSpike_t rawToTSpike(pDataPacket_t rd); 
+pDataPacket_t rawFromTSpikeForTX(const TSpike_t & ts, 
+				 sequence_t seq, size_t* len); 
 pDataPacket_t rawFromTSpike(const TSpike_t & ts); 
+
 
 #endif // TSPIKE_TYPE_H

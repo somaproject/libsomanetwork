@@ -50,30 +50,36 @@ TSpike_t rawToTSpike(pDataPacket_t rd)
 
 }
 
-pDataPacket_t rawFromTSpike(const TSpike_t & ts)
-{
+pDataPacket_t rawFromTSpikeForTX(const TSpike_t & ts, sequence_t seq, size_t * len)
+ {
   /*
     Take a TSpike and construct an associated DataPacket. 
-    the seq field is set to zero. 
+    returns the packet
+
+    len is set to the total length of the packet
+    
+    THE SEQUENCE NUMBER ISN'T BEING WRITTEN -- it looks like we're thinking
+    of the wrong absraction here. 
 
   */ 
-  
   pDataPacket_t rdp(new DataPacket_t); 
   rdp->src = ts.src; 
   rdp->typ = TSPIKE; 
-  rdp->seq = 0; 
+  rdp->seq = seq; 
   rdp->missing = false; 
+  bzero(&(rdp->body[0]), BUFSIZE-HDRLEN); 
+
   rdp->body[0] = datatypeToChar(TSPIKE);  
   rdp->body[1] = ts.src;
   rdp->body[2] = 0; 
   rdp->body[3] = 0; 
   uint64_t htime = htonll(ts.time); 
-  bzero(&(rdp->body[0]), BUFSIZE-HDRLEN); 
+
   memcpy((void*)(&rdp->body[4]), &htime, sizeof(htime)); 
   
-
   const TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
   size_t bpos = (size_t) &rdp->body[12]; 
+
   for (int i = 0; i < 4; i++)
     {
       const TSpikeWave_t * tswp = ptrs[i]; 
@@ -98,7 +104,21 @@ pDataPacket_t rawFromTSpike(const TSpike_t & ts)
 	  bpos += sizeof(x); 
 	}
     }
-  
+  *len = (bpos - (size_t)&(rdp->body[0])); 
   return  rdp; 
+
+}
+
+
+pDataPacket_t rawFromTSpike(const TSpike_t & ts)
+{
+  /*
+    Take a TSpike and construct an associated DataPacket. 
+    the seq field is set to zero. 
+
+  */ 
+  size_t len; 
+  return  rawFromTSpikeForTX(ts, 0, &len); 
+
 
 }
