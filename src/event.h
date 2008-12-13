@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <vector>
 #include <list>
+#include <string.h>
 
 typedef uint8_t eventsource_t ; 
 typedef uint8_t eventcmd_t; 

@@ -16,7 +16,7 @@ EventSender::EventSender(eventDispatcherPtr_t edp, std::string somaIP) :
     throw std::runtime_error("could not create transmit socket"); 
   }
   
-  memset(&saServer_, sizeof(saServer_), 0); 
+  bzero(&saServer_, sizeof(saServer_)); 
   saServer_.sin_family = AF_INET; 
   saServer_.sin_port = htons(EVENTTXPORT);  
   inet_aton(somaIP.c_str(), &saServer_.sin_addr); 
@@ -32,7 +32,10 @@ EventSender::EventSender(eventDispatcherPtr_t edp, std::string somaIP) :
 
 
   int pipes[2]; 
-  pipe(pipes); 
+  int result = pipe(pipes); 
+  if (result < 0) {
+    throw std::runtime_error("Error creating event sender pipe"); 
+  }
   pipeR_ = pipes[0]; 
   pipeW_ = pipes[1]; 
 
@@ -63,7 +66,7 @@ eventtxnonce_t EventSender::sendEvents(const EventTXList_t & el)
   
   // write to the pipe to wake up the TX handler
   char x = 0; 
-  write(pipeW_, &x, 1); 
+  int result = write(pipeW_, &x, 1); 
   return curnonce; 
 }
 
@@ -75,7 +78,7 @@ void EventSender::handleReceive(int fd)
 void EventSender::handleNewEventIn(int fd)
 {
   char x; 
-  read(pipeR_, &x, 1); // read from the queue 
+  int result = read(pipeR_, &x, 1); // read from the queue 
   newEventIn(); 
   
 }

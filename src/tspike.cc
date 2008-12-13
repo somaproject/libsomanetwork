@@ -1,3 +1,4 @@
+#include <strings.h>
 #include "tspike.h"
 
 TSpike_t rawToTSpike(pDataPacket_t rd)

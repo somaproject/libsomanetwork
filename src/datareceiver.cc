@@ -28,7 +28,7 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t
 
   }
 
-  memset((char *) &si_me, sizeof(si_me), 0);
+  bzero((char *) &si_me, sizeof(si_me));
 
   si_me.sin_family = AF_INET;
   si_me.sin_port = htons(dataPortLookup(type_, source_));

@@ -5,7 +5,6 @@
 #include "datapacket.h"
 #include <byteswap.h>
 #include <arpa/inet.h>
-
 /*
 Type declaration for Tetrode Spike data packet.
 

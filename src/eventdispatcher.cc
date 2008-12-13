@@ -6,7 +6,10 @@ EventDispatcher::EventDispatcher() :
   
   // setup control endpoint
   int pipes[2]; 
-  pipe(pipes); 
+  int result = pipe(pipes); 
+  if (result < 0) {
+    throw std::runtime_error("Error opening pipe for event dispatch"); 
+  }
   controlFDw_ = pipes[1]; 
   controlFDr_ = pipes[0]; 
   addEvent(controlFDr_,
@@ -83,7 +86,7 @@ void EventDispatcher::controlEvent(int fd)
 void EventDispatcher::halt()
 {
   char x; 
-  write(controlFDw_, &x, 1); 
+  int result = write(controlFDw_, &x, 1); 
 
 }
 

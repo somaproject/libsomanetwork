@@ -20,7 +20,10 @@ class TSPipeFifo
     {
       // create pipes
       int pipes[2]; 
-      pipe(pipes); 
+      int piperesult = pipe(pipes); 
+      if (piperesult < 0) {
+	throw std::runtime_error("TSPipeFifo pipe creation error"); 
+      }
       
       readingPipe = pipes[0]; 
       writingPipe_ = pipes[1]; 
@@ -46,7 +49,7 @@ class TSPipeFifo
       fifo_.push(x); 
       delete sl; 
 
-      write(writingPipe_, &test, 1); 
+      int wresult = write(writingPipe_, &test, 1); 
 
     }
   

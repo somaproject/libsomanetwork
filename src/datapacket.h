@@ -6,7 +6,7 @@
 #include <byteswap.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-
+#include <string.h>
 
 const int BUFSIZE = 1024; 
 const int HDRLEN = 4;
