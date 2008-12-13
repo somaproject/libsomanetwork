@@ -12,9 +12,8 @@ library_include_HEADERS = network.h event.h eventtx.h datapacket.h tspike.h netw
 	fakenetwork.h datareceiver.h eventreceiver.h eventsender.h packetreceiver.h \
 	eventdispatcher.h ports.h tspipefifo.h wave.h tspike.h raw.h
 
-library_CXXFLAGS =  $(FAKESRC_CFLAGS)
-
 lib_LTLIBRARIES= libsomanetwork-1.0.la
 libsomanetwork_1_0_la_SOURCES= $(h_sources) $(cc_sources)
-libsomanetwork_1_0_la_CXXFLAGS= $(FAKESRC_CFLAGS)
+libsomanetwork_1_0_la_CXXFLAGS= $(FAKESRC_CFLAGS) -Werror
 libsomanetwork_1_0_la_LDFLAGS= -version-info $(GENERIC_LIBRARY_VERSION) -release $(GENERIC_RELEASE)
+libsomanetwork_1_0_la_LIBS = $(BOOST_THREAD_LIBS) 

@@ -24,6 +24,9 @@ GENERIC_MICRO_VERSION=0
 GENERIC_API_VERSION=1.0
 AC_SUBST(GENERIC_API_VERSION)
 
+AC_CONFIG_AUX_DIR([m4])
+AC_CONFIG_MACRO_DIR([m4])
+
 #shared library versioning
 GENERIC_LIBRARY_VERSION=1:2:0
 #                       | | |
@@ -56,8 +59,6 @@ AC_SUBST(GENERIC_VERSION)
 VERSION=$GENERIC_VERSION
 
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_MACRO_DIR([m4]) # not strictly needed yet, but let's be future-proof
-
 
 # -----------------------------------------------
 # Checks for programs.
@@ -68,10 +69,10 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 # Boost!!! 
-AX_BOOST_BASE([1.34.1])
-AX_BOOST_THREAD
-AX_BOOST_UNIT_TEST_FRAMEWORK
-AX_BOOST_PROGRAM_OPTIONS
+BOOST_REQUIRE([1.34.1])
+BOOST_THREADS
+BOOST_TEST
+BOOST_PROGRAM_OPTIONS
 
 # glib for benchmark
 PKG_CHECK_MODULES(BENCH, gtkmm-2.4 >= 2.10 glibmm-2.4 >= 2.13.0 sigc++-2.0 >= 2.0 )
