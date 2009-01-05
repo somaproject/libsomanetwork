@@ -1,10 +1,14 @@
-This is the soma network interface library, which allows for
-multithreaded queuing and processing of soma events and datagrams.
+The Soma network library, libsomanetwork, is a high-speed
+multithreaded c++ library that serves as the backbone for most
+compiled Soma apps. The library handles packet encoding and decoding,
+queuing, out-of-order handling, retransmission, and presents a simple
+interface for taking data on and off the wire. It is licensed under
+the LGPL.
 
 The code is organized as:
+src/  : main library source
+tests/ : unit tests
+benchmarks/ : code for benchmarking performance. 
+docs/  : basic documentation 
 
-include/
-src/ 
-tests/
-benchmark/ 
-doc/ 
+see INSTALL if you are building from source. 
