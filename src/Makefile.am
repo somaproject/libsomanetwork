@@ -1,5 +1,4 @@
 # 
-
 h_sources = datareceiver.h eventdispatcher.h eventreceiver.h eventsender.h network.h \
 	networkinterface.h packetreceiver.h ports.h tspipefifo.h 
 
