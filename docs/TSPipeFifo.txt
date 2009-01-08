@@ -7,4 +7,5 @@ append(T x):  copy x into the internal fifo
 
 T pop(): return a copy of the head of the fifo, and remove it from the head. 
 
-internally this is implemented by a list that we push_back onto, which is mutex-protected via RAII
+internally this is implemented by a list that we push_back onto, which
+is mutex-protected via RAII

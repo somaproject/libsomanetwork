@@ -1,25 +1,43 @@
-The "network" object is designed to be a complete independent
+The "network" object in libsomanetwork is designed to be a complete independent
 interface to all necessary soma-network functions. All of its external
 API calls are to be thread-safe, and internally it spawns its own
 threads (maybe more than one).
 
-But to the rest of the application, Network looks like your standard single-threaded collection of data sources, with one exception: exposed pipes. 
+But to the rest of the application, Network looks like your standard
+single-threaded collection of data sources, with one exception:
+we use exposed pipes as a notification method. 
 
-Why pipes? Obviously, condion variables are the superior solution
-here. In fact, i'm still not convinced that using pipes (and the
-associated kernel trap) won't be awful for performace. But currently,
-linux has no capacity to block on both conditionals and sockets. There
-are future options such as kevents, but they are still very immature. 
+Why pipes? Obviously, condition variables are the superior solution
+here. But currently, Linux has no capacity to block on both
+conditionals and sockets. There are future options such as kevents,
+but they are still very immature.
 
-Pipes represent a language-neutral platform-neutral solution. 
+Pipes represent a framework-neutral, kernel-version-neutral solution 
+to this synchronization/blocking problem. 
+
+To understand and properly use libsomanetwork make sure you have
+read both the Soma overview documentation and the soma networking
+documentation. 
+
+-------------------------
+Data types
+-------------------------
+0. A Datapacket is a serialized data type
+1. there are three dtatypes at the moment
+
+--------------------------
+code organization
+--------------------------
 
 To configure network, we have:
 
 enableDataRx(type, source)
 disableDataRx(type, source) 
-  creates / opens the socket for type/source on the relevsant port, creates the correct internal buffer. 
+  creates / opens the socket for type/source on the relevant port, 
+  creates the correct internal buffer. 
 
-Network guarantees proper packet ordering, handling the necessary retx/etc. stuff. 
+Network guarantees proper packet ordering, 
+handling the necessary retx/etc. stuff. 
 
 Each pipe has one byte of data written to it for each datagram pending
 in the output queue. 
@@ -28,7 +46,9 @@ in the output queue.
 extracting data
 -------------------------
 
-There's the question of "do we extract one datagram or all datagrams?". I'm not sure what the best answer is here. I can't quite convince myself that a non-1:1 correspondence would be error-free. 
+There's the question of "do we extract one datagram or all
+datagrams?". I'm not sure what the best answer is here. I can't quite
+convince myself that a non-1:1 correspondence would be error-free.
 
 Network only understands the sequence and type/src id of each
 datagram, and nothing beyond that. Thus we pass out: 
@@ -45,13 +65,14 @@ ourselves.
 status: 
 -----------------
 
-there's a readStatus() function which returns a pre-defined status object, containing something that has yet to be defined. 
+there's a readStatus() function which returns a pre-defined status
+object, containing something that has yet to be defined.
 
 -------------------------------------------------------------
 internal guts: 
 -------------------------------------------------------------
 
 We use our event dispatcher, and create eventsender and eventreceiver
-on the stack; they are always enabled and ready to send events (etc); 
+on the stack; they are always enabled and ready to send events (etc);
 
 There are no data events created by default. 

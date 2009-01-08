@@ -3,17 +3,20 @@ Build instructions for libsomanetwork.
 NOTE: In general, you should use one of the pre-built debs for most
 Soma software, including this library.
 
-You will need to have automake on your system as well as Boost
-1.34.1. These packages are available from the Ubuntu 8.04
+BUILD REQUIREMENTS:
+autotools / automake
+Boost 1.34.1
+
+These packages are available from the Ubuntu 8.04
 package archive.
 
-In general: 
+Typically, building can be accomplished with : 
 
 ./autogen.sh
 ./configure
 make
 sudo make install
 
-should do what you want. 
 
-
+To run the unit tests, 
+make check
