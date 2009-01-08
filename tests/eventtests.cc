@@ -43,6 +43,11 @@ void FakeEventServer::start()
 
 std::list<EventList_t> genEventList(std::vector<char> es)
 {
+  /*
+    Create a list of eventlists of canonical events, 
+    where the i-th event list contains es[i] events.
+
+  */
   std::list<EventList_t> els; 
   for (std::vector<char>::iterator i = es.begin(); 
        i != es.end(); i++)

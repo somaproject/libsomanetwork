@@ -14,23 +14,23 @@ BOOST_AUTO_TEST_SUITE(datareceiver_test)
 
 using boost::unit_test::test_suite;
 
-std::list<pEventList_t> eventListBuffer; 
+std::list<pEventPacket_t> eventPacketBuffer; 
 
-void append(pEventList_t elp)
+void append(pEventPacket_t elp)
 {
-  eventListBuffer.push_back(elp); 
+  eventPacketBuffer.push_back(elp); 
 }
 
-void verifyEventListBuffer(std::vector<std::vector<char> > & inputbufs)
+void verifyEventPacketBuffer(std::vector<std::vector<char> > & inputbufs)
 {
 
-  std::list<pEventList_t >::iterator elbuf = eventListBuffer.begin(); 
+  std::list<pEventPacket_t >::iterator elbuf = eventPacketBuffer.begin(); 
   
   for (std::vector<std::vector<char> >::iterator esch = inputbufs.begin(); 
        esch != inputbufs.end(); esch++)
     {
       std::list<EventList_t> el = genEventList(*esch);  
-      EventList_t::iterator curevt = (*elbuf)->begin(); 
+      EventList_t::iterator curevt = (*elbuf)->events->begin(); 
       int ecnt = 0; 
       for (std::list<EventList_t>::iterator i = el.begin(); 
 	   i != el.end(); i++)
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   // 
   // Can we send a single packet? this is the model for all later tests
   // 
-  eventListBuffer.clear(); 
+  eventPacketBuffer.clear(); 
 
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
@@ -81,8 +81,8 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   server.start(); 
   ped->runonce(); 
   
-  BOOST_CHECK_EQUAL(eventListBuffer.size(), 1); 
-  BOOST_CHECK_EQUAL(eventListBuffer.front()->size(), 4+8+12+20+30); 
+  BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 1); 
+  BOOST_CHECK_EQUAL(eventPacketBuffer.front()->events->size(), 4+8+12+20+30); 
 
   
 
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   // assert data values
   std::vector<std::vector<char> > outlist; 
   outlist.push_back(lens); 
-  verifyEventListBuffer(outlist); 
+  verifyEventPacketBuffer(outlist); 
 
 }
 
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE( multieventtest )
 {
   // Can we get multiple packets
   
-  eventListBuffer.clear(); 
+  eventPacketBuffer.clear(); 
 
   // and then test them all. 
 
@@ -140,9 +140,9 @@ BOOST_AUTO_TEST_CASE( multieventtest )
   }
   
   // assert data values
-  BOOST_CHECK_EQUAL(eventListBuffer.size(), 10); 
+  BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 10); 
 
-  verifyEventListBuffer(outlist); 
+  verifyEventPacketBuffer(outlist); 
 
 }
 
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE( outofordertest )
   // packets
   // 
 
-  eventListBuffer.clear(); 
+  eventPacketBuffer.clear(); 
 
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
@@ -196,9 +196,9 @@ BOOST_AUTO_TEST_CASE( outofordertest )
   }
       
   // assert data values
-  BOOST_CHECK_EQUAL(eventListBuffer.size(), 10); 
+  BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 10); 
 
-  verifyEventListBuffer(outlist); 
+  verifyEventPacketBuffer(outlist); 
 
 }
 
@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE( droptest )
 {
   // if we send packets out of order, do we deal 
   
-  eventListBuffer.clear(); 
+  eventPacketBuffer.clear(); 
   
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
@@ -254,9 +254,9 @@ BOOST_AUTO_TEST_CASE( droptest )
 
   
   // assert data values
-  BOOST_CHECK_EQUAL(eventListBuffer.size(), 10); 
+  BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 10); 
   
-  verifyEventListBuffer(outlist); 
+  verifyEventPacketBuffer(outlist); 
 
 }
 
