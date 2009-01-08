@@ -1,0 +1,6 @@
+The following are example libsomanetwork applications that perform 
+simple operations. They are designed to build independently, i.e. 
+outside of the main libsomanetwork tree, and thus
+have their own (unrelated) Makefiles that may necessitate customization. 
+
+simplereader: simple reading of tspike data and saving to disk. 
