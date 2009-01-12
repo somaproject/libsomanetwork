@@ -1,5 +1,5 @@
-#ifndef WAVE_TYPE_T
-#define WAVE_TYPE_T
+#ifndef SOMANETWORK_WAVE_TYPE_T
+#define SOMANETWORK_WAVE_TYPE_T
 
 #include <stdint.h>
 #include <iostream>

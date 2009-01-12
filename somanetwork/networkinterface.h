@@ -1,5 +1,5 @@
-#ifndef NETWORKINTERFACE_H 
-#define NETWORKINTERFACE_H
+#ifndef SOMANETWORK_NETWORKINTERFACE_H 
+#define SOMANETWORK_NETWORKINTERFACE_H
 
 #include <boost/shared_ptr.hpp>
 

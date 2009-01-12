@@ -1,5 +1,5 @@
-#ifndef EVENT_H
-#define EVENT_H
+#ifndef SOMANETWORK_EVENT_H
+#define SOMANETWORK_EVENT_H
 #include <stdint.h>
 
 #include <boost/array.hpp>

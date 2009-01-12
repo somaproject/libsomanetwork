@@ -1,5 +1,5 @@
-#ifndef RAW_TYPE_T
-#define RAW_TYPE_T
+#ifndef SOMANETWORK_RAW_TYPE_T
+#define SOMANETWORK_RAW_TYPE_T
 
 #include <stdint.h>
 #include <iostream>

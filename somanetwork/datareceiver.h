@@ -1,5 +1,5 @@
-#ifndef DATARECEIVER_H
-#define DATARECEIVER_H
+#ifndef SOMANETWORK_DATARECEIVER_H
+#define SOMANETWORK_DATARECEIVER_H
 
 #include <ctime>
 #include <iostream>

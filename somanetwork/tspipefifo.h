@@ -1,5 +1,5 @@
-#ifndef TSPIPEFIFO_H
-#define TSPIPEFIFO_H
+#ifndef SOMANETWORK_TSPIPEFIFO_H
+#define SOMANETWORK_TSPIPEFIFO_H
 
 #include <queue>
 #include <boost/thread/mutex.hpp>

@@ -1,5 +1,5 @@
-#ifndef EVENTRECEIVER_H
-#define EVENTRECEIVER_H
+#ifndef SOMANETWORK_EVENTRECEIVER_H
+#define SOMANETWORK_EVENTRECEIVER_H
 
 #include <ctime>
 #include <iostream>

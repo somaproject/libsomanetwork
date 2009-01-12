@@ -1,5 +1,5 @@
-#ifndef EVENTSENDER_H
-#define EVENTSENDER_H
+#ifndef SOMANETWORK_EVENTSENDER_H
+#define SOMANETWORK_EVENTSENDER_H
 
 #include <ctime>
 #include <iostream>

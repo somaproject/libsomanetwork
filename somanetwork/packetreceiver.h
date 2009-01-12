@@ -1,5 +1,5 @@
-#ifndef PACKETRECEIVER_H
-#define PACKETRECEIVER_H
+#ifndef SOMANETWORK_PACKETRECEIVER_H
+#define SOMANETWORK_PACKETRECEIVER_H
 
 namespace somanetwork {
 

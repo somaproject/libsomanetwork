@@ -1,5 +1,5 @@
-#ifndef PORTS_H
-#define PORTS_H
+#ifndef SOMANETWORK_PORTS_H
+#define SOMANETWORK_PORTS_H
 
 namespace somanetwork { 
 /*

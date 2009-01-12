@@ -1,5 +1,5 @@
-#ifndef FAKENETWORK_H
-#define FAKENETWORK_H
+#ifndef SOMANETWORK_FAKENETWORK_H
+#define SOMANETWORK_FAKENETWORK_H
 
 #include <map>
 #include <set>

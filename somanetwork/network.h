@@ -1,5 +1,5 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#ifndef SOMANETWORK_NETWORK_H
+#define SOMANETWORK_NETWORK_H
 
 #include <map>
 #include <utility>

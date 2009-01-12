@@ -1,5 +1,5 @@
-#ifndef RAWDATA_H
-#define RAWDATA_H
+#ifndef SOMANETWORK_RAWDATA_H
+#define SOMANETWORK_RAWDATA_H
 
 #include <boost/array.hpp>
 #include <boost/shared_ptr.hpp>

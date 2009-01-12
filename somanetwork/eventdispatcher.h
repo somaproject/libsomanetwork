@@ -1,5 +1,5 @@
-#ifndef EVENTDISPATCHER_H
-#define EVENTDISPATCHER_H
+#ifndef SOMANETWORK_EVENTDISPATCHER_H
+#define SOMANETWORK_EVENTDISPATCHER_H
 
 #include <map>
 #include <boost/function.hpp>

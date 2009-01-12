@@ -1,5 +1,5 @@
-#ifndef EVENTTX_H
-#define EVENTTX_H
+#ifndef SOMANETWORK_EVENTTX_H
+#define SOMANETWORK_EVENTTX_H
 
 #include <vector>
 

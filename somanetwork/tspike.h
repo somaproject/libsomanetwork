@@ -1,5 +1,5 @@
-#ifndef TSPIKE_TYPE_H
-#define TSPIKE_TYPE_H
+#ifndef SOMANETWORK_TSPIKE_TYPE_H
+#define SOMANETWORK_TSPIKE_TYPE_H
 #include <stdint.h>
 #include <iostream>
 #include <somanetwork/datapacket.h>
