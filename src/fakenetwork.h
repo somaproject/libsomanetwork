@@ -7,11 +7,11 @@
 #include <sys/epoll.h>
 #include <fstream>
 
-#include "tspipefifo.h"
-#include "datareceiver.h"
-#include "eventreceiver.h"
-#include "event.h"
-#include "networkinterface.h"
+#include <somanetwork/tspipefifo.h>
+#include <somanetwork/datareceiver.h>
+#include <somanetwork/eventreceiver.h>
+#include <somanetwork/event.h>
+#include <somanetwork/networkinterface.h>
 #include <sigc++/sigc++.h>
 /* 
 There's the tricky problem of how to handine inbound events in the 

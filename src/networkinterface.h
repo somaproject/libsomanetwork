@@ -3,11 +3,11 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "event.h"
-#include "datapacket.h"
-#include "eventtx.h"
-#include "datareceiver.h"
-#include "eventreceiver.h" 
+#include <somanetwork/event.h>
+#include <somanetwork/datapacket.h>
+#include <somanetwork/eventtx.h>
+#include <somanetwork/datareceiver.h>
+#include <somanetwork/eventreceiver.h>
 
 namespace somanetwork { 
 

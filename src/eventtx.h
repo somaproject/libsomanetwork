@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "event.h"
+#include <somanetwork/event.h>
 
 namespace somanetwork { 
 

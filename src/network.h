@@ -4,12 +4,12 @@
 #include <map>
 #include <utility>
 #include <sys/epoll.h>
-#include "tspipefifo.h"
-#include "datareceiver.h"
-#include "eventreceiver.h"
-#include "eventsender.h"
-#include "event.h"
-#include "networkinterface.h"
+#include <somanetwork/tspipefifo.h> 
+#include <somanetwork/datareceiver.h> 
+#include <somanetwork/eventreceiver.h>
+#include <somanetwork/eventsender.h> 
+#include <somanetwork/event.h> 
+#include <somanetwork/networkinterface.h>
 
 namespace somanetwork {
 class Network : public NetworkInterface
@@ -21,7 +21,7 @@ class Network : public NetworkInterface
   ~Network(); 
   
   void enableDataRX(datasource_t, datatype_t); 
-  void disableDataRX(datasource_t, datatype_t); 
+  void disableDataRX(datasource_t, datatype_t); b
   void disableAllDataRX(); 
 
   pDataPacket_t  getNewData(void); 

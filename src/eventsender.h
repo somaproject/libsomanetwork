@@ -20,10 +20,10 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
-#include "event.h"
-#include "eventtx.h"
-#include "packetreceiver.h"
-#include "eventdispatcher.h"
+#include <somanetwork/event.h>
+#include <somanetwork/eventtx.h>
+#include <somanetwork/packetreceiver.h>
+#include <somanetwork/eventdispatcher.h>
 
 namespace somanetwork { 
 const int RETXTIME = 1000; // microseconds

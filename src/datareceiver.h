@@ -20,9 +20,9 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
-#include "datapacket.h"
-#include "packetreceiver.h"
-#include "eventdispatcher.h"
+#include <somanetwork/datapacket.h>
+#include <somanetwork/packetreceiver.h>
+#include <somanetwork/eventdispatcher.h>
 
 namespace somanetwork { 
 typedef std::queue<pDataPacket_t> dataPacketpQueue_t; 

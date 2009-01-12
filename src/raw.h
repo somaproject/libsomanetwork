@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <iostream>
-#include "datapacket.h"
+#include <somanetwork/datapacket.h>
 #include <byteswap.h>
 #include <arpa/inet.h>
 
