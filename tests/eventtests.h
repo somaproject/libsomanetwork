@@ -12,7 +12,7 @@
 #include <iostream>
 #include <queue>
 #include <list>
-#include <eventtx.h>
+#include <somanetwork/eventtx.h>
 
 
 using namespace somanetwork; 

@@ -6,7 +6,7 @@
 #include <boost/thread/thread.hpp>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include "datapacket.h"
+#include <somanetwork/datapacket.h>
 #include <queue>
 
 using namespace somanetwork; 

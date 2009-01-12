@@ -6,8 +6,8 @@
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "datareceiver.h"
-#include "eventdispatcher.h"
+#include <somanetwork/datareceiver.h>
+#include <somanetwork/eventdispatcher.h>
 #include "tests.h"
 
 using boost::unit_test::test_suite;

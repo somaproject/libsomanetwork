@@ -1,4 +1,4 @@
-AM_CXXFLAGS = $(BOOST_CPPFLAGS)  -I../src/
+AM_CXXFLAGS = $(BOOST_CPPFLAGS)  -I../
 AM_LDFLAGS = $(BOOST_LDFLAGS) \
 	$(BOOST_THREAD_LDFLAGS) $(BOOST_THREAD_LIBS) \
 	$(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_PROGRAM_LIBS) \
@@ -6,7 +6,7 @@ AM_LDFLAGS = $(BOOST_LDFLAGS) \
 	$(BOOST_UNIT_TEST_FRAMEWORK_LDFLAGS) $(BOOST_UNIT_TEST_FRAMEWORK_LIBS) \
 	 $(BENCH_LIBS) 
 
-LIBS = $(top_builddir)/src/libsomanetwork-1.0.la
+LIBS = $(top_builddir)/somanetwork/libsomanetwork-1.0.la
 TESTS=tspiketest wavetest rawtest datareceivertest eventreceivertest eventtxtest
 # check_PROGRAMS= alltest tspiketest wavetest rawtest datareceivertest \
 # 	eventreceivertest eventtxtest

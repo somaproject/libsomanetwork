@@ -4,7 +4,7 @@
 #include "boost/filesystem/fstream.hpp"   
 #include <iostream>    
 #include <fstream>                    
-#include "tspike.h"
+#include <somanetwork/tspike.h>
 using  namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 

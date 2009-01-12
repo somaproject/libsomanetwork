@@ -1,10 +1,10 @@
 #ifndef AUDIOGEN_H
 #define AUDIOGEN_H
 
-#include <datapacket.h>
-#include <tspike.h>
-#include <event.h>
-#include <wave.h>
+#include <somanetwork/datapacket.h>
+#include <somanetwork/tspike.h>
+#include <somanetwork/event.h>
+#include <somanetwork/wave.h>
 #include "eventsource.h"
 
 using namespace somanetwork; 

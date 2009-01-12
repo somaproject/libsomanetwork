@@ -1,6 +1,6 @@
 #include "tests.h"
 #include "eventtests.h"
-#include <event.h>
+#include <somanetwork/event.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -12,7 +12,7 @@
 
 #include <netdb.h>
 #include <stdio.h>
-#include "ports.h"
+#include <somanetwork/ports.h>
 
 FakeEventServer::FakeEventServer() :
   running_(false), 

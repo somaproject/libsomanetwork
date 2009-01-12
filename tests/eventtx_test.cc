@@ -4,7 +4,7 @@
 #include <iostream>    
 #include <fstream>             
 #include <assert.h>       
-#include "eventtx.h"
+#include <somanetwork/eventtx.h>
 using  namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 

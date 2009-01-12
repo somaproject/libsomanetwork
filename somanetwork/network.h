@@ -21,7 +21,7 @@ class Network : public NetworkInterface
   ~Network(); 
   
   void enableDataRX(datasource_t, datatype_t); 
-  void disableDataRX(datasource_t, datatype_t); b
+  void disableDataRX(datasource_t, datatype_t); 
   void disableAllDataRX(); 
 
   pDataPacket_t  getNewData(void); 

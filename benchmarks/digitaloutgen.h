@@ -1,10 +1,10 @@
 #ifndef DIGITALOUTGEN_H
 #define DIGITALOUTGEN_H
 
-#include <datapacket.h>
-#include <tspike.h>
-#include <event.h>
-#include <wave.h>
+#include <somanetwork/datapacket.h>
+#include <somanetwork/tspike.h>
+#include <somanetwork/event.h>
+#include <somanetwork/wave.h>
 #include "eventsource.h"
 #include "periodicpattern.h"
 

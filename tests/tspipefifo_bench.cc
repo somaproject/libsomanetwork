@@ -1,4 +1,4 @@
-#include "tspipefifo.h"
+#include "somanetwork/tspipefifo.h"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include <iostream>

@@ -4,7 +4,7 @@
 #include <iostream>    
 #include <fstream>             
 #include <assert.h>       
-#include "event.h"
+#include <somanetwork/event.h>
 using  namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 

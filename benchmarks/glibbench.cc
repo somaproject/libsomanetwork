@@ -1,5 +1,5 @@
 #include <iostream>
-#include <network.h>
+#include <somanetwork/network.h>
 #include <boost/program_options.hpp>
 
 #include <unistd.h>   

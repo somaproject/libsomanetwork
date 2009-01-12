@@ -7,11 +7,6 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <datapacket.h>
-#include <tspike.h>
-#include <wave.h>
-#include <ports.h>
-#include <limits>
 #include <time.h>
 #include <stdio.h>
 #include <sys/socket.h>

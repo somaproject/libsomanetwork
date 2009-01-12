@@ -10,11 +10,11 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <datapacket.h>
-#include <tspike.h>
-#include <event.h>
-#include <wave.h>
-#include <ports.h>
+#include <somanetwork/datapacket.h>
+#include <somanetwork/tspike.h>
+#include <somanetwork/event.h>
+#include <somanetwork/wave.h>
+#include <somanetwork/ports.h>
 #include <limits>
 #include <time.h>
 #include <stdio.h>

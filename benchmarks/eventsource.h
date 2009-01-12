@@ -1,11 +1,11 @@
 #ifndef EVENTSOURCE_H
 #define EVENTSOURCE_H
 
-#include <event.h>
-#include <datapacket.h>
-#include <tspike.h>
-#include <wave.h>
-#include <ports.h>
+#include <somanetwork/event.h>
+#include <somanetwork/datapacket.h>
+#include <somanetwork/tspike.h>
+#include <somanetwork/wave.h>
+#include <somanetwork/ports.h>
 #include "eventsynthtx.h"
 
 using namespace somanetwork; 

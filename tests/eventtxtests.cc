@@ -9,10 +9,10 @@
 
 #include <netdb.h>
 #include <stdio.h>
-#include "ports.h"
+#include <somanetwork/ports.h>
 #include "tests.h"
 #include "eventtests.h"
-#include "event.h"
+#include <somanetwork/event.h>
 
 FakeEventRXServer::FakeEventRXServer(skipMap_t norx, skipMap_t fail) :
   norxMap_(norx), 

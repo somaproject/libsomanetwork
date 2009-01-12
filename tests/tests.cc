@@ -1,5 +1,5 @@
 #include "tests.h"
-#include "datareceiver.h"
+#include <somanetwork/datareceiver.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
-#include "ports.h"
+#include <somanetwork/ports.h>
 
 std::vector<char> fakeDataPacket(unsigned int seq, datatype_t typ, 
 				 datasource_t src)

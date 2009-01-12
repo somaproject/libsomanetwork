@@ -7,8 +7,8 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "datareceiver.h"
-#include "network.h" 
+#include <somanetwork/datareceiver.h>
+#include <somanetwork/network.h>
 #include "tests.h"
 
 using asio::ip::udp;

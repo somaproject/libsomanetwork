@@ -4,7 +4,7 @@
 # and 
 # Prelude . 
 AC_INIT([somanetwork], [1.0], [bugs@soma.mit.edu])
-AC_CONFIG_SRCDIR([src/network.cc])
+AC_CONFIG_SRCDIR([somanetwork/network.cc])
 
 
 AM_CONFIG_HEADER(config.h)
@@ -95,7 +95,7 @@ dnl -----------------------------------------------
 dnl Generates Makefile's, configuration files and scripts
 dnl -----------------------------------------------
 
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile benchmarks/Makefile somanetwork-1.0.pc])
+AC_CONFIG_FILES([Makefile somanetwork/Makefile tests/Makefile benchmarks/Makefile somanetwork-1.0.pc])
 
 AC_OUTPUT
 

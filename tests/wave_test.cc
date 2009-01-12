@@ -4,7 +4,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <iostream>    
 #include <fstream>                    
-#include "wave.h"
+#include "somanetwork/wave.h"
 using  namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 

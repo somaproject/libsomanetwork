@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "eventdispatcher.h"
+#include <somanetwork/eventdispatcher.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 

@@ -7,7 +7,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 
-#include "eventreceiver.h"
+#include <somanetwork/eventreceiver.h>
 #include "eventtests.h"
 #include "tests.h"
 
