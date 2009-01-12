@@ -1,7 +1,7 @@
-The "network" object in libsomanetwork is designed to be a complete independent
-interface to all necessary soma-network functions. All of its external
-API calls are to be thread-safe, and internally it spawns its own
-threads (maybe more than one).
+The "network" object in libsomanetwork is designed to be a complete
+independent interface to all necessary soma-network functions. All of
+its external API calls are to be thread-safe, and internally it spawns
+its own threads (maybe more than one).
 
 But to the rest of the application, Network looks like your standard
 single-threaded collection of data sources, with one exception:

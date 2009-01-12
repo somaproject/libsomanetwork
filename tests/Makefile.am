@@ -6,7 +6,7 @@ AM_LDFLAGS = $(BOOST_LDFLAGS) \
 	$(BOOST_UNIT_TEST_FRAMEWORK_LDFLAGS) $(BOOST_UNIT_TEST_FRAMEWORK_LIBS) \
 	 $(BENCH_LIBS) 
 
-AM_LDADD = $(top_builddir)/src/libsomanetwork-1.0.la
+LIBS = $(top_builddir)/src/libsomanetwork-1.0.la
 TESTS=tspiketest wavetest rawtest datareceivertest eventreceivertest eventtxtest
 # check_PROGRAMS= alltest tspiketest wavetest rawtest datareceivertest \
 # 	eventreceivertest eventtxtest

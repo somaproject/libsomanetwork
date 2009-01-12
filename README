@@ -16,4 +16,4 @@ see INSTALL if you are building from source.
 ---------------------------------------------------------------------------
 Use
 ---------------------------------------------------------------------------
-libsomanetwork uses pkgconfig, with package name somanetwork-1.0. 
+libsomanetwork uses pkgconfig, with package name somanetwork-1.0
