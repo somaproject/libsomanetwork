@@ -15,6 +15,8 @@
 #include <eventtx.h>
 
 
+using namespace somanetwork; 
+
 typedef std::pair<eventseq_t, std::vector<char> > eventsetout_t; 
 
 typedef std::map<eventseq_t, std::vector<char> > retxLUT_t; 

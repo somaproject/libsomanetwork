@@ -7,6 +7,8 @@
 #include <wave.h>
 #include "eventsource.h"
 
+using namespace somanetwork; 
+
 class AudioGenerator : public EventSource
 {
 public:

@@ -1,5 +1,7 @@
 #include "wave.h"
 
+namespace somanetwork {
+
 Wave_t rawToWave(pDataPacket_t dp)
 {
   Wave_t w; 
@@ -133,5 +135,7 @@ pDataPacket_t rawFromWave(const Wave_t & w)
     }
 
   return rdp; 
+
+}
 
 }

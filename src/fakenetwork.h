@@ -24,7 +24,7 @@ on the response.
 
 */
 
-
+namespace somanetwork { 
 typedef sigc::signal<void, const EventTXList_t &> signalEventTX_t; 
 
 
@@ -79,6 +79,6 @@ class FakeNetwork : public NetworkInterface
 };
 
 typedef boost::shared_ptr<FakeNetwork> pFakeNetwork_t; 
-
+}
 #endif // FAKENETWORK_H
 

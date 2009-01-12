@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <string.h>
 
+namespace somanetwork { 
+
 const int BUFSIZE = 1024; 
 const int HDRLEN = 4;
 
@@ -92,4 +94,5 @@ pDataPacket_t newDataPacket(boost::array<char, BUFSIZE> buffer)
   return prd; 
 }
 
+}
 #endif // 

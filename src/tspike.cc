@@ -1,6 +1,7 @@
 #include <strings.h>
 #include "tspike.h"
 
+namespace somanetwork { 
 TSpike_t rawToTSpike(pDataPacket_t rd)
 {
   /* 
@@ -121,5 +122,7 @@ pDataPacket_t rawFromTSpike(const TSpike_t & ts)
   size_t len; 
   return  rawFromTSpikeForTX(ts, 0, &len); 
 
+
+}
 
 }

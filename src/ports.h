@@ -1,6 +1,7 @@
 #ifndef PORTS_H
 #define PORTS_H
 
+namespace somanetwork { 
 /*
 
 The canonical reference for all soma ports. 
@@ -27,7 +28,7 @@ inline int dataPortLookup(int type, int source) {
 }
 
 const int EVENTRXPORT = 5000; 
-
+}
 
 
 #endif // PORTS_H

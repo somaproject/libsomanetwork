@@ -24,6 +24,7 @@
 #include "packetreceiver.h"
 #include "eventdispatcher.h" 
 
+namespace somanetwork { 
 typedef std::queue<pEventPacket_t> eventPacketQueue_t; 
 
 struct EventReceiverStats
@@ -79,6 +80,7 @@ private:
   boost::mutex statusMutex_;
   
 }; 
+}
 
  
 #endif // EVENTRECEIVER_H

@@ -4,7 +4,7 @@
 #include <queue>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
-
+namespace somanetwork { 
 template <class T>
 class TSPipeFifo
 {
@@ -66,5 +66,5 @@ class TSPipeFifo
     }
   
 }; 
-
+}
 #endif // TSPIPEFIFO_H

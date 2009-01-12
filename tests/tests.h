@@ -9,6 +9,8 @@
 #include "datapacket.h"
 #include <queue>
 
+using namespace somanetwork; 
+
 std::vector<char> fakeDataPacket(unsigned int seq, char src, char typ); 
 
 void sendDataPacket(const std::vector<char> & dp, int port);

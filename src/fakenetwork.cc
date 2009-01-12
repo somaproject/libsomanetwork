@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "fakenetwork.h"
 
+namespace somanetwork {
 
 FakeNetwork::FakeNetwork() :
   running_ (false), 
@@ -162,3 +163,4 @@ EventReceiverStats FakeNetwork::getEventStats()
 
 }
 
+}

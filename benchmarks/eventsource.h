@@ -8,6 +8,7 @@
 #include <ports.h>
 #include "eventsynthtx.h"
 
+using namespace somanetwork; 
 
 class EventSource
 {

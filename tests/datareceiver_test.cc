@@ -11,6 +11,8 @@
 #include "tests.h"
 
 using boost::unit_test::test_suite;
+using namespace somanetwork; 
+
 
 
 BOOST_AUTO_TEST_SUITE(datareceivertest)

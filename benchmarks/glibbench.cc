@@ -12,6 +12,8 @@
 
 namespace po = boost::program_options;
 
+using namespace somanetwork; 
+
 Network *  network; 
 Glib::RefPtr<Glib::IOChannel> iochannel;
 using namespace boost::posix_time; 

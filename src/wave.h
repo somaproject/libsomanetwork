@@ -13,6 +13,7 @@ Type declaration for Data packet
 
 */ 
 
+namespace somanetwork { 
 const int WAVEBUF_LEN = 128; 
 
 struct Wave_t
@@ -29,6 +30,6 @@ struct Wave_t
 
 Wave_t rawToWave(pDataPacket_t dp); 
 pDataPacket_t rawFromWave(const Wave_t & w); 
-
+} 
 
 #endif // WAVE_TYPE_H

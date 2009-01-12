@@ -4,6 +4,7 @@
 #include "eventdispatcher.h"
 #include "ports.h"
 
+namespace somanetwork { 
 DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t type, 
 			   boost::function<void (pDataPacket_t)> rdp)
   : source_ (source), 
@@ -271,5 +272,7 @@ DataReceiverStats DataReceiver::getStats()
 void DataReceiver::resetStats()
 {
 
+
+}
 
 }

@@ -34,6 +34,7 @@ namespace po = boost::program_options;
 
 
 typedef int64_t somatime_t; 
+using namespace somanetwork; 
 
 class EventSource; 
 

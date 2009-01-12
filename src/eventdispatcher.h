@@ -13,6 +13,7 @@
 #include <iostream>
 #include <list>
 
+namespace somanetwork { 
 typedef boost::function<void (int fd)> eventCallback_t; 
 typedef std::map<int, eventCallback_t> callbackTable_t; 
 typedef std::list<eventCallback_t> callbackList_t; 
@@ -51,5 +52,5 @@ class  EventDispatcher
 }; 
 
 typedef boost::shared_ptr<EventDispatcher> eventDispatcherPtr_t; 
-
+} 
 #endif // EVENTDISPATCHER_H

@@ -3,6 +3,8 @@
 #include "eventreceiver.h"
 #include "ports.h"
 
+namespace somanetwork {
+
 EventReceiver::EventReceiver(eventDispatcherPtr_t ed, 
 			     boost::function<void (pEventPacket_t)> erxp)
   : pktCount_(0),
@@ -250,4 +252,6 @@ EventReceiverStats EventReceiver::getStats()
   st.reTxRxCount = 	      reTxRxCount_; 
   st.outOfOrderCount = outOfOrderCount_; 
   return EventReceiverStats(st); 
+}
+
 }

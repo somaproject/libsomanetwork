@@ -11,6 +11,8 @@
 #include <list>
 #include <string.h>
 
+namespace somanetwork { 
+
 typedef uint8_t eventsource_t ; 
 typedef uint8_t eventcmd_t; 
 typedef uint32_t eventseq_t; 
@@ -50,4 +52,5 @@ pEventPacket_t newEventPacket(boost::array<char, EBUFSIZE> buffer,
 std::vector<char> createEventBuffer(int seq, 
 				    std::list<EventList_t> els); 
 
+}
 #endif // EVENT_H

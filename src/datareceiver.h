@@ -24,6 +24,7 @@
 #include "packetreceiver.h"
 #include "eventdispatcher.h"
 
+namespace somanetwork { 
 typedef std::queue<pDataPacket_t> dataPacketpQueue_t; 
 
 
@@ -101,5 +102,6 @@ private:
 
 
 pDataPacket_t  newDataPacket(boost::array<char, BUFSIZE> buffer) ; 
- 
+}
+
 #endif // DATARECEIVER_H

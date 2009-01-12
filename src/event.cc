@@ -1,5 +1,7 @@
 #include "event.h"
 
+namespace somanetwork {
+
 pEventPacket_t newEventPacket(boost::array<char, EBUFSIZE> buffer, 
 				     size_t len) 
 {
@@ -100,4 +102,6 @@ std::vector<char> createEventBuffer(int seq, std::list<EventList_t> els)
       
     }
   return buffer; 
+}
+
 }

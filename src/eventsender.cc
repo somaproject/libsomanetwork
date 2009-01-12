@@ -1,6 +1,8 @@
 #include "eventsender.h"
 #include "ports.h"
 
+namespace somanetwork {
+
 EventSender::EventSender(eventDispatcherPtr_t edp, std::string somaIP) :
   pDispatch_(edp),
   nonce_(0), 
@@ -191,4 +193,6 @@ void EventSender::sendPendingEvent()
 EventSender::~EventSender()
 {
   
+}
+
 }

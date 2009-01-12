@@ -1,5 +1,7 @@
 #include "eventdispatcher.h"
 
+namespace somanetwork {
+
 EventDispatcher::EventDispatcher() :
   epollFD_(epoll_create(EPOLLMAXCNT))
 {
@@ -148,4 +150,6 @@ void EventDispatcher::delTimeout(eventCallback_t cb)
 //     }
 //   timeouts_.erase(i); 
 	
+}
+
 }

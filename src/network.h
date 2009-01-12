@@ -11,6 +11,7 @@
 #include "event.h"
 #include "networkinterface.h"
 
+namespace somanetwork {
 class Network : public NetworkInterface
 
 {
@@ -61,6 +62,6 @@ class Network : public NetworkInterface
   
 
 };
-
+}
 #endif // NETWORK_H
 

@@ -1,5 +1,7 @@
 #include "raw.h"
 
+namespace somanetwork {
+
 Raw_t rawToRaw(pDataPacket_t dp)
 {
   Raw_t raw; 
@@ -91,5 +93,7 @@ pDataPacket_t rawFromRaw(const Raw_t & raw)
     }
 
   return rdp; 
+
+}
 
 }

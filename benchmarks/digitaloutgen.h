@@ -17,6 +17,8 @@
 */
 
 
+using namespace somanetwork; 
+
 class DigitalOutputGenerator : public EventSource
 {
 public:

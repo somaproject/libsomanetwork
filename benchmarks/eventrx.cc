@@ -4,7 +4,7 @@
 #include <map>
 #include <boost/program_options.hpp>
 #include "network.h"
-
+using namespace somanetwork; 
 
 typedef std::map<eventcmd_t, int> eventmap_t; 
 

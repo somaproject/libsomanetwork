@@ -9,7 +9,7 @@
 #include "datareceiver.h"
 #include "eventreceiver.h" 
 
-
+namespace somanetwork { 
 
 typedef std::pair<datasource_t, datatype_t> datagen_t; 
 
@@ -46,5 +46,5 @@ class NetworkInterface
 
 typedef boost::shared_ptr<NetworkInterface> pNetworkInterface_t; 
 
-
+}
 #endif // NETWORKINTERFACE_H

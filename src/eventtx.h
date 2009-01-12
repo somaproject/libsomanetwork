@@ -5,6 +5,7 @@
 
 #include "event.h"
 
+namespace somanetwork { 
 
 const int ADDRBITS = 80; 
 const int ADDRSHORTS = 5; 
@@ -171,5 +172,5 @@ inline eventtxnonce_t getEventListFromBuffer(const std::vector<char> & buffer,
   return hnonce; 
 
 }
-
+}
 #endif //EVENTTX_H

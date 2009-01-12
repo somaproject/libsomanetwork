@@ -3,6 +3,8 @@
 #include "network.h"
 #include "datareceiver.h"
 
+namespace somanetwork { 
+
 Network::Network(std::string somaIP) :
   running_ (false), 
   pthrd_(NULL), 
@@ -162,3 +164,5 @@ void Network::resetEventStats()
 
 }
 
+
+}

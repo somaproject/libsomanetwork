@@ -10,6 +10,7 @@ Type declaration for Tetrode Spike data packet.
 
 */
 
+namespace somanetwork { 
 const int TSPIKEWAVE_LEN = 32; 
 
 struct TSpikeWave_t {
@@ -38,5 +39,5 @@ pDataPacket_t rawFromTSpikeForTX(const TSpike_t & ts,
 				 sequence_t seq, size_t* len); 
 pDataPacket_t rawFromTSpike(const TSpike_t & ts); 
 
-
+}
 #endif // TSPIKE_TYPE_H

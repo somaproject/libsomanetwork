@@ -6,9 +6,13 @@
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+
 #include "eventreceiver.h"
 #include "eventtests.h"
 #include "tests.h"
+
+using namespace somanetwork; 
+
 
 BOOST_AUTO_TEST_SUITE(datareceiver_test)
 

@@ -13,6 +13,7 @@ Type declaration for Raw packet
 
 */ 
 
+namespace somanetwork { 
 const int RAWBUF_LEN = 128; 
 
 struct Raw_t
@@ -27,6 +28,6 @@ struct Raw_t
 
 Raw_t rawToRaw(pDataPacket_t dp); 
 pDataPacket_t rawFromRaw(const Raw_t & w); 
-
+}
 
 #endif // RAW_TYPE_H

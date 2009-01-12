@@ -25,6 +25,7 @@
 #include "packetreceiver.h"
 #include "eventdispatcher.h"
 
+namespace somanetwork { 
 const int RETXTIME = 1000; // microseconds
 const int RETXCNT = 5; // try and send this many times, max
 
@@ -78,5 +79,5 @@ class EventSender : PacketReceiver
   
   
 };
-
+}
 #endif // EVENTSENDER_H
