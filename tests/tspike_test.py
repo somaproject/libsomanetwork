@@ -6,8 +6,10 @@ from struct import *
 # first we generate a bunch of data with
 
 WAVELEN = 32
-tspikewave_desc = n.dtype([('null', n.uint8),
-                           ('valid', n.uint8),
+tspikewave_desc = n.dtype([('valid', n.uint8),
+                           ('null1', n.uint8),
+                           ('null2', n.uint8),
+                           ('null3', n.uint8),                           
                            ('filtid', '>i4'),
                            ('threshold', '>i4'),
                            ('wave', '%d>i4' % WAVELEN)])
@@ -15,6 +17,7 @@ tspike_desc = n.dtype([('typ', n.uint8),
                        ('src', n.uint8),
                        ('chanlen', n.uint16), 
                        ('time', '>u8'),
+                       ('dummy2', n.uint16),
                        ('x', tspikewave_desc),
                        ('y', tspikewave_desc),
                        ('a', tspikewave_desc),
@@ -28,8 +31,9 @@ if __name__ == "__main__":
     x = n.zeros(N, dtype=tspike_desc)
     r = x.tostring()
     # make sure this is correct
-    assert ( (1 + 1 + 4 + 4 + WAVELEN*4 ) * 4 + (1 +1 + 2 + 8) == float(len(r))/N)
-
+    offset = 14
+    assert ( (1 + 3 + 4 + 4 + WAVELEN*4 ) * 4 + offset == float(len(r))/N)
+    print "PKTLEN = ", len(r)/N
 
     for  i in range(N):
         x[i]['typ'] = 0

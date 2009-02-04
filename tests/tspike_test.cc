@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
   for (int i = 0; i < N; i++)
     {
       pDataPacket_t rdp(new DataPacket_t()); 
-      const int PACKLEN = 564; 
+      const int PACKLEN = 574; 
       char buffer[PACKLEN]; 
 
       pyfile.read(buffer, PACKLEN); 

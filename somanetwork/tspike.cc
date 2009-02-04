@@ -20,19 +20,16 @@ TSpike_t rawToTSpike(pDataPacket_t rd)
     ts.time = ntohll(time); 
 
     TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
-    size_t bpos = (size_t) &rd->body[12]; 
+    size_t bpos = (size_t) &rd->body[14]; 
     for (int i = 0; i < 4; i++)
       {
-	
-
 	TSpikeWave_t * tsp= ptrs[i]; 
 
-	bpos++; 
 	tsp->valid = *((uint32_t*)bpos); 
-	bpos++; 
+	bpos += 4;
 
 	tsp->filtid = ntohl(*((uint32_t*)bpos)); 
-	bpos += 4; 
+	bpos += sizeof(tsp->filtid); 
 
 	tsp->threshold = ntohl(*((uint32_t *)bpos)); 
 	bpos += sizeof(tsp->threshold); 
@@ -80,20 +77,17 @@ pDataPacket_t rawFromTSpikeForTX(const TSpike_t & ts, sequence_t seq, size_t * l
   memcpy((void*)(&rdp->body[4]), &htime, sizeof(htime)); 
   
   const TSpikeWave_t * ptrs[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
-  size_t bpos = (size_t) &rdp->body[12]; 
+  size_t bpos = (size_t) &rdp->body[14]; 
 
   for (int i = 0; i < 4; i++)
     {
       const TSpikeWave_t * tswp = ptrs[i]; 
       memcpy((void*)bpos, &tswp->valid, 1); 
-      bpos++; 
-
-      memcpy((void*)bpos, &tswp->valid, 1); // FIXME
-      bpos++; 
+      bpos += 4; 
 
       int32_t nfiltid = htonl(tswp->filtid); 
       memcpy((void*)bpos, &nfiltid, 4); 
-      bpos +=4; 
+      bpos += sizeof(tswp->filtid); 
 	
       int32_t nthreshold = htonl(tswp->threshold); 
       memcpy((void*)bpos, &nthreshold, sizeof(nthreshold)); 
