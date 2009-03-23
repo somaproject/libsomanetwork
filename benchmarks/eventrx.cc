@@ -31,7 +31,7 @@ int main(void)
     
   }
   somanetwork.shutdown(); 
-  EventReceiverStats ers = somanetwork.getEventStats(); 
+  SeqPacketProtoStats ers = somanetwork.getEventStats(); 
   
   std::cout << "Finished recieving " << PKTCNT << " event packets" 
 	    << std::endl; 
@@ -44,16 +44,13 @@ int main(void)
 	    << std::endl; 
 
 
-  std::cout << "pktCount = " << ers.pktCount << std::endl; 
-  std::cout << "latestSeq = " << ers.latestSeq << std::endl; 
+  std::cout << "rxPacketCount = " << ers.rxPacketCount << std::endl; 
+  std::cout << "validPacketCount = " << ers.validPacketCount << std::endl; 
+  std::cout << "latestRXSequenceID = " << ers.latestRXSequenceID << std::endl; 
+  std::cout << "currentSequenceID = " << ers.currentSequenceID << std::endl; 
   std::cout << "dupeCount = " << ers.dupeCount << std::endl; 
-  std::cout << "pendingCount = " << ers.pendingCount 
-	    << std::endl; 
-  std::cout << "missingPacketCount = " 
-	    << ers.missingPacketCount << std::endl; 
-  std::cout << "reTxRxCount = " << ers.reTxRxCount << std::endl; 
-  std::cout << "outOfOrderCount = " << ers.outOfOrderCount << std::endl; 
-
+  std::cout << "listCount = " << ers.lostCount << std::endl; 
+  std::cout << "retxReqCount = " << ers.retxReqCount << std::endl; 
 
   std::cout << "--------------------------------------------------------"
 	    << std::endl; 

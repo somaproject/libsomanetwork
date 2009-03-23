@@ -7,12 +7,7 @@ namespace somanetwork {
 
 EventReceiver::EventReceiver(eventDispatcherPtr_t ed, 
 			     boost::function<void (pEventPacket_t)> erxp)
-  : pktCount_(0),
-    latestSeq_(0), 
-    dupeCount_(0), 
-    pendingCount_(0), 
-    reTxRxCount_(0), 
-    outOfOrderCount_(0),
+  : seqpacketproto_(SEQMAX), 
     putIn_(erxp), 
     pDispatch_(ed)
 {
@@ -108,150 +103,45 @@ void EventReceiver::handleReceive(int fd)
 
       // do we always extract out the events? 
       pEventPacket_t pEventPacket = newEventPacket(recvbuffer, len); 
-      
-      if ( pktCount_ == 0 or pEventPacket->seq == latestSeq_ + 1)
-	{
-	  // this is the next packet, append
-	  queue_.push(pEventPacket); 
-	  pendingCount_++; 
 
-	  latestSeq_ = pEventPacket->seq; 
-
-	  pktCount_++; 
-
-	} 
-      else if (pEventPacket->seq > latestSeq_ + 1)
-	{
-	  // we're missing a packet; add in blanks with "missing" set
-
-	  eventseq_t missingSeq;
-	  for (int i = 0; i < (pEventPacket->seq - (latestSeq_ +1)); i++) 
-	    {
-	      pEventPacket_t missingPkt( new EventPacket_t); 
-	      missingSeq =  latestSeq_ + i + 1; 
-	      missingPkt->seq = missingSeq; 
-	      missingPkt->missing = true; 
-	      queue_.push(missingPkt); 
-	      pendingCount_++; 
-
-	       
-	      // now add missing packets
-	      missingPackets_[missingSeq] = missingPkt; 
-	      
-	      // now request a retx 
-	      sendReTxReq(missingSeq, sfrom); 
-
-	    }
-	  
-	  // then add this after that
-	  queue_.push(pEventPacket); 
-	  pendingCount_++; 
-
-	  latestSeq_ = pEventPacket->seq;
-	  pktCount_++; 
-	  
-	} 
-      else 
-	{
-	  // it's in the past, which means it's either a dupe 
-	  // or on our missing list
-
-	  // check if it's a missing packet
-	  missingPktHash_t::iterator m 
-	    = missingPackets_.find(pEventPacket->seq); 
-
-	  if (m == missingPackets_.end() ) 
-	    {
-	    // this was a duplicate packet; ignore
-	    dupeCount_++; 
+      seqpacketproto_.addPacket(pEventPacket, pEventPacket->seq); 
 	    
-	    } 
-	  else 
-	    { 
-	      // get the iterator 
-	     pEventPacket_t pkt = (*m).second; 
-
-	      // copy the received packet into the one 
-	     // that's currently in the retx buffer
-
-	     *pkt = *pEventPacket; 
-	     missingPackets_.erase(m); 
-	     
-	     pEventPacket.reset(); 
-	     
-	     pktCount_++; 
-	     if (recvbuffer[6] != 0) {
-	       reTxRxCount_++;
-	     } else {
-	       outOfOrderCount_++; 
-	     }
-	    }
-	  
-	  
+      SequentialPacketProtocol<pEventPacket_t>::outqueue_t out = 
+	seqpacketproto_.getCompletedPackets(); 
+      
+      // check for retransmission
+      std::list<seqid_t> retxes = seqpacketproto_.getRetransmitRequests(); 
+      for (std::list<seqid_t>::iterator ri = retxes.begin(); ri != retxes.end(); 
+	   ri++) 
+	{
+	  sendReTxReq(*ri, sfrom); 
 	}
+
+      // commit the outputs
+
+      SequentialPacketProtocol<pEventPacket_t>::outqueue_t::iterator i; 
+      for (i = out.begin(); i != out.end(); i++) {
+	putIn_(*i); 	
+      }
       
-      
-      // push packets out via output queue
-      updateOutQueue(); 
-      
+
     } 
 }
 
-void EventReceiver::updateOutQueue()
-{
-  /* Update output queue pushes new data into the output queue and writes 
-     to the output pipe until 
-     
-     
-  */ 
-  
-  int updateCount = 0;  // the number of new packets we've added to the queue
-  // extract out
-
-  if ((*queue_.front()).missing == true) {
-    if (queue_.size() > 10) {
-      //       RawData * rdp = rawRxQueue_.front(); 
-      //       sendReTxReq(rdp->src,  rdp->typ, rdp->seq); 
-      
-    }
-  }
-  while (not queue_.empty() and 
-	 (*queue_.front()).missing == false) 
-    {
-    
-      
-      pEventPacket_t pep = queue_.front(); 
-    
-      
-      putIn_(pep); 
-      
-      queue_.pop(); 
-
-      pep.reset();
-
-      pendingCount_--; 	
-      
-      updateCount++ ; 
-      
-    }
-  
-}
-
-EventReceiverStats EventReceiver::getStats()
+SeqPacketProtoStats EventReceiver::getStats()
  {
    // This is now thread safe thanks to the mutex
 
   boost::mutex::scoped_lock lock( statusMutex_ );
-  EventReceiverStats st; 
-  st.pktCount = pktCount_; 
-  st.latestSeq = latestSeq_; 
-  st.dupeCount = dupeCount_; 
-  st.pendingCount = pendingCount_;
-  
-  st.missingPacketCount = missingPackets_.size(); 
-  st.reTxRxCount = 	      reTxRxCount_; 
-  st.outOfOrderCount = outOfOrderCount_; 
-  return EventReceiverStats(st); 
+  return seqpacketproto_.getStats(); 
+}
+
+void EventReceiver::resetStats()
+ {
+   // This is now thread safe thanks to the mutex
+
+  boost::mutex::scoped_lock lock( statusMutex_ );
+  return seqpacketproto_.resetStats(); 
 }
 
 }

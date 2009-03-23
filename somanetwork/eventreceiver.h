@@ -23,21 +23,11 @@
 #include <somanetwork/event.h>
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
+#include <somanetwork/seqpktproto.h>
+
 
 namespace somanetwork { 
 typedef std::queue<pEventPacket_t> eventPacketQueue_t; 
-
-struct EventReceiverStats
-{
-  unsigned int pktCount; 
-  unsigned int latestSeq;
-  unsigned int dupeCount; 
-  unsigned int pendingCount; 
-  unsigned int missingPacketCount;
-  unsigned int reTxRxCount; 
-  unsigned int outOfOrderCount; 
-}; 
-
 
 class EventReceiver : PacketReceiver
 {
@@ -51,31 +41,20 @@ public:
   int getSocket() { return socket_;}
 
   void handleReceive(int fd);   
-  EventReceiverStats getStats(); 
-
+  SeqPacketProtoStats getStats(); 
+  void resetStats(); 
+  
 private:
+  typedef SequentialPacketProtocol<pEventPacket_t> spp_t; 
 
   void sendReTxReq(eventseq_t seq, sockaddr_in sfrom); 
-  
-  int socket_; 
+  static const uint32_t SEQMAX = 0xFFFFFFFF; 
 
-  int pktCount_; 
-  int latestSeq_;
-  int dupeCount_; 
-  int pendingCount_; 
-  int reTxRxCount_; 
-  int outOfOrderCount_; 
+  int socket_; 
+  spp_t seqpacketproto_; 
 
   boost::function<void (pEventPacket_t)>  putIn_; 
   eventDispatcherPtr_t pDispatch_; 
-
-  // received queue
-  eventPacketQueue_t queue_; 
-  
-  // missing packet hash
-  missingPktHash_t missingPackets_; 
-
-  void updateOutQueue(void); 
   
   boost::mutex statusMutex_;
   

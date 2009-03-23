@@ -124,20 +124,20 @@ void Network::disableDataRX(datasource_t src, datatype_t typ)
   delete dr;   
 }
 
-std::vector<DataReceiverStats>  Network::getDataStats()
+std::vector<SeqPacketProtoStats>  Network::getDataStats()
 {
 
   std::map<const datagen_t, DataReceiver*>::iterator i;
-  std::vector<DataReceiverStats> drs; 
+  std::vector<SeqPacketProtoStats> drs; 
   for (i = dataReceivers_.begin(); i != dataReceivers_.end(); i++)
     {
       drs.push_back(((i->second))->getStats()); 
     }
-  return std::vector<DataReceiverStats>(drs); 
+  return std::vector<SeqPacketProtoStats>(drs); 
   
 }
 
-EventReceiverStats Network::getEventStats()
+SeqPacketProtoStats Network::getEventStats()
 {
 
   return eventReceiver_.getStats(); 

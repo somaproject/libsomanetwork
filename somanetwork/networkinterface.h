@@ -32,13 +32,13 @@ class NetworkInterface
   virtual void run() = 0; 
   virtual void shutdown() = 0; 
   
-  virtual std::vector<DataReceiverStats>  getDataStats() = 0; 
+  virtual std::vector<SeqPacketProtoStats>  getDataStats() = 0; 
   virtual void resetDataStats() = 0; 
   
 
   virtual eventtxnonce_t sendEvents(const EventTXList_t & el) = 0; 
 
-  virtual EventReceiverStats getEventStats() = 0; 
+  virtual SeqPacketProtoStats getEventStats() = 0; 
   virtual void resetEventStats() = 0; 
 
   //virtual ~NetworkInterface() =0; 

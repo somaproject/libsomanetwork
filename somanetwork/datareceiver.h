@@ -23,28 +23,8 @@
 #include <somanetwork/datapacket.h>
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
-
+#include <somanetwork/seqpktproto.h>
 namespace somanetwork { 
-typedef std::queue<pDataPacket_t> dataPacketpQueue_t; 
-
-
-// missing packet type
-typedef std::map<sequence_t, 
-		   pDataPacket_t> missingPktHash_t;
-
-struct DataReceiverStats
-{
-  
-  int source; 
-  int type; 
-  unsigned int pktCount; 
-  unsigned int latestSeq;
-  unsigned int dupeCount; 
-  unsigned int pendingCount; 
-  unsigned int missingPacketCount;
-  unsigned int reTxRxCount; 
-  unsigned int outOfOrderCount; 
-}; 
 
 int dataPortLookup(int type, int source); 
 
@@ -56,21 +36,14 @@ public:
 	       int source, datatype_t type,
 	       boost::function<void (pDataPacket_t)> rdp); 
   ~DataReceiver(); 
-  int getBufferSize(void) 
-    {  
-      return pktCount_; // rawBuffer_.size();
-    }
-  int getPktCount() { return pktCount_;} 
-  int getLatestSeq() { return latestSeq_;}
-  int getDupeCount() { return dupeCount_;}
-  int getPendingCount() { return pendingCount_; }
-  int getSocket() { return socket_;}
-  DataReceiverStats getStats(); 
+
+  SeqPacketProtoStats getStats(); 
   void resetStats(); 
 
   void handleReceive(int fd);   
 private:
 
+  typedef SequentialPacketProtocol<pDataPacket_t> spp_t; 
 
   void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq,
 		   sockaddr_in & sfrom); 
@@ -79,21 +52,11 @@ private:
 
   int source_; 
   datatype_t type_; 
-  int pktCount_; 
-  int latestSeq_;
-  int dupeCount_; 
-  int pendingCount_; 
-  int reTxRxCount_; 
-  int outOfOrderCount_; 
+  spp_t seqpacketproto_; 
+  static const uint32_t SEQMAX = 0xFFFFFFFF; 
   boost::function<void (pDataPacket_t)>  putIn_; 
 
-  // received queue
-  dataPacketpQueue_t rawRxQueue_; 
-  
   // missing packet hash
-  missingPktHash_t missingPackets_; 
-
-  void updateOutQueue(void); 
   
   boost::mutex statusMutex_;
   eventDispatcherPtr_t pDispatch_;    
