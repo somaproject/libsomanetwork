@@ -173,6 +173,7 @@ BOOST_AUTO_TEST_CASE(test_out_of_order_with_wrap_around) {
   
   run_sequential_test(pktin, goodout, SEQMAX); 
 
+  
 }
 
 BOOST_AUTO_TEST_CASE(test_dupe)
@@ -397,6 +398,107 @@ BOOST_AUTO_TEST_CASE(test_abort_sequence_with_wraparound)
   
   SequentialPacketProtocol<string> * spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
+
+}
+
+
+BOOST_AUTO_TEST_CASE(stats_test_linear_addition) {
+  /*
+    Add a sequence of packets, and compute stats
+
+   */
+
+  seqid_t SEQMAX = 4; 
+  
+  seqlist_t goodin; 
+  goodin += 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3; 
+  
+  SequentialPacketProtocol<string> * spp = 
+    run_sequential_test(goodin, goodin, SEQMAX); 
+
+  SeqPacketProtoStats stats = spp->getStats(); 
+  BOOST_CHECK_EQUAL(stats.rxPacketCount, 12); 
+  BOOST_CHECK_EQUAL(stats.validPacketCount, 12); 
+  BOOST_CHECK_EQUAL(stats.latestRXSequenceID, 3); 
+  BOOST_CHECK_EQUAL(stats.currentSequenceID, 3); 
+  BOOST_CHECK_EQUAL(stats.dupeCount, 0); 
+  BOOST_CHECK_EQUAL(stats.lostCount, 0); 
+  BOOST_CHECK_EQUAL(stats.retxReqCount, 0); 
+  
+
+}
+
+
+
+BOOST_AUTO_TEST_CASE(stats_test) {
+  /*
+    Add a sequence of packets, and compute stats
+    with some out of order and some dupes
+   */
+
+  seqid_t SEQMAX = 10; 
+  
+  seqlist_t goodin; 
+  goodin += 0, 1, 2, 2, 3, 4, 5, 6, 7, 9, 0, 1, 8; 
+  
+  seqlist_t goodout; 
+  goodout += 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1; 
+  
+  SequentialPacketProtocol<string> * spp = 
+    run_sequential_test(goodin, goodout, SEQMAX); 
+
+  SeqPacketProtoStats stats = spp->getStats(); 
+  BOOST_CHECK_EQUAL(stats.rxPacketCount, 13); 
+  BOOST_CHECK_EQUAL(stats.validPacketCount, 12); 
+  BOOST_CHECK_EQUAL(stats.latestRXSequenceID, 8); 
+  BOOST_CHECK_EQUAL(stats.currentSequenceID, 1); 
+  BOOST_CHECK_EQUAL(stats.dupeCount, 1); 
+  BOOST_CHECK_EQUAL(stats.lostCount, 0); 
+  BOOST_CHECK_EQUAL(stats.retxReqCount, 1); 
+
+  spp->resetStats(); 
+
+  stats = spp->getStats(); 
+
+  BOOST_CHECK_EQUAL(stats.rxPacketCount, 0); 
+  BOOST_CHECK_EQUAL(stats.validPacketCount, 0); 
+  BOOST_CHECK_EQUAL(stats.latestRXSequenceID, 8); 
+  BOOST_CHECK_EQUAL(stats.currentSequenceID, 1); 
+  BOOST_CHECK_EQUAL(stats.dupeCount, 0); 
+  BOOST_CHECK_EQUAL(stats.lostCount, 0); 
+  BOOST_CHECK_EQUAL(stats.retxReqCount, 0); 
+
+  
+}
+
+
+BOOST_AUTO_TEST_CASE(stat_test_abort_sequence_3)
+{
+
+  seqid_t SEQMAX = 1000; 
+  
+  seqlist_t pktin; 
+  pktin += 0, 1, 2, 3, 200, 201, 300, 301, 50, 100, 101, 
+    102, 103, 104, 105, 106, 107, 108,
+    109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119; 
+
+  seqlist_t goodout; 
+  goodout += 0, 1, 2, 3, 50, 100, 101, 102, 103, 104, 105, 106, 107, 108,
+               109, 110, 111, 112, 113, 114, 115, 116,
+               117, 118, 119;
+  
+  SequentialPacketProtocol<string> * spp = 
+    run_sequential_test(pktin, goodout, SEQMAX); 
+
+  SeqPacketProtoStats stats = spp->getStats(); 
+  BOOST_CHECK_EQUAL(stats.rxPacketCount, 29); 
+  BOOST_CHECK_EQUAL(stats.validPacketCount, 25); 
+  BOOST_CHECK_EQUAL(stats.latestRXSequenceID, 119); 
+  BOOST_CHECK_EQUAL(stats.currentSequenceID, 119); 
+  BOOST_CHECK_EQUAL(stats.dupeCount, 0); 
+  BOOST_CHECK_EQUAL(stats.lostCount, 95); 
+  BOOST_CHECK_EQUAL(stats.retxReqCount, 16); 
+
 
 }
 

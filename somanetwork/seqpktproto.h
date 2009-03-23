@@ -67,6 +67,30 @@ namespace somanetwork {
   }
 
 
+  class SeqPacketProtoStats
+  {
+  public:
+    uint64_t rxPacketCount;
+    uint64_t validPacketCount; 
+    seqid_t latestRXSequenceID; 
+    seqid_t currentSequenceID;
+    uint64_t dupeCount; 
+    uint64_t lostCount; 
+    uint64_t retxReqCount; 
+
+    SeqPacketProtoStats() :
+      rxPacketCount(0), 
+      validPacketCount(0), 
+      currentSequenceID(0),
+      latestRXSequenceID(0), 
+      dupeCount(0), 
+      lostCount(0), 
+      retxReqCount(0)
+    {
+      
+    }
+  }; 
+  
   template<class T>
   class SequentialPacketProtocol : boost::noncopyable
   {
@@ -90,6 +114,12 @@ namespace somanetwork {
     bool inPast(seqid_t); 
     
     int seqCount(); 
+    typedef std::list<std::pair<seqid_t, seqid_t> > seqrangelist_t; 
+    seqrangelist_t getPendingSequences(); 
+    
+    // statistics
+    SeqPacketProtoStats getStats(); 
+    void resetStats(); 
 
   private:
     const seqid_t SEQMAX_;   
@@ -103,7 +133,7 @@ namespace somanetwork {
     seqid_t currentID_; 
     bool waitingForFirst_; 
 
-    int dupeCount_; 
+    SeqPacketProtoStats stats_; 
 
     seqid_t retxReqWaiting_; 
     int retxReqWaitingDuration_; 
@@ -124,6 +154,8 @@ namespace somanetwork {
     
     pktSeqMapIterator_t findNextPacketSequence(); 
     
+    void commitPacket(const T & val); 
+    
   }; 
   
   template<class T>
@@ -136,8 +168,7 @@ namespace somanetwork {
     currentID_(0), 
     waitingForFirst_(true), 
     retxReqWaiting_(0), 
-    retxReqWaitingDuration_(-1), 
-    dupeCount_(0)
+    retxReqWaitingDuration_(-1)
   {
 
 
@@ -158,8 +189,7 @@ namespace somanetwork {
     currentID_(0), 
     waitingForFirst_(true),
     retxReqWaiting_(0), 
-    retxReqWaitingDuration_(-1), 
-    dupeCount_(0)
+    retxReqWaitingDuration_(-1)
   {
     
     
@@ -194,28 +224,33 @@ namespace somanetwork {
 	retxReqWaitingDuration_++;       
       }
     }
-    
-    std::cout << "Add packet " << id 
-	      << " with currentID = " << currentID_ 
-	      << " with retxReqWaitingDuration_ = " << retxReqWaitingDuration_
-	      << std::endl;
+
+    stats_.rxPacketCount++; 
+    stats_.latestRXSequenceID = id; 
+
+//     std::cout << "Add packet " << id 
+// 	      << " with currentID = " << currentID_ 
+// 	      << " with retxReqWaitingDuration_ = " << retxReqWaitingDuration_
+// 	      << std::endl;
     // if first packet, just pass on
     if (waitingForFirst_){
       currentID_ = id; 
-      outQueue_.push_back(val); 
+      commitPacket(val); 
       waitingForFirst_ = false; 
+      stats_.currentSequenceID = currentID_; 
+
       return; 
     } 
 
     if (id == seq_add(currentID_, 1, SEQMAX_)) {
        // correct next packet
-      std::cout << "Correct next packet " << std::endl;
-      outQueue_.push_back(val); 
+//       std::cout << "Correct next packet " << std::endl;
+      commitPacket(val); 
       currentID_ = id; 
 
     } else if (inPast(id) ) {
       // duplicate packet
-      dupeCount_++; 
+      stats_.dupeCount++; 
       
     } else if (inFuture(id)) {
       // In the future
@@ -233,7 +268,7 @@ namespace somanetwork {
     consumeSequences(); 
     // Now check for retransmission
     if (retxReqWaitingDuration_ > RETX_WAIT_THOLD) {
-      std::cout << "retx abort" << std::endl; 
+//       std::cout << "retx abort" << std::endl; 
       // insert empty/missing // FIXME? 
       currentID_ = seq_add(currentID_, 1, SEQMAX_); 
       consumeSequences(); 
@@ -245,9 +280,9 @@ namespace somanetwork {
 	typename SequentialPacketProtocol<T>::pktSeqMapIterator_t pi = findNextPacketSequence(); 
 	if (pi != packetSequences_.end()) {
 	  if (pi->second->size() >= RETX_REQ_THOLD) {
-	    std::cout << "retx send" << std::endl; 
+// 	    std::cout << "retx send" << std::endl; 
 	    seqid_t retxid = seq_add(currentID_, 1, SEQMAX_); 
-
+	    stats_.retxReqCount++; 
 	    retxReq_.push_back(retxid); 
 	    retxReqWaiting_ = retxid; 
 	    retxReqWaitingDuration_ = 0; 	  
@@ -255,6 +290,7 @@ namespace somanetwork {
 	}
       }
     }
+    stats_.currentSequenceID = currentID_; 
   }
     
   template<class T>
@@ -325,14 +361,14 @@ namespace somanetwork {
     typedef typename pktSeqMap_t::iterator pi_t; 
     pi_t pi = packetSequences_.find(nextid); 
     while (pi != packetSequences_.end() ){
-      std::cout << "Consuming sequence with " 
-		<< pi->second->headID() << " " << pi->second->tailID() << std::endl; 
+//       std::cout << "Consuming sequence with " 
+// 		<< pi->second->headID() << " " << pi->second->tailID() << std::endl; 
 
       // sequence has nextId at its head
       std::list<T> & pkts = pi->second->packets(); 
       typedef typename std::list<T>::iterator iter_t; 
       for(iter_t i = pkts.begin(); i != pkts.end(); i++) {
-	outQueue_.push_back(*i); 
+	commitPacket(*i); 
       }
       currentID_ = pi->second->tailID(); 
 
@@ -350,23 +386,25 @@ namespace somanetwork {
     if((ps.size() > LOST_CAUSE_LEN) and 
        (dist > LOST_CAUSE_THOLD)) 
       {
+	int lost = 0; 
+	int notlost = 0; 
 	typedef typename pktSeqMap_t::iterator pi_t; 
-	std::cout << "Calling lost cause with dist = " << dist
-		  << " using packet sequence (" 
-		  << ps.headID() << ", " << ps.tailID() 
-		  << ") as the sequence"  << std::endl; 
+// 	std::cout << "Calling lost cause with dist = " << dist
+// 		  << " using packet sequence (" 
+// 		  << ps.headID() << ", " << ps.tailID() 
+// 		  << ") as the sequence"  << std::endl; 
 	
 	while(true) { 
 	  pi_t pi; 
-	  std::cout << "---------------------------------\n"; 
-	  std::cout << "In this loop, ps.headid = " 
-		    << ps.headID() << std::endl; 
+// 	  std::cout << "---------------------------------\n"; 
+// 	  std::cout << "In this loop, ps.headid = " 
+// 		    << ps.headID() << std::endl; 
 	    
 
 	  pi = packetSequences_.lower_bound(currentID_); 
 	  
 	  if (pi == packetSequences_.end()) { 
-	    std::cout << "packetSequences pi = end" << std::endl; 
+// 	    std::cout << "packetSequences pi = end" << std::endl; 
 	    if (ps.headID() < currentID_) {
 	      // try wrap-around
 	      currentID_ = 0; 
@@ -374,15 +412,15 @@ namespace somanetwork {
 	      break; 
 	    }
 	  } else {
-	    std::cout << "packetSequences pi != end" << std::endl; 
-	    std::cout << "pi->second->headID() = " 
-		      << pi->second->headID() 
-		      << " ps.headID = " << ps.headID() 
-		      << "currentID = " << currentID_ << std::endl; 
+// 	    std::cout << "packetSequences pi != end" << std::endl; 
+// 	    std::cout << "pi->second->headID() = " 
+// 		      << pi->second->headID() 
+// 		      << " ps.headID = " << ps.headID() 
+// 		      << "currentID = " << currentID_ << std::endl; 
 	    if (ps.headID() == pi->second->headID())
 	      {
-		std::cout << "This is our own packet seq"
-			  << std::endl; 
+// 		std::cout << "This is our own packet seq"
+// 			  << std::endl; 
 		break; 
 	      }
 	    
@@ -396,15 +434,16 @@ namespace somanetwork {
 		break; 
 	      } else {
 		// consume
-		std::cout << "Appending sequence with " 
-			  << pi->second->headID() << " to "  
-			  << pi->second->tailID() << std::endl; 
+// 		std::cout << "Appending sequence with " 
+// 			  << pi->second->headID() << " to "  
+// 			  << pi->second->tailID() << std::endl; 
 
 		tlist_t & pktlist = pi->second->packets(); 
 		
 		for(typename tlist_t::iterator i = pktlist.begin(); i != pktlist.end(); ++i)
 		  {
-		    outQueue_.push_back(*i); 
+		    notlost++; 
+		    commitPacket(*i); 
 		  }
 		currentID_ = pi->second->tailID(); 
 		packetSequences_.erase(pi->second->headID()); 
@@ -415,7 +454,8 @@ namespace somanetwork {
 	      tlist_t & pktlist = pi->second->packets(); 
 	      for(typename tlist_t::iterator i = pktlist.begin(); i != pktlist.end(); ++i)
 		{
-		  outQueue_.push_back(*i); 
+		  notlost++; 
+		  commitPacket(*i); 
 		}
 	      currentID_ = pi->second->tailID(); 
 	      packetSequences_.erase(pi->second->headID()); 
@@ -423,24 +463,23 @@ namespace somanetwork {
 	      
 	    }
 	    
-	    
 	  }
 	  
 	}
 	// now add the current packet sequence
-	std::cout << "Adding the new lost cause packet head" 
-		  << " head = " << ps.headID() << " tail = " 
-		  << ps.tailID() << std::endl; 
+// 	std::cout << "Adding the new lost cause packet head" 
+// 		  << " head = " << ps.headID() << " tail = " 
+// 		  << ps.tailID() << std::endl; 
 	tlist_t & pktlist = ps.packets(); 
 	for(typename tlist_t::iterator i = pktlist.begin(); i != pktlist.end(); ++i)
 	  {
-	    outQueue_.push_back(*i); 
+	    commitPacket(*i); 
 	  }
 	currentID_ = ps.tailID();
 	packetSequences_.erase(ps.headID()); 
 	retxReqWaitingDuration_ = -1; 
 	retxReqWaiting_ = 0; 
-	
+	stats_.lostCount += (dist - notlost); 
       }
   }
 
@@ -450,6 +489,32 @@ namespace somanetwork {
   {
     return packetSequences_.size(); 
     
+  }
+
+  template<class T>
+  SeqPacketProtoStats SequentialPacketProtocol<T>::getStats()
+  {
+    return stats_; 
+    
+  }
+
+  template<class T>
+  void SequentialPacketProtocol<T>::resetStats()
+  {
+    SeqPacketProtoStats s; 
+    s.latestRXSequenceID = stats_.latestRXSequenceID; 
+    s.currentSequenceID = currentID_; 
+    stats_ = s; 
+
+  }
+
+
+  template<class T>
+  void SequentialPacketProtocol<T>::commitPacket(const T & val)
+  {
+    outQueue_.push_back(val);     
+    stats_.validPacketCount++; 
+
   }
 
   template<class T>
