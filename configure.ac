@@ -3,7 +3,7 @@
 # http://www.openismus.com/documents/linux/building_libraries/building_libraries.shtml
 # and 
 # Prelude . 
-AC_INIT([somanetwork], [1.0], [bugs@soma.mit.edu])
+AC_INIT([somanetwork], [1.1], [soma-devmit.edu])
 AC_CONFIG_SRCDIR([somanetwork/network.cc])
 
 
@@ -28,7 +28,7 @@ AC_CONFIG_AUX_DIR([m4])
 AC_CONFIG_MACRO_DIR([m4])
 
 #shared library versioning
-GENERIC_LIBRARY_VERSION=1:2:0
+GENERIC_LIBRARY_VERSION=1:1:0
 #                       | | |
 #                +------+ | +---+
 #                |        |     |

@@ -72,8 +72,8 @@ namespace somanetwork {
   public:
     uint64_t rxPacketCount;
     uint64_t validPacketCount; 
-    seqid_t latestRXSequenceID; 
     seqid_t currentSequenceID;
+    seqid_t latestRXSequenceID; 
     uint64_t dupeCount; 
     uint64_t lostCount; 
     uint64_t retxReqCount; 

@@ -41,7 +41,7 @@ class NetworkInterface
   virtual SeqPacketProtoStats getEventStats() = 0; 
   virtual void resetEventStats() = 0; 
 
-  //virtual ~NetworkInterface() =0; 
+  virtual ~NetworkInterface(){}; 
 }; 
 
 typedef boost::shared_ptr<NetworkInterface> pNetworkInterface_t; 
