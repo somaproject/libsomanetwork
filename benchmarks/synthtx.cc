@@ -10,8 +10,10 @@
 #include <somanetwork/datapacket.h>
 #include <somanetwork/tspike.h>
 #include <somanetwork/wave.h>
+#include <somanetwork/raw.h>
 #include <somanetwork/ports.h>
 #include <limits>
+#include <math.h>
 #include <time.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -39,6 +41,7 @@ struct txparams_t
   double elapsed; 
   sequence_t seq; 
   sockaddr_in si_addr; 
+  somatime_t somatime; 
   int count; 
   int socket; 
   char * pdata; // FIXME stupid hack of an opaque pointer to the data struct
@@ -90,8 +93,20 @@ void data_send_packet(txparams_t *  params) {
     }
 
     p = rawFromTSpikeForTX(*ts, params->seq, &len); 
-
-  } else if (params->typ = WAVE) {
+    // add the sequence number
+    sequence_t seq = p->seq; 
+    int nseq = htonl(seq); 
+    memcpy(buffer, &nseq, sizeof(nseq)); 
+    // put in the rest of the data
+    memcpy(&buffer[4], &(p->body[0]), len); 
+    
+    // now the actual TX 
+    
+    ssize_t result = sendto(params->socket, buffer, len+4, 0, 
+			    (sockaddr*) &(params->si_addr), sizeof(params->si_addr)); 
+    params->seq++; 
+    
+  } else if (params->typ == WAVE) {
 
     Wave_t * wave = (Wave_t*)params->pdata; 
     wave->src = params->src; 
@@ -106,20 +121,43 @@ void data_send_packet(txparams_t *  params) {
     
     //p = rawFromWaveForTX(*wave, params->seq, &len); 
 
-  } 
+  } else if (params->typ == RAW) {
+    // raw is a bit more complex, as we get to create
+    // several 
 
-  // add the sequence number
-  sequence_t seq = p->seq; 
-  int nseq = htonl(seq); 
-  memcpy(buffer, &nseq, sizeof(nseq)); 
-  // put in the rest of the data
-  memcpy(&buffer[4], &(p->body[0]), len); 
+    // handling time here is tricky
+
+    for(int i = 0; i < 4; i++) {
+      pDataPacket_t p;
+      Raw_t *raws = (Raw_t*)(params->pdata); 
+      Raw_t * raw = &(raws[i]); 
+
+      raw->chansrc = i; 
+      raw->time = params->somatime;
+      double period = 32*(i + 1);
+      
+      for (int i = 0; i < RAWBUF_LEN; i++) {
+	raw->data[i] =  int32_t(10000000 * (sin(2 * 3.141592 * double(i) / period))); 
+      }
+
+      p = rawFromRawForTX(*raw, params->seq, &len); 
+      // add the sequence number
+      sequence_t seq = p->seq; 
+      int nseq = htonl(seq); 
+      memcpy(buffer, &nseq, sizeof(nseq)); 
+      // put in the rest of the data
+      memcpy(&buffer[4], &(p->body[0]), len); 
+      
+      // now the actual TX 
+      ssize_t result = sendto(params->socket, buffer, len+4, 0, 
+			      (sockaddr*) &(params->si_addr), sizeof(params->si_addr)); 
+      params->seq++; 
+    }
+    params->somatime += 200; 
+    
+  }
   
-  // now the actual TX 
-  
-  ssize_t result = sendto(params->socket, buffer, len+4, 0, 
-			  (sockaddr*) &(params->si_addr), sizeof(params->si_addr)); 
-  params->seq++; 
+
 }
 
 void data_setup_socket(txparams_t *  params, std::string destipaddr) {
@@ -160,8 +198,9 @@ void data_setup_socket(txparams_t *  params, std::string destipaddr) {
   } else if (params->typ == WAVE) {
     // FIXME
   } else if (params->typ == RAW) {
-    // FIXME
-  
+    Raw_t * pdata = new Raw_t[4]; 
+    pdata->src = params->src; 
+    params->pdata = (char*)pdata; 
   }
 }
 
@@ -248,6 +287,10 @@ int main(int argc, char * argv[])
      "The rate of wave transmission in Hz")
     ("waves-count", po::value<int>()->default_value(100), 
      "The # of Waves to send per source")
+    ("raws", po::value<string>(), 
+     "range of raw sources (inclusive)")
+    ("raws-count", po::value<int>()->default_value(100), 
+     "The # of raw packets to send per source")
     ("send-events", "send timer events")
     ("enable-tracker-events", "send video tracker events from digital out")
 
@@ -283,6 +326,19 @@ int main(int argc, char * argv[])
       txparams.push_back(tx); 
      }
   }
+  if (vm.count("raws")) {
+    vector<int> tgt = parserange(vm["raws"].as<string>()); 
+
+    for (vector<int>::iterator i = tgt.begin(); i != tgt.end(); i++) {
+      txparams_t tx; 
+      tx.src = *i; 
+      tx.typ = RAW; 
+      tx.period = 1.0 / 4000.0; 
+      tx.count = vm["raws-count"].as<int>(); 
+      tx.somatime = 0; 
+      txparams.push_back(tx); 
+     }
+  }
 
   // FIXME: Waves
 
@@ -307,6 +363,7 @@ int main(int argc, char * argv[])
     etxp->ecycleload = 1; 
     etxp->count = 0; 
     etxp->latesttime = 0; 
+
     event_setup_socket(etxp, vm["destip"].as<string>()); 
 
     if(vm.count("enable-audio-events")) {
