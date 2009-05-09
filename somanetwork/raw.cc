@@ -11,7 +11,7 @@ namespace somanetwork {
     
       uint64_t time; 
       memcpy(&time, &(dp->body[2]), 8); 
-      raw.time = ntohll(time); v
+      raw.time = ntohll(time); 
       
       // extract out selected channel
       uint16_t nchan, hchan; 
