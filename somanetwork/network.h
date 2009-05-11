@@ -3,7 +3,7 @@
 
 #include <map>
 #include <utility>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <somanetwork/tspipefifo.h> 
 #include <somanetwork/datareceiver.h> 
 #include <somanetwork/eventreceiver.h>

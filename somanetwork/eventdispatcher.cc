@@ -2,8 +2,8 @@
 
 namespace somanetwork {
 
-EventDispatcher::EventDispatcher() :
-  epollFD_(epoll_create(EPOLLMAXCNT))
+EventDispatcher::EventDispatcher() //:
+  //epollFD_(epoll_create(EPOLLMAXCNT))
 {
   
   // setup control endpoint
@@ -25,6 +25,14 @@ EventDispatcher::~EventDispatcher()
 
 
 }
+  
+
+static void generic_event_callback(int fd, short evt, void *arg){
+
+    struct event *ev = (struct event *)arg;
+    EventDispatcher *ed = (EventDispatcher *)(ev->ev_arg);
+    ed->dispatchEvent(ev);
+}
 
 void EventDispatcher::addEvent(int fd, eventCallback_t cb)
 {
@@ -34,7 +42,19 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
     
     callbackTable_[fd] = cb; 
   } 
-  struct epoll_event  ev; 
+  
+    struct event ev;
+    
+    event_set(&ev, fd, EV_READ | EV_PERSIST, generic_event_callback, &ev);
+    ev.ev_arg = this;
+    event_add(&ev, NULL);
+    
+    {
+        boost::mutex::scoped_lock lock( eventTableMutex_ );
+    eventTable_[fd] = &ev;
+    }
+    
+    /*struct epoll_event  ev; 
 
   // try adding to epoll
   ev.events = EPOLLIN; 
@@ -43,13 +63,21 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
   if (errorret != 0) {
     throw std::runtime_error("could not add FD to epoll event set");
   }
-  
+  */
 }
 
 void EventDispatcher::delEvent(int fd)
 {
 
-  struct epoll_event  ev; 
+    struct event *ev;
+    {
+        boost::mutex::scoped_lock lock( eventTableMutex_ );
+        ev = eventTable_[fd];
+    }
+    
+    event_del(ev);
+    
+/*  struct epoll_event  ev; 
   ev.events = EPOLLIN; 
   ev.data.fd = fd;
 
@@ -57,11 +85,12 @@ void EventDispatcher::delEvent(int fd)
 
   if (errorret != 0 ) {
     throw std::runtime_error("could not del FD to epoll event set");
-  }
+  }*/
   
   boost::mutex::scoped_lock lock( cbTableMutex_ );
   
   callbackTable_.erase(fd);
+    eventTable_.erase(fd);
   
 }
 
@@ -72,8 +101,8 @@ void EventDispatcher::run(void)
   running_ = true; 
   while(running_)
     {
-
-      runonce(); 
+        event_dispatch();
+      //runonce(); 
     }
 }
 
@@ -91,12 +120,19 @@ void EventDispatcher::halt()
   int result = write(controlFDw_, &x, 1); 
 
 }
+    
+
+void EventDispatcher::dispatchEvent(struct event *event_to_dispatch){
+    int fd = event_to_dispatch->ev_fd; 
+    
+    callbackTable_[fd](fd);
+}
 
 void EventDispatcher::runonce()
 {
 
 
-      epoll_event events[EPOLLMAXCNT]; 
+      /*epoll_event events[EPOLLMAXCNT]; 
       const int epMaxWaitMS = 1; 
       int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
 			    epMaxWaitMS); 
@@ -127,7 +163,7 @@ void EventDispatcher::runonce()
 	{
 	  (*i)(0); 
 	}
-      
+      */
 }
 
 void EventDispatcher::addTimeout(eventCallback_t cb)

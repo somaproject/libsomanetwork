@@ -8,10 +8,12 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/shared_ptr.hpp>
 #include <utility>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
+#include <event.h>
 #include <errno.h>
 #include <iostream>
 #include <list>
+
 
 namespace somanetwork { 
 typedef boost::function<void (int fd)> eventCallback_t; 
@@ -31,6 +33,8 @@ class  EventDispatcher
   void halt(); 
   void runonce(); 
 
+    void dispatchEvent(struct event *ev);
+    
   void addEvent(int fd, eventCallback_t cb); 
   void delEvent(int fd); 
 
@@ -43,7 +47,10 @@ class  EventDispatcher
   int controlFDw_, controlFDr_; 
   callbackTable_t callbackTable_; 
   boost::mutex cbTableMutex_;
-
+    
+  std::map<int, struct event*> eventTable_; 
+    boost::mutex eventTableMutex_;
+    
   callbackList_t timeouts_; 
   boost::mutex cbTimeoutsMutex_; 
 

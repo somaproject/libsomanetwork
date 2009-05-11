@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -32,9 +32,12 @@ class DataReceiver : public PacketReceiver
 {
   
 public:
-  DataReceiver(eventDispatcherPtr_t pDispatch, 
-	       int source, datatype_t type,
-	       boost::function<void (pDataPacket_t)> rdp); 
+  //DataReceiver(eventDispatcherPtr_t pDispatch, 
+//	       int source, datatype_t type,  bool enableReTxReq,
+//	       boost::function<void (pDataPacket_t)> rdp); 
+DataReceiver(eventDispatcherPtr_t pDispatch, 
+                 int source, datatype_t type, 
+                 boost::function<void (pDataPacket_t)> rdp); 
   ~DataReceiver(); 
 
   SeqPacketProtoStats getStats(); 
