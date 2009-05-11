@@ -15,4 +15,4 @@ lib_LTLIBRARIES= libsomanetwork-1.0.la
 libsomanetwork_1_0_la_SOURCES= $(h_sources) $(cc_sources)
 libsomanetwork_1_0_la_CXXFLAGS= $(FAKESRC_CFLAGS) -Werror
 libsomanetwork_1_0_la_LDFLAGS= -version-info $(GENERIC_LIBRARY_VERSION) -release $(GENERIC_RELEASE)
-libsomanetwork_1_0_la_LIBS = $(BOOST_THREAD_LIBS) 
+libsomanetwork_1_0_la_LIBS = $(BOOST_THREAD_LIBS)
