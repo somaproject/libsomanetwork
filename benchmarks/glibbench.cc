@@ -63,17 +63,18 @@ bool DataRxCallback(Glib::IOCondition io_condition)
 void printDataStats()
 {
 
-  std::vector<SeqPacketProtoStats> drs = network->getDataStats(); 
-  std::vector<SeqPacketProtoStats>::iterator i = drs.begin(); 
+  std::vector<DataReceiverStats> drs = network->getDataStats(); 
+  std::vector<DataReceiverStats>::iterator i = drs.begin(); 
   for (i = drs.begin(); i != drs.end(); i++ ) 
     {
-      //std::cout << "src = " << i->source << "typ = " << i->type << std::endl;
-      std::cout << "    " << "rxPacketCount=" << i->rxPacketCount
-		<< " validPacketCount=" << i->validPacketCount 
-		<< " dupeCount=" << i->dupeCount
-		<< " lostCount=" << i->lostCount 
-		<< " retxReqCount = " << i->retxReqCount 
-		<< " currentSequenceID = " << i->currentSequenceID
+      //std::cout << "src = " << i->seqprotostats.source << "typ = " << i->seqprotostats.type << std::endl;
+      std::cout << "    " << "rxPacketCount=" << i->seqprotostats.rxPacketCount
+		<< " validPacketCount=" << i->seqprotostats.validPacketCount 
+		<< " dupeCount=" << i->seqprotostats.dupeCount
+		<< " lostCount=" << i->seqprotostats.lostCount 
+		<< " retxReqCount = " << i->seqprotostats.retxReqCount 
+		<< " currentSequenceID = " << i->seqprotostats.currentSequenceID
+		<< " latestRXSequenceID = " << i->seqprotostats.latestRXSequenceID
 		<< std::endl; 
     }
   

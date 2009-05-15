@@ -144,12 +144,15 @@ void DataReceiver::handleReceive(int fd)
 }
 
 
-SeqPacketProtoStats DataReceiver::getStats()
+DataReceiverStats DataReceiver::getStats()
 {
   //This is now thread safe thanks to the mutex
 
   boost::mutex::scoped_lock lock( statusMutex_ );
-  return seqpacketproto_.getStats(); 
+  DataReceiverStats s; 
+  s.seqprotostats = seqpacketproto_.getStats(); 
+  s.source = source_; 
+  s.type = type_; 
 
 }
 

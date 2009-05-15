@@ -28,6 +28,14 @@ namespace somanetwork {
 
 int dataPortLookup(int type, int source); 
 
+class DataReceiverStats {
+public : 
+  datasource_t source; 
+  datatype_t type; 
+  SeqPacketProtoStats seqprotostats; 
+
+}; 
+
 class DataReceiver : public PacketReceiver
 {
   
@@ -37,7 +45,7 @@ public:
 	       boost::function<void (pDataPacket_t)> rdp); 
   ~DataReceiver(); 
 
-  SeqPacketProtoStats getStats(); 
+  DataReceiverStats getStats(); 
   void resetStats(); 
 
   void handleReceive(int fd);   

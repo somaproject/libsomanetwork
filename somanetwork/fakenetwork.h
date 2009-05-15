@@ -53,8 +53,8 @@ class FakeNetwork : public NetworkInterface
   eventtxnonce_t sendEvents(const EventTXList_t & el);
   signalEventTX_t & signalEventTX();  // returns ref to the relevant signal
 
-  void setDataStats(std::vector<SeqPacketProtoStats> ds); 
-  std::vector<SeqPacketProtoStats> getDataStats(); 
+  void setDataStats(std::vector<DataReceiverStats> ds); 
+  std::vector<DataReceiverStats> getDataStats(); 
   void resetDataStats(); 
 
   SeqPacketProtoStats getEventStats(); 
@@ -74,7 +74,7 @@ class FakeNetwork : public NetworkInterface
   signalEventTX_t signalEventTX_; 
   std::set<datagen_t> dataReceivers_; 
   
-  std::vector<SeqPacketProtoStats>  currentStats_; 
+  std::vector<DataReceiverStats>  currentStats_; 
 
 };
 

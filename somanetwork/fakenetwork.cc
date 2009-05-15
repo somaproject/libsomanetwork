@@ -105,7 +105,7 @@ void FakeNetwork::disableDataRX(datasource_t src, datatype_t typ)
 
 }
 
-std::vector<SeqPacketProtoStats>  FakeNetwork::getDataStats()
+std::vector<DataReceiverStats>  FakeNetwork::getDataStats()
 {
 
   return currentStats_; 
@@ -135,7 +135,7 @@ void FakeNetwork::disableAllDataRX()
 }
 
 
-void FakeNetwork::setDataStats(std::vector<SeqPacketProtoStats> ds)
+void FakeNetwork::setDataStats(std::vector<DataReceiverStats> ds)
 {
 
   currentStats_ = ds; 
