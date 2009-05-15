@@ -124,16 +124,16 @@ void Network::disableDataRX(datasource_t src, datatype_t typ)
   delete dr;   
 }
 
-std::vector<SeqPacketProtoStats>  Network::getDataStats()
+std::vector<DataReceiverStats>  Network::getDataStats()
 {
 
   std::map<const datagen_t, DataReceiver*>::iterator i;
-  std::vector<SeqPacketProtoStats> drs; 
+  std::vector<DataReceiverStats> drs; 
   for (i = dataReceivers_.begin(); i != dataReceivers_.end(); i++)
     {
       drs.push_back(((i->second))->getStats()); 
     }
-  return std::vector<SeqPacketProtoStats>(drs); 
+  return drs; 
   
 }
 
@@ -153,14 +153,14 @@ eventtxnonce_t Network::sendEvents(const EventTXList_t & el)
 
 void Network::resetDataStats() 
 {
-
+  // FIXME
 
 }
 
 
 void Network::resetEventStats()
 {
-
+  // FIXME
 
 }
 

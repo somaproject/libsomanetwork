@@ -35,7 +35,7 @@ class Network : public NetworkInterface
   void run(); 
   void shutdown(); 
   
-  std::vector<SeqPacketProtoStats>  getDataStats(); 
+  std::vector<DataReceiverStats>  getDataStats(); 
   SeqPacketProtoStats getEventStats(); 
 
   void resetDataStats(); 

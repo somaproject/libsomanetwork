@@ -32,7 +32,7 @@ class NetworkInterface
   virtual void run() = 0; 
   virtual void shutdown() = 0; 
   
-  virtual std::vector<SeqPacketProtoStats>  getDataStats() = 0; 
+  virtual std::vector<DataReceiverStats>  getDataStats() = 0; 
   virtual void resetDataStats() = 0; 
   
 
