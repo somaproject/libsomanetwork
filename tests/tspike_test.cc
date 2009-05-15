@@ -17,8 +17,9 @@ BOOST_AUTO_TEST_CASE(tspike_toandfrom)
 
   TSpike_t ts; 
   ts.src = 17; 
-  ts.time = 0x123456789ABCDEF; 
-
+  //ts.time = 0x123456789ABCDEF; 
+  ts.time = 0x1234567; 
+    
   TSpikeWave_t * waves[4]; 
   waves[0] = &ts.x; 
   waves[1] = &ts.y; 

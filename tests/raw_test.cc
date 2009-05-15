@@ -17,7 +17,8 @@ BOOST_AUTO_TEST_CASE(raw_toraw)
 {
   Raw_t raw; 
   raw.src = 120; 
-  raw.time = 0x123456789ABCDEF; 
+    raw.time = 0x123456;
+//raw.time = 0x123456789ABCDEF; 
   raw.chansrc = 0x4567; 
   raw.filterid = 0x12342233; 
   // fil the raw with 128 words

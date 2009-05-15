@@ -17,7 +17,8 @@ BOOST_AUTO_TEST_CASE(wave_toraw)
 {
   Wave_t w; 
   w.src = 120; 
-  w.time = 0x123456789ABCDEF; 
+  //w.time = 0x123456789ABCDEF;
+  w.time = 0x1234567; 
   w.sampratenum = 0xCD12; 
   w.selchan = 0x4567; 
   w.filterid = 0x1234; 

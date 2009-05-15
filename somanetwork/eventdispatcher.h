@@ -9,11 +9,12 @@
 #include <boost/shared_ptr.hpp>
 #include <utility>
 //#include <sys/epoll.h>
-#include <event.h>
 #include <errno.h>
 #include <iostream>
 #include <list>
 
+#include <event.h>
+typedef struct event libevent_event_t;
 
 namespace somanetwork { 
 typedef boost::function<void (int fd)> eventCallback_t; 

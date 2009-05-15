@@ -3,7 +3,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <somanetwork/event.h>
+#include <somanetwork/soma_event.h>
 #include <somanetwork/datapacket.h>
 #include <somanetwork/eventtx.h>
 #include <somanetwork/datareceiver.h>

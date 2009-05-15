@@ -134,8 +134,8 @@ BOOST_AUTO_TEST_CASE(dupetest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
+  //struct epoll_event ev;
+  //epoll_event events[EPOLLMAXCNT];
   
   server.start(); 
   for (int i = 0; i < 9; i++) {
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(retxtest)
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 30;
   datatype_t typ = RAW; 
-  int epollfd = epoll_create(EPOLLMAXCNT);
+  //int epollfd = epoll_create(EPOLLMAXCNT);
   
   DataReceiver dr(ped, src, typ, &append); 
   
@@ -184,8 +184,8 @@ BOOST_AUTO_TEST_CASE(retxtest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
+  //struct epoll_event ev;
+  //epoll_event events[EPOLLMAXCNT];
   
   server.start(); 
   for (int i = 0; i < 10; i++) {

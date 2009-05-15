@@ -2,7 +2,7 @@
 #define EVENTTEST_H
 
 #include <vector>
-#include <somanetwork/event.h>
+#include <somanetwork/soma_event.h>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>

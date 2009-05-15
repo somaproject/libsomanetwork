@@ -29,7 +29,7 @@ EventDispatcher::~EventDispatcher()
 
 static void generic_event_callback(int fd, short evt, void *arg){
 
-    struct event *ev = (struct event *)arg;
+    struct event *ev = (libevent_event_t *)arg;
     EventDispatcher *ed = (EventDispatcher *)(ev->ev_arg);
     ed->dispatchEvent(ev);
 }

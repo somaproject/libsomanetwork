@@ -1,6 +1,6 @@
 #include "tests.h"
 #include "eventtests.h"
-#include <somanetwork/event.h>
+#include <somanetwork/soma_event.h>
 #include <vector>
 #include <sys/types.h>
 #include <sys/socket.h>
