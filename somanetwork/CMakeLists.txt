@@ -45,8 +45,13 @@ ADD_LIBRARY(somanetwork SHARED
 target_link_libraries(somanetwork 
   ${Boost_LIBRARIES} ${SIGC++_LIBRARIES})
 
-install(TARGETS somanetwork
-   LIBRARY DESTINATION lib)
+SET_TARGET_PROPERTIES(somanetwork
+  PROPERTIES VERSION ${LIBRARY_VERSION}
+  SOVERSION ${LIBRARY_SOVERSION})
+
+install( TARGETS somanetwork LIBRARY
+  DESTINATION lib)
 
 install(FILES ${somanetwork_HEADERS}
-  DESTINATION include/somanetwork)
+  DESTINATION
+  include/${PROJECT_NAME}-${LIBRARY_VERSION}/${PROJECT_NAME})

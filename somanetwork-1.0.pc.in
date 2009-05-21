@@ -1,11 +1,7 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
 
 Name: somanetwork
 Description: Soma Network Library
 Requires: sigc++-2.0 >= 2.0 
-Version: @VERSION@
-Libs: -L${libdir} -lsomanetwork-1.0
-Cflags: -I${includedir}/somanetwork-1.0 -I${libdir}/somanetwork-1.0/include
+Version: ${LIBRARY_VERSION}
+Libs: -L${CMAKE_INSTALL_PREFIX}/lib/ -l${PROJECT_NAME}
+Cflags: -I${CMAKE_INSTALL_PREFIX}/include/somanetwork-1.0 -I${libdir}/somanetwork-1.0/include
