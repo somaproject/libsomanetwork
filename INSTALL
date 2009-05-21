@@ -6,9 +6,9 @@ Soma software, including this library.
 BUILD REQUIREMENTS:
 cmake
 Boost 1.37.0
+sigc++-2.0 for the benchmarks
 
-These packages are available from the Ubuntu 8.04
-package archive.
+These packages are available from the Ubuntu package archive.
 
 Typically, building can be accomplished with : 
 
