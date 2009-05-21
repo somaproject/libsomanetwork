@@ -49,7 +49,7 @@ set(testlist
 foreach(testname ${testlist})
   
   target_link_libraries(${testname}
-    somanetwork)
+    somanetworkstatic)
   
   ADD_TEST(${testname} ${testname})
 
