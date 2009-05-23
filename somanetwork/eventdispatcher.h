@@ -34,7 +34,7 @@ class  EventDispatcher
   void halt(); 
   void runonce(); 
 
-    void dispatchEvent(struct event *ev);
+    void dispatchEvent(int fd);
     
   void addEvent(int fd, eventCallback_t cb); 
   void delEvent(int fd); 
@@ -44,13 +44,17 @@ class  EventDispatcher
 
  private:
   int epollFD_; 
+
   bool running_; 
+    
   int controlFDw_, controlFDr_; 
+  
   callbackTable_t callbackTable_; 
   boost::mutex cbTableMutex_;
+  
     
   std::map<int, struct event*> eventTable_; 
-    boost::mutex eventTableMutex_;
+  boost::mutex eventTableMutex_;
     
   callbackList_t timeouts_; 
   boost::mutex cbTimeoutsMutex_; 

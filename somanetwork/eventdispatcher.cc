@@ -6,6 +6,8 @@ EventDispatcher::EventDispatcher() //:
   //epollFD_(epoll_create(EPOLLMAXCNT))
 {
   
+    event_init();
+    
   // setup control endpoint
   int pipes[2]; 
   int result = pipe(pipes); 
@@ -29,9 +31,9 @@ EventDispatcher::~EventDispatcher()
 
 static void generic_event_callback(int fd, short evt, void *arg){
 
-    struct event *ev = (libevent_event_t *)arg;
-    EventDispatcher *ed = (EventDispatcher *)(ev->ev_arg);
-    ed->dispatchEvent(ev);
+//    struct event *ev = (libevent_event_t *)arg;
+    EventDispatcher *ed = (EventDispatcher *)arg;
+    ed->dispatchEvent(fd);
 }
 
 void EventDispatcher::addEvent(int fd, eventCallback_t cb)
@@ -43,15 +45,15 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
     callbackTable_[fd] = cb; 
   } 
   
-    struct event ev;
+    struct event *ev = new struct event();
     
-    event_set(&ev, fd, EV_READ | EV_PERSIST, generic_event_callback, &ev);
-    ev.ev_arg = this;
-    event_add(&ev, NULL);
+    event_set(ev, fd, EV_READ | EV_PERSIST, generic_event_callback, this);
+    //ev.ev_arg = this;
+    event_add(ev, NULL);
     
     {
         boost::mutex::scoped_lock lock( eventTableMutex_ );
-    eventTable_[fd] = &ev;
+        eventTable_[fd] = ev;
     }
     
     /*struct epoll_event  ev; 
@@ -98,20 +100,42 @@ void EventDispatcher::delEvent(int fd)
 
 void EventDispatcher::run(void)
 {
+  {
+  //boost::mutex::scoped_lock lock(running_mutex_);
   running_ = true; 
-  while(running_)
+  }
+    
+    bool is_running = true;
+    
+  while(is_running)
     {
-        event_dispatch();
+        event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
       //runonce(); 
+        
+        //boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
+//        for(callbackList_t::iterator i = timeouts_.begin(); i != timeouts_.end(); i++)
+//        {
+//            (*i)(0); 
+//        }
+//        
+        {
+           // boost::mutex::scoped_lock lock(running_mutex_);
+            is_running = running_; 
+        }
     }
+    event_loopexit(NULL);
+    
+    std::cerr << "thread about to end" << std::endl;
 }
 
 
   
 void EventDispatcher::controlEvent(int fd)
 {
-  running_ = false; 
-
+    {
+        //boost::mutex::scoped_lock lock(running_mutex_);
+        running_ = false; 
+    }
 }
 
 void EventDispatcher::halt()
@@ -122,9 +146,9 @@ void EventDispatcher::halt()
 }
     
 
-void EventDispatcher::dispatchEvent(struct event *event_to_dispatch){
-    int fd = event_to_dispatch->ev_fd; 
-    
+void EventDispatcher::dispatchEvent(int fd){
+ //   int fd = event_to_dispatch->ev_fd; 
+//    
     callbackTable_[fd](fd);
 }
 
@@ -176,7 +200,7 @@ void EventDispatcher::addTimeout(eventCallback_t cb)
 
 void EventDispatcher::delTimeout(eventCallback_t cb)
 {
-  boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
+ // boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
   // now find and delete the callback; is O(n); 
 //   callbackList_t::iterator i = find(timeouts_.begin(), timeouts_.end(), 
 // 				    cb); 

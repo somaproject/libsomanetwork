@@ -3,6 +3,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <iostream>
 #include <boost/array.hpp>
+#include <boost/thread/mutex.hpp>
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -12,13 +13,18 @@
 
 using boost::unit_test::test_suite;
 
+using namespace somanetwork;
+
 typedef std::list<std::vector<char> > buflist_t; 
+//boost::mutex buff_mutex;
 buflist_t buflist; 
 
 void append(int fd)
 {
   std::vector<char> buffer(2048); 
   int n = read(fd, &buffer[0], 2048); 
+  
+ // boost::mutex::scoped_lock  lock(buff_mutex);  
   buffer.resize(n); 
   
   buflist.push_back(buffer); 
@@ -49,11 +55,30 @@ BOOST_AUTO_TEST_CASE( simpledispatch )
       
       send(fdw, &x, 1, 0); 
     }
-  while(buflist.size() < 10) {
-    // THIS IS NOT THREAD SAFE, but i don't really care too much right now
-  }
+
+    
+    int size = 0;
+    {
+       // boost::mutex::scoped_lock  lock(buff_mutex);
+        size = buflist.size();
+    }
+    
+    while(size < 10) {
+        // THIS IS NOT THREAD SAFE, but i don't really care too much right now
+        //boost::mutex::scoped_lock  lock(buff_mutex);
+        size = buflist.size();
+    }
+//    
+//    
+//  while(buflist.size() < 10) {
+//    // THIS IS NOT THREAD SAFE, but i don't really care too much right now
+//  }
+  std::cerr << "broken out" << std::endl;
   ed.halt(); 
+  std::cerr << "halted" << std::endl;
   thrd.join(); 
+  std::cerr << "joined" << std::endl;
+    
   BOOST_CHECK_EQUAL(buflist.size(), 10); 
   BOOST_CHECK_EQUAL((unsigned int)buflist.front().size(), 1); 
 
@@ -89,8 +114,18 @@ BOOST_AUTO_TEST_CASE( livedelete )
       char x = (char)i; 
       send(fdw, &x, 1, 0); 
     }
-  while(buflist.size() < 10) {
+  
+    
+    int size = 0;
+    {
+     // boost::mutex::scoped_lock  lock(buff_mutex);
+        size = buflist.size();
+    }
+    
+  while(size < 10) {
     // THIS IS NOT THREAD SAFE, but i don't really care too much right now
+     // boost::mutex::scoped_lock  lock(buff_mutex);
+      size = buflist.size();
   }
   
   ed.delEvent(fdr); 

@@ -1,4 +1,8 @@
 
+//#define __STDC_LIMIT_MACROS 
+#define __STDC_CONSTANT_MACROS 
+//#include <stdint.h> 
+
 #include <boost/test/auto_unit_test.hpp>
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/fstream.hpp"   
@@ -10,6 +14,7 @@ using namespace boost::filesystem;
 using namespace std; 
 using namespace somanetwork; 
 
+
 BOOST_AUTO_TEST_SUITE(tspike_test); 
 
 BOOST_AUTO_TEST_CASE(tspike_toandfrom) 
@@ -17,8 +22,8 @@ BOOST_AUTO_TEST_CASE(tspike_toandfrom)
 
   TSpike_t ts; 
   ts.src = 17; 
-  //ts.time = 0x123456789ABCDEF; 
-  ts.time = 0x1234567; 
+  ts.time = UINT64_C(0x123456789ABCDEF); 
+  //ts.time = 0x1234567; 
     
   TSpikeWave_t * waves[4]; 
   waves[0] = &ts.x; 
@@ -67,7 +72,7 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
 {
   // we generate test data in python and read it here
   std::fstream pyfile("tspikes.frompy.dat", ios::in | ios::binary); 
-  int N = 10000; 
+  int N = 9000; 
   for (int i = 0; i < N; i++)
     {
       pDataPacket_t rdp(new DataPacket_t()); 
