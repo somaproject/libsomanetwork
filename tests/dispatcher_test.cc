@@ -65,19 +65,11 @@ BOOST_AUTO_TEST_CASE( simpledispatch )
     
     while(size < 10) {
         // THIS IS NOT THREAD SAFE, but i don't really care too much right now
-        //boost::mutex::scoped_lock  lock(buff_mutex);
         size = buflist.size();
     }
-//    
-//    
-//  while(buflist.size() < 10) {
-//    // THIS IS NOT THREAD SAFE, but i don't really care too much right now
-//  }
-  std::cerr << "broken out" << std::endl;
+
   ed.halt(); 
-  std::cerr << "halted" << std::endl;
   thrd.join(); 
-  std::cerr << "joined" << std::endl;
     
   BOOST_CHECK_EQUAL(buflist.size(), 10); 
   BOOST_CHECK_EQUAL((unsigned int)buflist.front().size(), 1); 
@@ -118,13 +110,11 @@ BOOST_AUTO_TEST_CASE( livedelete )
     
     int size = 0;
     {
-     // boost::mutex::scoped_lock  lock(buff_mutex);
         size = buflist.size();
     }
     
   while(size < 10) {
     // THIS IS NOT THREAD SAFE, but i don't really care too much right now
-     // boost::mutex::scoped_lock  lock(buff_mutex);
       size = buflist.size();
   }
   

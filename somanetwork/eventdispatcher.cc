@@ -2,9 +2,7 @@
 
 namespace somanetwork {
 
-EventDispatcher::EventDispatcher() //:
-  //epollFD_(epoll_create(EPOLLMAXCNT))
-{
+EventDispatcher::EventDispatcher() {
   
     event_init();
     
@@ -31,7 +29,6 @@ EventDispatcher::~EventDispatcher()
 
 static void generic_event_callback(int fd, short evt, void *arg){
 
-//    struct event *ev = (libevent_event_t *)arg;
     EventDispatcher *ed = (EventDispatcher *)arg;
     ed->dispatchEvent(fd);
 }
@@ -48,7 +45,6 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
     struct event *ev = new struct event();
     
     event_set(ev, fd, EV_READ | EV_PERSIST, generic_event_callback, this);
-    //ev.ev_arg = this;
     event_add(ev, NULL);
     
     {
@@ -56,16 +52,6 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
         eventTable_[fd] = ev;
     }
     
-    /*struct epoll_event  ev; 
-
-  // try adding to epoll
-  ev.events = EPOLLIN; 
-  ev.data.fd = fd;
-  int errorret = epoll_ctl(epollFD_, EPOLL_CTL_ADD, fd, &ev); 
-  if (errorret != 0) {
-    throw std::runtime_error("could not add FD to epoll event set");
-  }
-  */
 }
 
 void EventDispatcher::delEvent(int fd)
@@ -79,15 +65,6 @@ void EventDispatcher::delEvent(int fd)
     
     event_del(ev);
     
-/*  struct epoll_event  ev; 
-  ev.events = EPOLLIN; 
-  ev.data.fd = fd;
-
-  int errorret = epoll_ctl(epollFD_, EPOLL_CTL_DEL, fd, &ev); 
-
-  if (errorret != 0 ) {
-    throw std::runtime_error("could not del FD to epoll event set");
-  }*/
   
   boost::mutex::scoped_lock lock( cbTableMutex_ );
   
@@ -100,42 +77,26 @@ void EventDispatcher::delEvent(int fd)
 
 void EventDispatcher::run(void)
 {
-  {
-  //boost::mutex::scoped_lock lock(running_mutex_);
+
   running_ = true; 
-  }
     
-    bool is_running = true;
     
-  while(is_running)
-    {
-        event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
-      //runonce(); 
+  while(running_){
+      
+    event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
+      
         
-        //boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
-//        for(callbackList_t::iterator i = timeouts_.begin(); i != timeouts_.end(); i++)
-//        {
-//            (*i)(0); 
-//        }
-//        
-        {
-           // boost::mutex::scoped_lock lock(running_mutex_);
-            is_running = running_; 
-        }
-    }
-    event_loopexit(NULL);
+  }
+  event_loopexit(NULL);
     
-    std::cerr << "thread about to end" << std::endl;
 }
 
 
   
 void EventDispatcher::controlEvent(int fd)
 {
-    {
-        //boost::mutex::scoped_lock lock(running_mutex_);
-        running_ = false; 
-    }
+  running_ = false; 
+
 }
 
 void EventDispatcher::halt()
@@ -152,11 +113,11 @@ void EventDispatcher::dispatchEvent(int fd){
     callbackTable_[fd](fd);
 }
 
-void EventDispatcher::runonce()
+/*void EventDispatcher::runonce()
 {
 
 
-      /*epoll_event events[EPOLLMAXCNT]; 
+      epoll_event events[EPOLLMAXCNT]; 
       const int epMaxWaitMS = 1; 
       int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
 			    epMaxWaitMS); 
@@ -187,8 +148,8 @@ void EventDispatcher::runonce()
 	{
 	  (*i)(0); 
 	}
-      */
-}
+      
+}*/
 
 void EventDispatcher::addTimeout(eventCallback_t cb)
 {
@@ -200,10 +161,9 @@ void EventDispatcher::addTimeout(eventCallback_t cb)
 
 void EventDispatcher::delTimeout(eventCallback_t cb)
 {
- // boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
-  // now find and delete the callback; is O(n); 
-//   callbackList_t::iterator i = find(timeouts_.begin(), timeouts_.end(), 
-// 				    cb); 
+//  boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
+//  // now find and delete the callback; is O(n); 
+//   callbackList_t::iterator i = find(timeouts_.begin(), timeouts_.end(), cb); 
 //   if (i == timeouts_.end() )
 //     {
 //       throw std::runtime_error("requested callback was not present in timeout list"); 
@@ -211,5 +171,5 @@ void EventDispatcher::delTimeout(eventCallback_t cb)
 //   timeouts_.erase(i); 
 	
 }
-
 }
+
