@@ -4,19 +4,16 @@ NOTE: In general, you should use one of the pre-built debs for most
 Soma software, including this library.
 
 BUILD REQUIREMENTS:
-autotools / automake
-Boost 1.34.1
+cmake
+Boost 1.37.0
+sigc++-2.0 for the benchmarks
 
-These packages are available from the Ubuntu 8.04
-package archive.
+These packages are available from the Ubuntu package archive.
 
 Typically, building can be accomplished with : 
 
-./autogen.sh
-./configure
+cmake
 make
+make test
 sudo make install
 
-
-To run the unit tests, 
-make check

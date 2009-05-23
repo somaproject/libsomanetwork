@@ -41,3 +41,11 @@ missing
 ltmain.sh
 src/fakenetwork.loT
 */semantic.cache
+CMakeFiles
+CMakeCache.txt
+Testing
+*.so
+*.a
+*.cmake
+install_manifest.txt
+somanetowrk-1.0.pc
