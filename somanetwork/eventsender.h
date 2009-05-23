@@ -24,6 +24,7 @@
 #include <somanetwork/eventtx.h>
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
+#include <somanetwork/sockproxy.h>
 
 namespace somanetwork { 
 const int RETXTIME = 1000; // microseconds
@@ -44,7 +45,9 @@ class EventSender : PacketReceiver
 {
 
  public:
-  EventSender(eventDispatcherPtr_t, std::string somaIP); 
+  EventSender(eventDispatcherPtr_t, 
+	      pISocketProxy_t sp); 
+
   ~EventSender(); 
   
   eventtxnonce_t sendEvents(const EventTXList_t & el);
@@ -67,7 +70,6 @@ class EventSender : PacketReceiver
   int sendSock_; 
   int pipeR_;
   int pipeW_; 
-  sockaddr_in saServer_; 
   void sendPacket(  EventTXPending_t * etp);
   void sendPendingEvent(); 
 
@@ -77,7 +79,8 @@ class EventSender : PacketReceiver
   
   boost::mutex appendMutex_;
   
-  
+  pISocketProxy_t pSockProxy_; 
+
 };
 }
 #endif // EVENTSENDER_H

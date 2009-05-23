@@ -15,7 +15,7 @@ namespace somanetwork {
     retxEventReqSockAddr_.sin_port = htons(EVENTRXRETXPORT); 
     retxEventReqSockAddr_.sin_family = AF_INET;
     inet_pton(AF_INET, somaip_.c_str(), &retxEventReqSockAddr_.sin_addr);
-     
+
     eventTXSockAddr_.sin_port = htons(EVENTTXPORT); 
     eventTXSockAddr_.sin_family = AF_INET;
     inet_pton(AF_INET, somaip_.c_str(), &eventTXSockAddr_.sin_addr);
@@ -128,8 +128,16 @@ namespace somanetwork {
 
   int NetSocketProxy::createEventTXSocket() {
 
+    int sock = socket(AF_INET, SOCK_DGRAM, 17); 
+    if (sock  < 0) {
+      throw std::runtime_error("could not create transmit socket"); 
+    }
+    
+    return sock; 
+    
   }
 
+  
 
 
 }

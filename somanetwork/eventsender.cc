@@ -3,25 +3,18 @@
 
 namespace somanetwork {
 
-EventSender::EventSender(eventDispatcherPtr_t edp, std::string somaIP) :
+EventSender::EventSender(eventDispatcherPtr_t edp, pISocketProxy_t sp) :
   pDispatch_(edp),
   nonce_(0), 
-  pPendingPacket_(0)
+  pPendingPacket_(0), 
+  pSockProxy_(sp)
 {
 
   ////////////////////////////////////////
   // configure the transmit socket
   ////////////////////////////////////////
 
-  sendSock_ = socket(AF_INET, SOCK_DGRAM, 17); 
-  if (sendSock_ < 0) {
-    throw std::runtime_error("could not create transmit socket"); 
-  }
-  
-  bzero(&saServer_, sizeof(saServer_)); 
-  saServer_.sin_family = AF_INET; 
-  saServer_.sin_port = htons(EVENTTXPORT);  
-  inet_aton(somaIP.c_str(), &saServer_.sin_addr); 
+  sendSock_ = pSockProxy_->createEventTXSocket(); 
   
   pDispatch_->addEvent(sendSock_, 
 		       boost::bind(std::mem_fun(&EventSender::handleReceive),
@@ -51,7 +44,6 @@ EventSender::EventSender(eventDispatcherPtr_t edp, std::string somaIP) :
 
 eventtxnonce_t EventSender::sendEvents(const EventTXList_t & el)
 {
-  std::cout << "Appending events to list from master thread" << std::endl; 
   // convert events to a buffer
   EventTXPending_t * etp = new EventTXPending_t; 
   eventtxnonce_t curnonce = nonce_; 
@@ -182,7 +174,8 @@ void EventSender::sendPendingEvent()
 
   sendto(sendSock_, &(pPendingPacket_->buffer[0]), 
 	 pPendingPacket_->buffer.size(),0, 
-	 (sockaddr*)&saServer_, sizeof(saServer_)); 
+	 pSockProxy_->getEventTXSockAddr(),
+	 pSockProxy_->getEventTXSockAddrLen()); 
 
   pPendingPacket_->txcnt++; 
   gettimeofday(&(pPendingPacket_->sendtime), NULL); 

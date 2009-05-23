@@ -27,7 +27,7 @@ Network::Network(pISocketProxy_t sockprox) :
   pDispatch_(new EventDispatcher()), 
   eventReceiver_(pDispatch_, sockprox, 
 		 boost::bind(&Network::appendEventOut, this, _1) ),
-  eventSender_(pDispatch_, "127.0.0.1")
+  eventSender_(pDispatch_, sockprox)
 {
 
 
