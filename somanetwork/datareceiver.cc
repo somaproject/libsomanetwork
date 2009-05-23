@@ -5,62 +5,21 @@
 #include "ports.h"
 
 namespace somanetwork { 
-DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, int source, datatype_t type, 
+DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, 
+			   pISocketProxy_t sockProxy, 
+			   int source, datatype_t type, 
 			   boost::function<void (pDataPacket_t)> rdp)
   : source_ (source), 
     type_ (type),
     seqpacketproto_(SEQMAX), 
     putIn_(rdp), 
-    pDispatch_(dispatch)
+    pDispatch_(dispatch), 
+    pSockProxy_(sockProxy)
 {
 
 
-  struct sockaddr_in si_me, si_other;
-  int  slen=sizeof(si_other);
-    
-  socket_ = socket(AF_INET, SOCK_DGRAM, 17); 
-  if (socket_ < 0) {
-    throw std::runtime_error("could not create socket"); 
+  socket_ = pSockProxy_->createDataSocket(source, type); 
 
-  }
-
-  bzero((char *) &si_me, sizeof(si_me));
-
-  si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(dataPortLookup(type_, source_));
-
-  si_me.sin_addr.s_addr = INADDR_ANY; 
-  
-  int optval = 1; 
-
-  // confiugre socket for reuse
-  optval = 1; 
-  int res = setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, 
-	     &optval, sizeof (optval)); 
-  if (res < 0) {
-    throw std::runtime_error("error setting socket to reuse"); 
-  }
-
-  optval = 1; 
-  res = setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, 
-	     &optval, sizeof (optval)); 
-  if (res < 0) {
-    throw std::runtime_error("error setting the broadcast bit"); 
-  }
-
-  optval = 500000; 
-  res = setsockopt (socket_, SOL_SOCKET, SO_RCVBUF, 
-		    (const void *) &optval, sizeof(optval)); 
-  if (res < 0) {
-    throw std::runtime_error("error settng receive buffer size"); 
-
-  }
-
-  res =  bind(socket_, (sockaddr*)&si_me, sizeof(si_me)); 
-  if (res < 0) {
-    throw std::runtime_error("error binding socket"); 
-  }
-    
   // configure the RX dispatch
   pDispatch_->addEvent(socket_, 
 		       boost::bind(std::mem_fun(&DataReceiver::handleReceive),
@@ -78,7 +37,6 @@ DataReceiver::~DataReceiver()
   
 }
 
-
 void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 			       int seq,  sockaddr_in & sfrom)
 {
@@ -89,8 +47,10 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
   unsigned int seqn = htonl(seq); 
   memcpy(&retxbuf[2], &seqn, 4); 
 
-  sfrom.sin_port = htons(DATARETXPORT); 
-  sendto(socket_, &retxbuf[0], 6, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
+
+  sendto(socket_, &retxbuf[0], 6, 0, 
+	 pSockProxy_->getDataReTxReqSockAddr(), 
+	 pSockProxy_->getDataReTxReqSockAddrLen()); 
 
 }
 

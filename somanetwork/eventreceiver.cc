@@ -6,53 +6,14 @@
 namespace somanetwork {
 
 EventReceiver::EventReceiver(eventDispatcherPtr_t ed, 
+			     pISocketProxy_t sp, 
 			     boost::function<void (pEventPacket_t)> erxp)
   : seqpacketproto_(SEQMAX), 
     putIn_(erxp), 
-    pDispatch_(ed)
+    pDispatch_(ed), 
+    pSockProxy_(sp)
 {
-
-  struct sockaddr_in si_me, si_other;
-  int  slen=sizeof(si_other);
-    
-  socket_ = socket(AF_INET, SOCK_DGRAM, 17); 
-  if (socket_ < 0) {
-    throw std::runtime_error("could not create socket"); 
-
-  }
-  
-  bzero((char *) &si_me, sizeof(si_me));
-
-  si_me.sin_family = AF_INET;
-  si_me.sin_port = htons(EVENTRXPORT); 
-
-  si_me.sin_addr.s_addr = INADDR_ANY; 
-  
-  int optval = 1; 
-
-  // confiugre socket for reuse
-  optval = 1; 
-  int res = setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, 
-	     &optval, sizeof (optval)); 
-  if (res < 0) {
-    throw std::runtime_error("error settng socket to reuse"); 
-  }
-
-  optval = 4000000; 
-  res = setsockopt (socket_, SOL_SOCKET, SO_RCVBUF, 
-		    (const void *) &optval, sizeof(optval)); 
-  if (res < 0) {
-    throw std::runtime_error("error settng receive buffer size"); 
-  }
-
-  socklen_t optlen;   
-  res = getsockopt(socket_, SOL_SOCKET, SO_RCVBUF, 
-		   (void *) &optval, &optlen); 
-
-  res =  bind(socket_, (sockaddr*)&si_me, sizeof(si_me)); 
-  if (res < 0) {
-    throw std::runtime_error("error binding socket"); 
-  }
+  socket_ = pSockProxy_->createEventRXSocket(); 
     
   // try adding to dispatcher
   pDispatch_->addEvent(socket_, 
@@ -78,8 +39,10 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
   unsigned int seqn = htonl(seq); 
   memcpy(&retxbuf[0], &seqn, 4); 
 
-  sfrom.sin_port = htons(EVENTRXRETXPORT); 
-  sendto(socket_, &retxbuf[0], 4, 0, (sockaddr*)&sfrom , sizeof(sfrom)); 
+  sendto(socket_, &retxbuf[0], 4, 0, 
+	 pSockProxy_->getEventReTxReqSockAddr(), 
+	 pSockProxy_->getEventReTxReqSockAddrLen()); 
+
 }
 
 

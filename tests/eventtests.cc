@@ -203,13 +203,14 @@ void FakeEventServer::retxthread(void) {
       }
     
     if (FD_ISSET(s, &readfds)) {
-
+      
       int res = recv(s, dummy, 100, 0); 
       unsigned int seq; 
       memcpy(&seq, &dummy[0], 4); 
       unsigned int seq_host; 
       seq_host = ntohl(seq); 
-
+      std::cout << "Recieved event retx req for seq=" 
+		<< seq_host << std::endl; 
       std::vector<char> dp = retxLUT_[seq_host]; 
       int n = sendto(sendsock_, &(dp)[0],
 		     dp.size(), 0, (sockaddr*)&server,

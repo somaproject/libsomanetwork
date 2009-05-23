@@ -4,6 +4,7 @@
 #include <map>
 #include <utility>
 #include <sys/epoll.h>
+#include <somanetwork/sockproxy.h>
 #include <somanetwork/tspipefifo.h> 
 #include <somanetwork/datareceiver.h> 
 #include <somanetwork/eventreceiver.h>
@@ -17,8 +18,11 @@ class Network : public NetworkInterface
 {
 
  public:
-  Network(std::string SomaIP); 
+
   ~Network(); 
+
+  static pNetworkInterface_t createINet(std::string somaip); 
+  static pNetworkInterface_t createDomain(std::string basedirectory); 
   
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 
@@ -43,6 +47,9 @@ class Network : public NetworkInterface
 
 
  private: 
+  Network(pISocketProxy_t sockproxy); 
+
+  pISocketProxy_t pSockProxy_; 
   TSPipeFifo<pDataPacket_t> outputDataFifo_; 
   TSPipeFifo<pEventPacket_t> outputEventFifo_; 
 
@@ -59,9 +66,10 @@ class Network : public NetworkInterface
   boost::thread *  pthrd_; 
   void workthread(void); 
 
-  
+
 
 };
+  
 }
 #endif // NETWORK_H
 

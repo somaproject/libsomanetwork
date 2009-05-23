@@ -8,6 +8,9 @@
 
 
 #include <somanetwork/eventreceiver.h>
+#include <somanetwork/sockproxy.h>
+#include <somanetwork/netsockproxy.h>
+
 #include "eventtests.h"
 #include "tests.h"
 
@@ -65,7 +68,10 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
 
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
-  EventReceiver er(ped, &append); 
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+
+  EventReceiver er(ped, sp, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -108,7 +114,8 @@ BOOST_AUTO_TEST_CASE( multieventtest )
   // and then test them all. 
 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
-  EventReceiver er(ped, &append); 
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+  EventReceiver er(ped, sp, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -161,7 +168,8 @@ BOOST_AUTO_TEST_CASE( outofordertest )
 
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
-  EventReceiver er(ped, &append); 
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+  EventReceiver er(ped, sp, &append); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -214,7 +222,8 @@ BOOST_AUTO_TEST_CASE( droptest )
   
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
-  EventReceiver er(ped, &append); 
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+  EventReceiver er(ped, sp, &append); 
   
   // validate epoll addition
   FakeEventServer server; 

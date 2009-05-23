@@ -8,6 +8,9 @@
 
 #include <somanetwork/datareceiver.h>
 #include <somanetwork/eventdispatcher.h>
+#include <somanetwork/sockproxy.h>
+#include <somanetwork/netsockproxy.h>
+
 #include "tests.h"
 
 using boost::unit_test::test_suite;
@@ -40,8 +43,9 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 10;
   datatype_t typ = RAW; 
-  
-  DataReceiver dr(ped, src, typ, &append); 
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -70,8 +74,10 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   
   datasource_t src = 30;
   datatype_t  typ = TSPIKE; 
-  
-  DataReceiver dr(ped, src, typ, &append); 
+
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -114,8 +120,10 @@ BOOST_AUTO_TEST_CASE(dupetest)
 
   datasource_t src = 30;
   datatype_t typ = TSPIKE; 
+
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
   
-  DataReceiver dr(ped, src, typ, &append); 
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -164,8 +172,10 @@ BOOST_AUTO_TEST_CASE(retxtest)
   datasource_t src = 30;
   datatype_t typ = RAW; 
   int epollfd = epoll_create(EPOLLMAXCNT);
-  
-  DataReceiver dr(ped, src, typ, &append); 
+
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 

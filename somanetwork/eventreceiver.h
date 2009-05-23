@@ -24,7 +24,7 @@
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
 #include <somanetwork/seqpktproto.h>
-
+#include <somanetwork/sockproxy.h>
 
 namespace somanetwork { 
 typedef std::queue<pEventPacket_t> eventPacketQueue_t; 
@@ -35,6 +35,7 @@ class EventReceiver : PacketReceiver
   
 public:
   EventReceiver(eventDispatcherPtr_t ed, 
+		pISocketProxy_t sp, 
 		boost::function<void (pEventPacket_t)> erxp); 
   ~EventReceiver(); 
 
@@ -57,6 +58,7 @@ private:
   eventDispatcherPtr_t pDispatch_; 
   
   boost::mutex statusMutex_;
+  pISocketProxy_t pSockProxy_; 
   
 }; 
 }

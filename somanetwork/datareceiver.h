@@ -24,6 +24,8 @@
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
 #include <somanetwork/seqpktproto.h>
+#include <somanetwork/sockproxy.h>
+
 namespace somanetwork { 
 
 int dataPortLookup(int type, int source); 
@@ -41,6 +43,7 @@ class DataReceiver : public PacketReceiver
   
 public:
   DataReceiver(eventDispatcherPtr_t pDispatch, 
+	       pISocketProxy_t sockProxy, 
 	       int source, datatype_t type,
 	       boost::function<void (pDataPacket_t)> rdp); 
   ~DataReceiver(); 
@@ -49,13 +52,14 @@ public:
   void resetStats(); 
 
   void handleReceive(int fd);   
+
 private:
 
   typedef SequentialPacketProtocol<pDataPacket_t> spp_t; 
 
   void sendReTxReq(datasource_t src, datatype_t typ, sequence_t seq,
 		   sockaddr_in & sfrom); 
-  
+
   int socket_; 
 
   int source_; 
@@ -68,6 +72,8 @@ private:
   
   boost::mutex statusMutex_;
   eventDispatcherPtr_t pDispatch_;    
+  pISocketProxy_t pSockProxy_; 
+
 }; 
 
 

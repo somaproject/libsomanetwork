@@ -16,7 +16,7 @@ EventDispatcher::EventDispatcher() :
   controlFDr_ = pipes[0]; 
   addEvent(controlFDr_,
 	   boost::bind(std::mem_fun(&EventDispatcher::controlEvent), this, _1)); 
-
+  
 }
 
 EventDispatcher::~EventDispatcher()

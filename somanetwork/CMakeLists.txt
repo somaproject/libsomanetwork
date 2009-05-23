@@ -12,10 +12,13 @@ set(somanetwork_SRCS
   eventsender.cc
   fakenetwork.cc
   network.cc
+  netsockproxy.cc
   ${datatype_SRCS})
 
 set(somanetwork_HEADERS
 datapacket.h
+sockproxy.h
+netsockproxy.h
 datareceiver.h
 eventdispatcher.h
 event.h

@@ -14,7 +14,7 @@ namespace po = boost::program_options;
 
 using namespace somanetwork; 
 
-Network *  network; 
+pNetworkInterface_t network; 
 Glib::RefPtr<Glib::IOChannel> iochannel;
 using namespace boost::posix_time; 
 using namespace std; 
@@ -137,7 +137,7 @@ int main(int argc, char * argv[])
   std::cout << "Configuring rx for " << tchans.size() << " TSpike receivers" << std::endl; 
   
   
-  network =  new Network("127.0.0.1"); 
+  network =  Network::createINet("127.0.0.1"); 
 
   // enable tspikes
 

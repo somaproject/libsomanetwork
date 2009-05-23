@@ -2,16 +2,32 @@
 #include <errno.h>
 #include "network.h"
 #include "datareceiver.h"
+#include "netsockproxy.h"
+#include "sockproxy.h"
 
 namespace somanetwork { 
+  
+  pNetworkInterface_t Network::createINet(std::string somaip) 
+  {
+    
+    pISocketProxy_t sp(new NetSocketProxy(somaip)); 
+    return pNetworkInterface_t(new Network(sp)); 
+  }
+  
+  pNetworkInterface_t Network::createDomain(std::string rootdir) {
 
-Network::Network(std::string somaIP) :
+    throw std::runtime_error("Not implemented"); 
+    
+  }
+
+Network::Network(pISocketProxy_t sockprox) :
+  pSockProxy_(sockprox), 
   running_ (false), 
   pthrd_(NULL), 
   pDispatch_(new EventDispatcher()), 
-  eventReceiver_(pDispatch_, 
+  eventReceiver_(pDispatch_, sockprox, 
 		 boost::bind(&Network::appendEventOut, this, _1) ),
-  eventSender_(pDispatch_, somaIP)
+  eventSender_(pDispatch_, "127.0.0.1")
 {
 
 
@@ -106,7 +122,8 @@ void Network::enableDataRX(datasource_t src, datatype_t typ)
 
   datagen_t dg(src, typ); 
 
-  dataReceivers_[dg] = new DataReceiver(pDispatch_, src, typ, 
+  dataReceivers_[dg] = new DataReceiver(pDispatch_, 
+					pSockProxy_,src, typ, 
   					boost::bind(&Network::appendDataOut, 
   						    this, _1) ); 
   
