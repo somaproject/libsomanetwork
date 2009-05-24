@@ -22,15 +22,15 @@ Wave_t rawToWave(pDataPacket_t dp)
     hversion = ntohs(nversion); 
 
     // extract out the sampling rate numerator
-    uint16_t nsampnum, hsampnum; 
+    uint32_t nsampnum, hsampnum; 
     memcpy(&nsampnum, &dp->body[12], sizeof(hsampnum)); 
-    hsampnum = ntohs(nsampnum); 
+    hsampnum = ntohl(nsampnum); 
     w.sampratenum = hsampnum; 
 
     // extract out the sampling rate denominator
-    uint16_t nsampden, hsampden; 
+    uint32_t nsampden, hsampden; 
     memcpy(&nsampden, &dp->body[16], sizeof(hsampden)); 
-    hsampden = ntohs(nsampden); 
+    hsampden = ntohl(nsampden); 
     w.samprateden = hsampden; 
 
     // extract out the filterid
@@ -95,15 +95,15 @@ pDataPacket_t rawFromWave(const Wave_t & w)
   memcpy(&(rdp->body[10]), &nversion, sizeof(nversion));
 
   // extract out the sampling rate (only an integer)
-  uint16_t nsampnum, hsampnum;
+  uint32_t nsampnum, hsampnum;
   hsampnum = w.sampratenum;
-  nsampnum = htons(hsampnum);
+  nsampnum = htonl(hsampnum);
   memcpy(&rdp->body[12], &nsampnum,  sizeof(nsampnum));
 
   // extract out the sampling rate (only an integer)
-  uint16_t nsampden, hsampden;
+  uint32_t nsampden, hsampden;
   hsampden = w.samprateden;
-  nsampden = htons(hsampden);
+  nsampden = htonl(hsampden);
   memcpy(&rdp->body[16], &nsampden,  sizeof(nsampden));
 
   // extract out the filter id
