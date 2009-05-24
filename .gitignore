@@ -49,3 +49,14 @@ Testing
 *.cmake
 install_manifest.txt
 somanetowrk-1.0.pc
+/somanetwork-1.0.pc
+/somanetwork/libsomanetwork.so.0
+/somanetwork/libsomanetwork.so.1.0
+/tests/datareceivertest
+/tests/domainsockproxytest
+/tests/eventreceivertest
+/tests/eventtxtest
+/tests/pktseqtest
+/tests/rawtest
+/tests/tspiketest
+/tests/wavetest
