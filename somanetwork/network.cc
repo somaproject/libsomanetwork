@@ -57,9 +57,11 @@ void Network::shutdown()
 Network::~Network()
 {
   shutdown(); 
-  if (running_) {
+
+  if(pthrd_) {
     pthrd_->join(); 
   }
+
   // delete the data receivers that remain
   std::map<const datagen_t, DataReceiver*>::iterator i;
   for (i = dataReceivers_.begin(); i != dataReceivers_.end(); 
