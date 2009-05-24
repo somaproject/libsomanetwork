@@ -14,7 +14,6 @@ namespace somanetwork {
 const int TSPIKEWAVE_LEN = 32; 
 
 struct TSpikeWave_t {
-  uint8_t srcchan; 
   uint8_t valid; 
   uint32_t filtid; 
   int32_t threshold; 
