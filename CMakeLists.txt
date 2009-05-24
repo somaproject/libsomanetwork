@@ -8,7 +8,7 @@ SET(LIBRARY_SOVERSION "0")
 
 
 # boost requirements
-find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework program_options system REQUIRED)
+find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework program_options filesystem system REQUIRED)
 find_package(PkgConfig)
 
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0>=2.0)

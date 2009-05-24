@@ -2,8 +2,10 @@
 #include <errno.h>
 #include "network.h"
 #include "datareceiver.h"
-#include "netsockproxy.h"
 #include "sockproxy.h"
+#include "netsockproxy.h"
+#include "domainsockproxy.h"
+
 
 namespace somanetwork { 
   
@@ -14,9 +16,10 @@ namespace somanetwork {
     return pNetworkInterface_t(new Network(sp)); 
   }
   
-  pNetworkInterface_t Network::createDomain(std::string rootdir) {
+  pNetworkInterface_t Network::createDomain(boost::filesystem::path rootdir) {
 
-    throw std::runtime_error("Not implemented"); 
+    pISocketProxy_t sp(new DomainSocketProxy(rootdir)); 
+    return pNetworkInterface_t(new Network(sp)); 
     
   }
 
@@ -39,6 +42,7 @@ void Network::run()
   pthrd_ = new boost::thread(boost::bind(&Network::workthread,
 					 this));
 }
+
 void Network::workthread()
 {
 
@@ -48,7 +52,7 @@ void Network::workthread()
 
 void Network::shutdown()
 {
-  //std::cout << "NETWORK SHUTDOWN" << std::endl; 
+
   running_ = false; 
   pDispatch_->halt(); 
 
@@ -71,7 +75,6 @@ Network::~Network()
       delete (*i).second; 
     }
 
-  
 }
 
 void Network::disableAllDataRX()

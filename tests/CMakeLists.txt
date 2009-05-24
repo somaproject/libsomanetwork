@@ -4,6 +4,10 @@ include_directories(${SIGC++_INCLUDE_DIRS})
 
 #TSpike Test
 
+add_library(network_test_utils
+  canonical.cc
+)
+
 add_executable(tspiketest
   tspike_test.cc
   runner.cc)
@@ -37,6 +41,10 @@ add_executable(pktseqtest
   seqpktproto_test.cc
   runner.cc)
 
+add_executable(domainsockproxytest
+  domainsockproxy_test.cc
+  runner.cc)
+
 set(testlist 
   tspiketest
   wavetest
@@ -44,11 +52,13 @@ set(testlist
   datareceivertest 
   eventreceivertest
   eventtxtest
+  domainsockproxytest
   pktseqtest)
 
 foreach(testname ${testlist})
   
   target_link_libraries(${testname}
+    network_test_utils
     somanetwork)
   
   ADD_TEST(${testname} ${testname})

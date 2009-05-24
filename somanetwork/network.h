@@ -4,6 +4,7 @@
 #include <map>
 #include <utility>
 #include <sys/epoll.h>
+#include <boost/filesystem.hpp>
 #include <somanetwork/sockproxy.h>
 #include <somanetwork/tspipefifo.h> 
 #include <somanetwork/datareceiver.h> 
@@ -22,7 +23,7 @@ class Network : public NetworkInterface
   ~Network(); 
 
   static pNetworkInterface_t createINet(std::string somaip); 
-  static pNetworkInterface_t createDomain(std::string basedirectory); 
+  static pNetworkInterface_t createDomain(boost::filesystem::path basedirectory); 
   
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 

@@ -1,4 +1,5 @@
 #include "eventdispatcher.h"
+#include <boost/format.hpp>
 
 namespace somanetwork {
 
@@ -40,8 +41,12 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
   ev.events = EPOLLIN; 
   ev.data.fd = fd;
   int errorret = epoll_ctl(epollFD_, EPOLL_CTL_ADD, fd, &ev); 
-  if (errorret != 0) {
-    throw std::runtime_error("could not add FD to epoll event set");
+  if (errorret == -1) {
+    int errsv = errno; 
+    boost::format errorstr("could not add FD to epoll event set, err = '%s'"); 
+    
+    throw std::runtime_error(boost::str(errorstr % strerror(errsv))); 
+    
   }
   
 }
@@ -92,19 +97,19 @@ void EventDispatcher::halt()
 
 }
 
-void EventDispatcher::runonce()
-{
-
-
-      epoll_event events[EPOLLMAXCNT]; 
-      const int epMaxWaitMS = 1; 
-      int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
-			    epMaxWaitMS); 
-
-
+  void EventDispatcher::runonce()
+  {
+    
+    
+    epoll_event events[EPOLLMAXCNT]; 
+    const int epMaxWaitMS = 1; 
+    int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
+			  epMaxWaitMS); 
+    
+    
       if (nfds > 0 ) {
 	boost::mutex::scoped_lock lock( cbTableMutex_ );
-
+	
 	for(int evtnum = 0; evtnum < nfds; evtnum++) {
 	  int fd = events[evtnum].data.fd; 
 	  
@@ -121,15 +126,15 @@ void EventDispatcher::runonce()
 	  throw std::runtime_error("epoll_wait returned an unexpected error condition"); 
 	}
       }
-
+      
       boost::mutex::scoped_lock lock( cbTimeoutsMutex_ );
       for(callbackList_t::iterator i = timeouts_.begin(); i != timeouts_.end(); i++)
 	{
 	  (*i)(0); 
 	}
       
-}
-
+  }
+  
 void EventDispatcher::addTimeout(eventCallback_t cb)
 {
 

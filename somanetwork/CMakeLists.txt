@@ -13,6 +13,7 @@ set(somanetwork_SRCS
   fakenetwork.cc
   network.cc
   netsockproxy.cc
+  domainsockproxy.cc
   ${datatype_SRCS})
 
 set(somanetwork_HEADERS
