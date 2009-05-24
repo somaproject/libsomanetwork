@@ -8,4 +8,11 @@ tspike_test: Test the tspike serialization and deserialization code. Requires
 	     that you have run tspike_test.py at some point to generate the
 	     example input data file, tspikes.frompy.dat
 
- 
+wave_test: Test wave serialization / deserialization
+
+raw_test : Test raw serialization / deserialization
+
+packetsequence_test : Test the packet sequende cdata structure
+
+seqpktproto_test : Test the sequential packet protocol 
+

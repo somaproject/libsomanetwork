@@ -2,10 +2,12 @@
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SIGC++_INCLUDE_DIRS})
 
-#TSpike Test
+SET(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
+
 
 add_library(network_test_utils
   canonical.cc
+  fakeeventserver.cc
 )
 
 add_executable(tspiketest
@@ -20,6 +22,11 @@ add_executable(rawtest
   raw_test.cc
   runner.cc)
 
+add_executable(pktseqtest
+  packetsequence_test.cc
+  seqpktproto_test.cc
+  runner.cc)
+
 add_executable(datareceivertest
   datareceiver_test.cc
   tests.cc
@@ -27,18 +34,11 @@ add_executable(datareceivertest
 
 add_executable(eventreceivertest
   eventreceiver_test.cc
-  eventtests.cc
   runner.cc)
 
 add_executable(eventtxtest
   eventreceiver_test.cc
-  eventtests.cc
   eventtxtests.cc
-  runner.cc)
-
-add_executable(pktseqtest
-  packetsequence_test.cc
-  seqpktproto_test.cc
   runner.cc)
 
 add_executable(domainsockproxytest

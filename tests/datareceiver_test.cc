@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE(outofordertest)
 
 BOOST_AUTO_TEST_CASE(dupetest)
 {
-  // we will send a series of packets with a dupe
+  // we will send a series of packets with a duplicate
   clearBuffer(); 
 
   // and then test them all. 

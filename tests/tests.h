@@ -17,6 +17,17 @@ void sendDataPacket(const std::vector<char> & dp, int port);
 
 class FakeDataServer 
 {
+  /* 
+     Fake data server takes in a list of packet sequence IDs to send,
+     and sends those packets on startup. Also runs a retransmission
+     thread out-of-process, and will respond with a canonical 
+     packet as requested. 
+
+     So if we tell the FakeDataServer to send sequences 0-3, 10-12, and
+     issue a retransmission request for 4, the retx thread will send 4. 
+
+   */ 
+
  public:
   FakeDataServer(datatype_t, datasource_t);
   ~FakeDataServer(); 

@@ -6,7 +6,7 @@ namespace somanetwork {
   {
     Raw_t r; 
     r.src = src; 
-    r.time = index + 0xAABBCCDD; 
+    r.time = index + 0xAABBCCDD00000000; 
     r.chansrc = index * 3; 
     r.filterid = 0x1122 * (index + 10); 
     for(int i = 0; i < RAWBUF_LEN; i++) {
@@ -31,7 +31,7 @@ namespace somanetwork {
   {
     TSpike_t ts; 
     ts.src = src; 
-    ts.time = 0x1234 * (index + 7); 
+    ts.time = 0x1234 * (index + 7) + 0xAABBCCDD00000000;  // want to test all 64 bits
     
     TSpikeWave_t * wave[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
     
@@ -82,10 +82,10 @@ namespace somanetwork {
   {
     Wave_t wave; 
     wave.src = src; 
-    wave.time = 0x1234 * (index + 7); 
+    wave.time = 0x1234 * (index + 7) + 0xAABBCCDD00000000;  // want to test all 64 bits
     
-    wave.sampratenum = index * 10 + 1; 
-    wave.samprateden = index * 20 + 1; 
+    wave.sampratenum = index * 100 + 1; 
+    wave.samprateden = index * 200 + 1; 
     wave.selchan = 10; 
     wave.filterid = src * index; 
     
@@ -102,7 +102,32 @@ namespace somanetwork {
 
     BOOST_CHECK_EQUAL(w1.src, w2.src); 
     BOOST_CHECK_EQUAL(w1.time, w2.time); 
+    BOOST_CHECK_EQUAL(w1.sampratenum, w2.sampratenum); 
+    BOOST_CHECK_EQUAL(w1.samprateden, w2.samprateden); 
+    BOOST_CHECK_EQUAL(w1.selchan, w2.selchan);
+    BOOST_CHECK_EQUAL(w1.filterid, w2.filterid);
     
-  }
+    for(int i = 0; i < WAVEBUF_LEN; i++) {
+      BOOST_CHECK_EQUAL(w2.wave[i], w2.wave[i]);
+    }
 
+
+  }
+  
+  EventList_t generateCanonicalEventList(int len, int index) {
+    EventList_t el; 
+    
+    for (int j = 0; j < len; j++) {
+      Event_t event; 
+      event.cmd = j + index; 
+      event.src = (j * 4) % 255; 
+      for (int k = 0; k < 5; k++)
+	{
+	  event.data[k] = k * 0x1234 + index + j ; 
+	}
+      el.push_back(event); 
+    }
+    return el; 
+  }
+  
 }

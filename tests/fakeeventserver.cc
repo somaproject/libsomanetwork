@@ -1,5 +1,4 @@
-#include "tests.h"
-#include "eventtests.h"
+#include "fakeeventserver.h"
 #include <somanetwork/event.h>
 #include <vector>
 #include <sys/types.h>
@@ -13,6 +12,7 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <somanetwork/ports.h>
+#include "canonical.h"
 
 FakeEventServer::FakeEventServer() :
   running_(false), 
@@ -52,19 +52,7 @@ std::list<EventList_t> genEventList(std::vector<char> es)
   for (std::vector<char>::iterator i = es.begin(); 
        i != es.end(); i++)
 	{
-	  EventList_t el; 
-	  // create the event
-	  for (int j = 0; j < *i; j++) {
-	    Event_t event; 
-	    event.cmd = j; 
-	    event.src = j * 4; 
-	    for (int k = 0; k < 5; k++)
-	      {
-		event.data[k] = k * 0x1234; 
-	      }
-	    el.push_back(event); 
-	  }
-	  els.push_back(el); 
+	  els.push_back(generateCanonicalEventList(*i, 0)); 
 	}
   return els; 
 }

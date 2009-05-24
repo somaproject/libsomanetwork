@@ -1,0 +1,52 @@
+libsomanetwork lets you create an instance of the network interface
+with a directory name, and in that directory name we will
+create the following canonical domain sockets for receiving traffic: 
+
+$DIRECTORY/eventrx  : the port we listen to to get events
+$DIRECTORY/data/tspikes/0 .. 63 : data source ports for tspikes
+
+Libsomanetwork also needs socket endpoints to exist in $DIRECTORY
+with the following names and ports: 
+     $DIRECTORY/dataretx
+     $DIRECTORY/eventretx 
+     $DIRECTORY/eventtx
+
+It will fail if those sockets do not exist. 
+
+Because domain socket semantics are a bit more complex, we enumerate the
+following use patterns and data flow: 
+
+------------------------------------------------------------
+Data Transmission from Soma Emulator to libsomanetwork
+------------------------------------------------------------
+(here we use tspike source 0 as an example) 
+
+libsomanetwork exposes socket $DIRECTORY/data/tspikes/0
+emulator writes datagrams to that socket
+
+Retransmission: 
+If libsomanetwork needs to request datagram retransmission, it will
+write to the emulator-created $DIRECTORY/dataretx. The emulator
+will write to $DIRECTORY/data/tspikes/0 when resending. 
+
+------------------------------------------------------------
+Event Transmission from Soma Emulator to libsomanetwork
+------------------------------------------------------------
+libsomanetwork exposes socket $DIRECTORY/eventrx
+emulator writes event datagrams to that socket
+
+Retransmission: 
+If libsomanetwork needs to request datagram retransmission, it will
+write to the emulator-created $DIRECTORY/eventretx. The emulator
+will write to $DIRECTORY/eventrx when resending. 
+
+
+------------------------------------------------------------
+Event Transmission from libsomanetwork to Soma Emulator
+------------------------------------------------------------
+soma emulator exposes $DIRECTORY/eventtx
+libsomanetwork writes event datagrams to that socket. 
+
+This is the one place where we want the equivalent of a ephemeral
+sockets, so that we can respond. 
+

@@ -8,6 +8,7 @@
 #include <somanetwork/raw.h>
 #include <somanetwork/tspike.h>
 #include <somanetwork/wave.h>
+#include <somanetwork/event.h>
 
 /*
   Deterministic functions which generate canonical versions
@@ -26,6 +27,9 @@ namespace somanetwork {
   Wave_t generateCanonicalWave(datasource_t src, int index); 
   void test_equality(const Wave_t & r1, const Wave_t & r2); 
 
+  EventList_t generateCanonicalEventList(int len, int index); 
+  void test_equality(const EventList_t & el1, const EventList_t & el2); 
+  
 }
 
 #endif

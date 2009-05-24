@@ -3,6 +3,7 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <iostream>
 #include <boost/array.hpp>
+#include <boost/bind.hpp>
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -21,14 +22,15 @@ BOOST_AUTO_TEST_SUITE(datareceiver_test)
 
 using boost::unit_test::test_suite;
 
-std::list<pEventPacket_t> eventPacketBuffer; 
 
-void append(pEventPacket_t elp)
+
+void append(std::list<pEventPacket_t> * epl, pEventPacket_t elp)
 {
-  eventPacketBuffer.push_back(elp); 
+  epl->push_back(elp); 
 }
 
-void verifyEventPacketBuffer(std::vector<std::vector<char> > & inputbufs)
+void verifyEventPacketBuffer(std::list<pEventPacket_t> eventPacketBuffer, 
+			     std::vector<std::vector<char> > & inputbufs)
 {
 
   std::list<pEventPacket_t >::iterator elbuf = eventPacketBuffer.begin(); 
@@ -64,14 +66,14 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   // 
   // Can we send a single packet? this is the model for all later tests
   // 
-  eventPacketBuffer.clear(); 
 
+  std::list<pEventPacket_t> eventPacketBuffer; 
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
 
-
-  EventReceiver er(ped, sp, &append); 
+  
+  EventReceiver er(ped, sp, boost::bind(append, &eventPacketBuffer, _1)); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -94,13 +96,10 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(eventPacketBuffer.front()->events->size(), 4+8+12+20+30); 
 
-  
-
-
   // assert data values
   std::vector<std::vector<char> > outlist; 
   outlist.push_back(lens); 
-  verifyEventPacketBuffer(outlist); 
+  verifyEventPacketBuffer(eventPacketBuffer, outlist); 
 
 }
 
@@ -108,14 +107,13 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
 BOOST_AUTO_TEST_CASE( multieventtest )
 {
   // Can we get multiple packets
+  std::list<pEventPacket_t> eventPacketBuffer; 
   
-  eventPacketBuffer.clear(); 
-
-  // and then test them all. 
-
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
-  EventReceiver er(ped, sp, &append); 
+  
+  EventReceiver er(ped, sp, boost::bind(append, &eventPacketBuffer, _1)); 
+
   
   // validate epoll addition
   FakeEventServer server; 
@@ -153,7 +151,7 @@ BOOST_AUTO_TEST_CASE( multieventtest )
   // assert data values
   BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 10); 
 
-  verifyEventPacketBuffer(outlist); 
+  verifyEventPacketBuffer(eventPacketBuffer, outlist); 
 
 }
 
@@ -163,13 +161,13 @@ BOOST_AUTO_TEST_CASE( outofordertest )
   // Check for proper handling of soma-device tx of out-of-order
   // packets
   // 
+  std::list<pEventPacket_t> eventPacketBuffer; 
 
-  eventPacketBuffer.clear(); 
 
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
-  EventReceiver er(ped, sp, &append); 
+  EventReceiver er(ped, sp, boost::bind(append, &eventPacketBuffer, _1)); 
   
   // validate epoll addition
   FakeEventServer server; 
@@ -210,21 +208,20 @@ BOOST_AUTO_TEST_CASE( outofordertest )
   // assert data values
   BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 10); 
 
-  verifyEventPacketBuffer(outlist); 
+  verifyEventPacketBuffer(eventPacketBuffer, outlist); 
 
 }
 
 BOOST_AUTO_TEST_CASE( droptest )
 {
   // if we send packets out of order, do we deal 
-  
-  eventPacketBuffer.clear(); 
+  std::list<pEventPacket_t> eventPacketBuffer; 
   
   // and then test them all. 
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
-  EventReceiver er(ped, sp, &append); 
-  
+  EventReceiver er(ped, sp, boost::bind(append, &eventPacketBuffer, _1)); 
+
   // validate epoll addition
   FakeEventServer server; 
   // create fake data
@@ -269,7 +266,7 @@ BOOST_AUTO_TEST_CASE( droptest )
   // assert data values
   BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 10); 
   
-  verifyEventPacketBuffer(outlist); 
+  verifyEventPacketBuffer(eventPacketBuffer, outlist); 
 
 }
 

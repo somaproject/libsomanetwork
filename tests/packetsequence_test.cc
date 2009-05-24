@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_SUITE(packetsequence)
 BOOST_AUTO_TEST_CASE(test_simple)
 {
   int SEQMAX = 100; 
-  somanetwork::PacketSequence<string> ps("Hello", 1, 100); 
+  somanetwork::PacketSequence<string> ps("Hello", 1, SEQMAX); 
   BOOST_CHECK_EQUAL(ps.headID(), 1); 
   BOOST_CHECK_EQUAL(ps.headID(), ps.tailID()); 
 
