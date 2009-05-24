@@ -1,0 +1,11 @@
+Unit and functional tests for various bits of libsomanetwork. We have
+the following support libraries: 
+
+  canonical.h : create and check typical packet types. 
+
+
+tspike_test: Test the tspike serialization and deserialization code. Requires
+	     that you have run tspike_test.py at some point to generate the
+	     example input data file, tspikes.frompy.dat
+
+ 

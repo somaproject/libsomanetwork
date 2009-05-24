@@ -5,6 +5,8 @@
 #include <iostream>    
 #include <fstream>                    
 #include <somanetwork/tspike.h>
+#include "canonical.h"
+
 using  namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 
@@ -14,49 +16,21 @@ BOOST_AUTO_TEST_SUITE(tspike_test);
 
 BOOST_AUTO_TEST_CASE(tspike_toandfrom) 
 {
+  /*
+    Identity operation -- convert a TSpike_t to a data packet
+    and then convert back, and make sure we are getting
+    the same data. 
 
-  TSpike_t ts; 
-  ts.src = 17; 
-  ts.time = 0x123456789ABCDEF; 
-
-  TSpikeWave_t * waves[4]; 
-  waves[0] = &ts.x; 
-  waves[1] = &ts.y; 
-  waves[2] = &ts.a; 
-  waves[3] = &ts.b; 
-  for (int i = 0; i < 4; i++) {
-    waves[i]->valid = i; 
-    waves[i]->filtid = 0x11223344 * (i+1); 
-    waves[i]->threshold = 100000 * (i + 17);
-    // waveform wave
-    for (int j = 0; j < TSPIKEWAVE_LEN; j++) {
-      waves[i]->wave[j] = i * 17 + j * 23; 
+   */ 
+  for (int i = 0; i < 20; i++) { 
+    for (int j = 0; j < 10; j++) { 
+      TSpike_t ts = generateCanonicalTSpike(i, j) ; 
       
-    }
-  }
-  
-  pDataPacket_t rdp = rawFromTSpike(ts); 
+      pDataPacket_t rdp = rawFromTSpike(ts); 
 
-  TSpike_t tsr = rawToTSpike(rdp); 
-  //BOOST_CHECK_EQUAL(ts.src, tsr.src); 
-  BOOST_CHECK_EQUAL(ts.time, tsr.time); 
-  
-  TSpikeWave_t * outwaves[4]; 
-  outwaves[0] = &tsr.x; 
-  outwaves[1] = &tsr.y; 
-  outwaves[2] = &tsr.a; 
-  outwaves[3] = &tsr.b; 
-  for (int i = 0; i < 4; i++) {
-    BOOST_CHECK_EQUAL(outwaves[i]->valid, waves[i]->valid); 
-    BOOST_CHECK_EQUAL(outwaves[i]->filtid, waves[i]->filtid); 
-    BOOST_CHECK_EQUAL(outwaves[i]->threshold, waves[i]->threshold); 
-    
-    for (int j = 0; j < TSPIKEWAVE_LEN; j++) 
-      {
-	BOOST_CHECK_EQUAL(outwaves[i]->wave[j], waves[i]->wave[j]); 
-	
-	
-      }
+      TSpike_t tsr = rawToTSpike(rdp); 
+      test_equality(ts, tsr); 
+    }
   }
   
 }
@@ -64,7 +38,10 @@ BOOST_AUTO_TEST_CASE(tspike_toandfrom)
 
 BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
 {
-  // we generate test data in python and read it here
+  /*
+    We generate test data in python with tspike_test.py and read it here
+    
+  */
   std::fstream pyfile("tspikes.frompy.dat", ios::in | ios::binary); 
   int N = 10000; 
   for (int i = 0; i < N; i++)
@@ -104,35 +81,6 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
     
 
 }
-
-// BOOST_AUTO_TEST_CASE(tspike_toraw)
-// {
-//   // we generate test data in python and read it here
-//   std::fstream pyfile("frompy.dat", ios::in | ios::binary); 
-//   int N = 1; 
-//   for (int i = 0; i < N; i++)
-//     {
-//       pDataPacket_t rdp(new DataPacket_t()); 
-//       const int PACKLEN = 548; 
-//       char buffer[PACKLEN]; 
-
-//       pyfile.read(buffer, PACKLEN); 
-//       memcpy(&rdp->body[0], buffer, PACKLEN); 
-
-//       TSpike_t ts = rawToTSpike(rdp); 
-      
-      
-//       pDataPacket_t nrdp = rawFromTSpike(ts); 
-      
-//       for (int i = 0; i < PACKLEN; i++)
-// 	{
-// 	  BOOST_CHECK_EQUAL(rdp->body[i], nrdp->body[i]); 
-// 	}
-//     }
-  
-  
-
-// }
 
 
 BOOST_AUTO_TEST_SUITE_END(); 
