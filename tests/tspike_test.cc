@@ -73,7 +73,9 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
 	  BOOST_CHECK_EQUAL(tsw.threshold, j * i * (2*17 - 141)); 
 	  for (int k = 0; k < TSPIKEWAVE_LEN; k++)
 	    {
-	      BOOST_CHECK_EQUAL(tsw.wave[k], j*i*0x12345 + k); 
+	      uint64_t val = (j*i*0x12345 + k); 
+	      val = val % (1<<31); 
+	      BOOST_CHECK_EQUAL(tsw.wave[k], val); 
 	    }
 	}
     }

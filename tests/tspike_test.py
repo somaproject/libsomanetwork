@@ -26,7 +26,7 @@ tspike_desc = n.dtype([('typ', n.uint8),
 
 
 if __name__ == "__main__":
-    N = 10000; 
+    N = 10000
 
     x = n.zeros(N, dtype=tspike_desc)
     r = x.tostring()
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             x[i][s]['valid'] = (j * i  % 256)
             x[i][s]['threshold'] = (j * i* (2*17-141))
             for k in range(WAVELEN):
-                x[i][s]['wave'][k] = j * i * 0x12345 +  (k)
+                x[i][s]['wave'][k] = (j * i * 0x12345 +  (k)) % 2**31
     print len(r)/N
 
     x.tofile('tspikes.frompy.dat')
