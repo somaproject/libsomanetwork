@@ -1,5 +1,9 @@
 #include "eventdispatcher.h"
 
+#include <event.h>
+typedef struct event libevent_event_t;
+
+
 namespace somanetwork {
 
 EventDispatcher::EventDispatcher() {
@@ -82,16 +86,16 @@ void EventDispatcher::run(void)
     
     
   while(running_){
-      
-    event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
-      
-        
+      runonce();
   }
   event_loopexit(NULL);
     
 }
 
-
+void EventDispatcher::runonce(void)
+{
+    event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
+}
   
 void EventDispatcher::controlEvent(int fd)
 {

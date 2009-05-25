@@ -6,7 +6,7 @@ set(datatype_SRCS
 
 set(somanetwork_SRCS 
   datareceiver.cc
-  event.cc
+  soma_event.cc
   eventdispatcher.cc
   eventreceiver.cc
   eventsender.cc
@@ -18,7 +18,7 @@ set(somanetwork_HEADERS
 datapacket.h
 datareceiver.h
 eventdispatcher.h
-event.h
+soma_event.h
 eventreceiver.h
 eventsender.h
 eventtx.h
@@ -38,12 +38,13 @@ wave.h
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SIGC++_INCLUDE_DIRS})
+include_directories(${Event_INCLUDE_DIRS})
 
 ADD_LIBRARY(somanetwork SHARED
   ${somanetwork_SRCS})
 
 target_link_libraries(somanetwork 
-  ${Boost_LIBRARIES} ${SIGC++_LIBRARIES})
+  ${Boost_LIBRARIES} ${SIGC++_LIBRARIES} event ${Event_LIBRARIES})
 
 SET_TARGET_PROPERTIES(somanetwork
   PROPERTIES VERSION ${LIBRARY_VERSION}

@@ -13,8 +13,17 @@
 #include <iostream>
 #include <list>
 
+#ifdef signal_add
+  #define signal_add_gtk signal_add
+#endif 
 #include <event.h>
+#undef signal_add
+#ifdef signal_add_gtk
+  #define signal_add signal_add_gtk
+#endif
+
 typedef struct event libevent_event_t;
+
 
 namespace somanetwork { 
 typedef boost::function<void (int fd)> eventCallback_t; 
