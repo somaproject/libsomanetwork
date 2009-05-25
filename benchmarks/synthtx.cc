@@ -64,22 +64,18 @@ void data_send_packet(txparams_t *  params) {
     ts->src = params->src; 
     ts->time = 0; 
 
-    ts->x.srcchan = 0; 
     ts->x.valid = 1; 
     ts->x.filtid = 0x12345678; 
     ts->x.threshold = 100000; 
     
-    ts->y.srcchan = 1; 
     ts->y.valid = 1; 
     ts->y.filtid = 0xAABBCCDD;
     ts->y.threshold = 100000; 
     
-    ts->a.srcchan = 2; 
     ts->a.valid = 1; 
     ts->a.filtid = 0x11223344;
     ts->a.threshold = 100000; 
     
-    ts->b.srcchan = 3; 
     ts->b.valid = 1; 
     ts->b.filtid = 0xABCD1234; 
     ts->b.threshold = 100000; 
