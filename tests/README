@@ -3,6 +3,8 @@ the following support libraries:
 
   canonical.h : create and check typical packet types. 
 
+tinytest.cc :  no-op test to generate valgrind suppression file
+
 
 tspike_test: Test the tspike serialization and deserialization code. Requires
 	     that you have run tspike_test.py at some point to generate the
@@ -16,3 +18,16 @@ packetsequence_test : Test the packet sequende cdata structure
 
 seqpktproto_test : Test the sequential packet protocol 
 
+Valgrind
+------------------------
+To use tinytest to generate the suppressions file, run with:
+
+valgrind --gen-suppressions=yes  --track-origins=yes ./tinytest
+
+This will generate a list of suppressions. The latest set are
+collected in boost.supp . I doubt these work across platforms
+or boost binary revisions. 
+
+Then run valgrind with: 
+
+valgrind --suppressions=boost.supp  --track-origins=yes  --show-reachable=yes TESTNAME
