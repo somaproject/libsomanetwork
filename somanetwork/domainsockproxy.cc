@@ -149,7 +149,7 @@ namespace somanetwork {
       throw std::runtime_error("error settng receive buffer size"); 
     }
     
-    socklen_t optlen;   
+    socklen_t optlen = 0;   
     res = getsockopt(sock, SOL_SOCKET, SO_RCVBUF, 
 		     (void *) &optval, &optlen); 
 

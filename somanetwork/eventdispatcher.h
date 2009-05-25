@@ -29,7 +29,7 @@ class  EventDispatcher
   // thread safe (can call from other threads)
   void run(); 
   void halt(); 
-  void runonce(); 
+  void runonce(int epMaxWaitMS); 
 
   void addEvent(int fd, eventCallback_t cb); 
   void delEvent(int fd); 

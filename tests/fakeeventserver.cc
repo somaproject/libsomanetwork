@@ -120,6 +120,8 @@ void FakeEventServer::shutdown()
 FakeEventServer::~FakeEventServer()
 {
   shutdown(); 
+  delete pmainthrd_;
+  delete pretxthrd_;
 
 }
 

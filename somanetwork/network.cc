@@ -55,7 +55,7 @@ void Network::shutdown()
 
   running_ = false; 
   pDispatch_->halt(); 
-
+  
 }
 
 Network::~Network()
@@ -74,7 +74,7 @@ Network::~Network()
       
       delete (*i).second; 
     }
-
+  delete pthrd_; 
 }
 
 void Network::disableAllDataRX()

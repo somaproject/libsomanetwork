@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   
   
   server.start(); 
-  ped->runonce(); 
+  ped->runonce(1000); 
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(outofordertest)
 
   server.start(); 
   for (int i = 0; i < 8; i++) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }  
 
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 8); 
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(dupetest)
   
   server.start(); 
   for (int i = 0; i < 9; i++) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }  
 
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 8); 
@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE(retxtest)
   
   server.start(); 
   for (int i = 0; i < 10; i++) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }  
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 10); 

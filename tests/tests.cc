@@ -127,7 +127,8 @@ void FakeDataServer::shutdown()
 FakeDataServer::~FakeDataServer()
 {
   shutdown(); 
-
+  delete pmainthrd_;
+  delete pretxthrd_;
 }
 
 

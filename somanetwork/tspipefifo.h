@@ -40,7 +40,7 @@ class TSPipeFifo
 
   void append(T x)
     {
-      char test; 
+      char test(0); 
       // we just lock the primitive, not the pipe
       // because if we add too much to the primitive and don't write to the 
       // pipe, it's not like the client will pop the (added) data
@@ -56,7 +56,6 @@ class TSPipeFifo
   
   T pop(void)
     {
-      char dummy; 
  
       boost::mutex::scoped_lock scoped_lock(mutex_);
       T x = fifo_.front(); 

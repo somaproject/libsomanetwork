@@ -68,7 +68,7 @@ pDataPacket_t sendData(Raw_t raw, bf::path outdir,
 		       sequence_t seq, int sendingsocket) {
 
   
-  size_t  len;
+  size_t  len = 0;
 
   pDataPacket_t dp = (rawFromRawForTX(raw, seq, &len)); 
 
@@ -104,7 +104,7 @@ pDataPacket_t sendData(TSpike_t raw, bf::path outdir,
 		       sequence_t seq, int sendingsocket) {
 
   
-  size_t  len;
+  size_t  len = 0;
 
   pDataPacket_t dp = (rawFromTSpikeForTX(raw, seq, &len)); 
 
@@ -140,7 +140,7 @@ pDataPacket_t sendData(Wave_t raw, bf::path outdir,
 		       sequence_t seq, int sendingsocket) {
 
   
-  size_t  len;
+  size_t  len = sizeof(Wave_t);
   
   pDataPacket_t dp = rawFromWave(raw); 
 

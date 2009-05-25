@@ -14,6 +14,10 @@ add_executable(tspiketest
   tspike_test.cc
   runner.cc)
 
+add_executable(tinytest
+  tiny_test.cc
+  runner.cc)
+
 add_executable(wavetest
   wave_test.cc
   runner.cc)
@@ -52,6 +56,7 @@ set(testlist
   datareceivertest 
   eventreceivertest
   eventtxtest
+  tinytest
   domainsockproxytest
   pktseqtest)
 

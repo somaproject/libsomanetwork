@@ -120,8 +120,9 @@ void EventSender::newResponse()
       if (pPendingPacket_ != NULL and pPendingPacket_->nonce == hnonce) {
 	
 	if (hsuccess) {
-	  
+	  delete pPendingPacket_; 
 	  pPendingPacket_ = 0;
+
 	  newEventIn(); 
 	} else {
 	  // it was a failure? what does that even mean? 
@@ -158,6 +159,7 @@ void EventSender::checkPending()
 	if (pPendingPacket_->txcnt < RETXCNT) {
 	  sendPendingEvent(); 
 	} else {
+	  // giving up
 	  delete pPendingPacket_;
 	  pPendingPacket_ = 0; 
 	  newEventIn(); 
@@ -185,7 +187,9 @@ void EventSender::sendPendingEvent()
 
 EventSender::~EventSender()
 {
-  
+  if (  pPendingPacket_ != NULL) {
+    delete pPendingPacket_; 
+  }
 }
 
 }

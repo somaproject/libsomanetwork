@@ -36,7 +36,7 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
     callbackTable_[fd] = cb; 
   } 
   struct epoll_event  ev; 
-
+  bzero(&ev, sizeof(ev)); 
   // try adding to epoll
   ev.events = EPOLLIN; 
   ev.data.fd = fd;
@@ -78,7 +78,7 @@ void EventDispatcher::run(void)
   while(running_)
     {
 
-      runonce(); 
+      runonce(1); 
     }
 }
 
@@ -92,17 +92,17 @@ void EventDispatcher::controlEvent(int fd)
 
 void EventDispatcher::halt()
 {
-  char x; 
+  char x(0); 
   int result = write(controlFDw_, &x, 1); 
 
 }
 
-  void EventDispatcher::runonce()
+  void EventDispatcher::runonce(int epMaxWaitMS)
   {
     
     
     epoll_event events[EPOLLMAXCNT]; 
-    const int epMaxWaitMS = 1; 
+
     int nfds = epoll_wait(epollFD_, events, EPOLLMAXCNT, 
 			  epMaxWaitMS); 
     

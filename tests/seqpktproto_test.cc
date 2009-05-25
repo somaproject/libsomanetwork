@@ -23,11 +23,13 @@ BOOST_AUTO_TEST_SUITE(seqpktproto)
 
 typedef std::list<seqid_t> seqlist_t; 
 
-SequentialPacketProtocol<string> * run_sequential_test(seqlist_t seqIDlist, seqlist_t seqIDlistRX, 
+typedef boost::shared_ptr<SequentialPacketProtocol<string> > pSPP_t; 
+
+pSPP_t run_sequential_test(seqlist_t seqIDlist, seqlist_t seqIDlistRX, 
 			 seqid_t SEQMAX)
 {
 
-  SequentialPacketProtocol<string> * spp = new SequentialPacketProtocol<string>(SEQMAX);
+  pSPP_t spp(new SequentialPacketProtocol<string>(SEQMAX));
   
   // create the data and push into source
   std::list<std::string> strdata; 
@@ -217,7 +219,7 @@ BOOST_AUTO_TEST_CASE(test_retx)
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
   std::list<seqid_t> retx =  spp->getRetransmitRequests(); 
   BOOST_CHECK_EQUAL(retx.front(), 4); 
@@ -238,7 +240,7 @@ BOOST_AUTO_TEST_CASE(test_retx_lost_single)
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
   std::list<seqid_t> retx =  spp->getRetransmitRequests(); 
   BOOST_CHECK_EQUAL(retx.front(), 4); 
@@ -260,7 +262,7 @@ BOOST_AUTO_TEST_CASE(test_retx_lost_multiple)
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
   std::list<seqid_t> retx =  spp->getRetransmitRequests(); 
   std::list<seqid_t>::iterator ri = retx.begin(); 
@@ -285,7 +287,7 @@ BOOST_AUTO_TEST_CASE(test_random_permutation_packets)
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 4, 5, 6, 7, 8, 9; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 }
 
@@ -300,7 +302,7 @@ BOOST_AUTO_TEST_CASE(test_noise_packets)
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 4, 5, 6, 7, 8, 9; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
 }
@@ -319,7 +321,7 @@ BOOST_AUTO_TEST_CASE(test_abort_sequence)
   goodout += 0, 1, 2, 3, 100, 101, 102, 103, 104, 105, 106, 107, 108,
     109, 110, 111; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
 }
@@ -339,7 +341,7 @@ BOOST_AUTO_TEST_CASE(test_abort_sequence_2)
                109, 110, 111, 112, 113, 114, 115, 116,
                117, 118, 119; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
 }
@@ -359,7 +361,7 @@ BOOST_AUTO_TEST_CASE(test_abort_sequence_3)
                109, 110, 111, 112, 113, 114, 115, 116,
                117, 118, 119;
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
 }
@@ -375,7 +377,7 @@ BOOST_AUTO_TEST_CASE(test_overlapping_seq)
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
 
@@ -396,7 +398,7 @@ BOOST_AUTO_TEST_CASE(test_abort_sequence_with_wraparound)
   goodout += 800, 801, 802, 803, 900, 901, 
     2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
 }
@@ -413,7 +415,7 @@ BOOST_AUTO_TEST_CASE(stats_test_linear_addition) {
   seqlist_t goodin; 
   goodin += 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(goodin, goodin, SEQMAX); 
 
   SeqPacketProtoStats stats = spp->getStats(); 
@@ -444,7 +446,7 @@ BOOST_AUTO_TEST_CASE(stats_test) {
   seqlist_t goodout; 
   goodout += 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1; 
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(goodin, goodout, SEQMAX); 
 
   SeqPacketProtoStats stats = spp->getStats(); 
@@ -487,7 +489,7 @@ BOOST_AUTO_TEST_CASE(stat_test_abort_sequence_3)
                109, 110, 111, 112, 113, 114, 115, 116,
                117, 118, 119;
   
-  SequentialPacketProtocol<string> * spp = 
+  pSPP_t spp = 
     run_sequential_test(pktin, goodout, SEQMAX); 
 
   SeqPacketProtoStats stats = spp->getStats(); 

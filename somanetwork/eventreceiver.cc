@@ -42,6 +42,7 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
   sendto(socket_, &retxbuf[0], 4, 0, 
 	 pSockProxy_->getEventReTxReqSockAddr(), 
 	 pSockProxy_->getEventReTxReqSockAddrLen()); 
+  delete[] retxbuf; 
 
 }
 

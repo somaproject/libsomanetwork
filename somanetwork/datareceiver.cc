@@ -52,6 +52,8 @@ void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 	 pSockProxy_->getDataReTxReqSockAddr(), 
 	 pSockProxy_->getDataReTxReqSockAddrLen()); 
 
+  delete[] retxbuf; 
+
 }
 
 

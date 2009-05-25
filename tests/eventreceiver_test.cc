@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE( simpleeventtest )
   server.appendSeqsToSend(eso); 
 
   server.start(); 
-  ped->runonce(); 
+  ped->runonce(1000); 
   
   BOOST_CHECK_EQUAL(eventPacketBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(eventPacketBuffer.front()->events->size(), 4+8+12+20+30); 
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE( multieventtest )
 
   /// wait for the primary rx to complete
   while ( !server.workthreaddone()) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }
   
   // assert data values
@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE( outofordertest )
   server.start(); 
 
   while ( !server.workthreaddone()) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }
       
   // assert data values
@@ -259,7 +259,7 @@ BOOST_AUTO_TEST_CASE( droptest )
 
 
   while ( !server.workthreaddone()) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }
 
   

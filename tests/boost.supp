@@ -1,0 +1,7 @@
+{
+   Boost Unit test Bug
+   Memcheck:Addr8
+   fun:_ZN5boost9unit_test14framework_implD1Ev
+   fun:exit
+   fun:(below main)
+}
