@@ -122,6 +122,18 @@ namespace somanetwork {
 
   }
 
+  void DomainSocketProxy::closeSocket(int sock) {
+    // close _AND_ unlink
+    sockaddr_un sa; 
+    socklen_t len = sizeof(sockaddr_un); 
+    getsockname(sock, (sockaddr*)&sa, &len); 
+
+    close(sock); 
+
+    unlink(sa.sun_path); 
+
+  }
+
   int DomainSocketProxy::createEventRXSocket() {
     
     int sock; 

@@ -76,6 +76,11 @@ namespace somanetwork {
 
   }
 
+  void NetSocketProxy::closeSocket(int sock) {
+
+    close(sock); 
+
+  }
 
   int NetSocketProxy::createEventRXSocket() {
     int sock; 

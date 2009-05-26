@@ -14,16 +14,17 @@
 #include <somanetwork/networkinterface.h>
 
 namespace somanetwork {
+
 class Network : public NetworkInterface
 
 {
 
  public:
+  static pNetworkInterface_t createINet(std::string somaip); 
+  static pNetworkInterface_t createDomain(boost::filesystem::path basedirectory); 
 
   ~Network(); 
 
-  static pNetworkInterface_t createINet(std::string somaip); 
-  static pNetworkInterface_t createDomain(boost::filesystem::path basedirectory); 
   
   void enableDataRX(datasource_t, datatype_t); 
   void disableDataRX(datasource_t, datatype_t); 

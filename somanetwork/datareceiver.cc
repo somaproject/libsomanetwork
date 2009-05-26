@@ -30,10 +30,9 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch,
 
 DataReceiver::~DataReceiver()
 {
-  
   // remove from epoll
   pDispatch_->delEvent(socket_); 
-  close(socket_); 
+  pSockProxy_->closeSocket(socket_); 
   
 }
 

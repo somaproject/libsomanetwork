@@ -328,4 +328,37 @@ BOOST_AUTO_TEST_CASE(test_events_to_soma)
   nf->shutdown(); 
 }
 
+
+BOOST_AUTO_TEST_CASE(test_enable_disable)
+{
+  /*
+    Can we disable and reenable a particular data source
+  */ 
+  std::cout << "test_enable_disable" << std::endl; 
+  bf::path tempdir = createTempDir(); 
+  BOOST_CHECK_THROW(Network::createDomain(tempdir), 
+		    std::runtime_error); 
+  
+  createBoundDomainSocket(tempdir / "dataretx"); 
+  createBoundDomainSocket(tempdir / "eventretx"); 
+  createBoundDomainSocket(tempdir / "eventtx"); 
+  
+  int sendingsocket = createBoundDomainSocket(tempdir / "test_sendsocket"); 
+
+  pNetworkInterface_t nf = Network::createDomain(tempdir); 
+  
+  datasource_t src = 10;
+  nf->enableDataRX(src, RAW); 
+  nf->disableDataRX(src, RAW); 
+  std::cout << "About to reenable" << std::endl; 
+  nf->enableDataRX(src, RAW); 
+  std::cout << "About to reenable: done" << std::endl; 
+
+  nf->run(); 
+  
+
+
+  nf->shutdown(); 
+}
+
 BOOST_AUTO_TEST_SUITE_END(); 

@@ -17,7 +17,8 @@ public:
 
   // open and return a data socket suitable for receiving data
   virtual int createDataSocket(datasource_t src, datatype_t type) = 0; 
-  
+  virtual void closeSocket(int sock) = 0; 
+
   virtual sockaddr * getDataReTxReqSockAddr() = 0;
   virtual socklen_t getDataReTxReqSockAddrLen() =0; 
 
@@ -29,7 +30,7 @@ public:
   virtual int createEventTXSocket() = 0; 
   virtual sockaddr * getEventTXSockAddr() = 0; 
   virtual socklen_t getEventTXSockAddrLen() = 0; 
-
+  
 }; 
 
   typedef boost::shared_ptr<ISocketProxy> pISocketProxy_t; 

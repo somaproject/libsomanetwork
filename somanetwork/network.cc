@@ -137,6 +137,7 @@ void Network::enableDataRX(datasource_t src, datatype_t typ)
 
 void Network::disableDataRX(datasource_t src, datatype_t typ)
 {
+  std::cout << "Disable called " << std::endl; 
   // we really need a custom try/catch here 
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 

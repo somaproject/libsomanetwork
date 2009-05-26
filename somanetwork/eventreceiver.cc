@@ -27,7 +27,7 @@ EventReceiver::~EventReceiver()
 {
   
   pDispatch_->delEvent(socket_); 
-  close(socket_); 
+  pSockProxy_->closeSocket(socket_); 
 
 }
 

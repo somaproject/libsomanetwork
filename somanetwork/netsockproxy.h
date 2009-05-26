@@ -14,7 +14,8 @@ public:
 
   // open and return a data socket suitable for receiving data
   int createDataSocket(datasource_t src, datatype_t type); 
-  
+  void closeSocket(int sock); 
+
   sockaddr * getDataReTxReqSockAddr() {
     return (sockaddr*)&retxDataReqSockAddr_; 
   }

@@ -55,8 +55,8 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
 
       TSpike_t ts = rawToTSpike(rdp); 
       BOOST_CHECK_EQUAL(ts.src,  i % 256); 
-      uint64_t time = i * 10215; 
-
+      uint64_t time = i * 10215 + 0x12345678ll; 
+      std::cout << "ts.time = " <<  ts.time << std::endl; 
       BOOST_CHECK_EQUAL(ts.time, time); 
       
       std::vector<TSpikeWave_t> waves; 

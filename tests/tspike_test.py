@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for  i in range(N):
         x[i]['typ'] = 0
         x[i]['src'] = (i % 256)
-        x[i]['time'] = i * 10215
+        x[i]['time'] = i * 10215 + 0x12345678
         for j, s in enumerate(['x', 'y', 'a', 'b']):
             x[i][s]['filtid'] = (j * i)
             x[i][s]['valid'] = (j * i  % 256)

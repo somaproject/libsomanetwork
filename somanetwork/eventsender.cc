@@ -190,6 +190,7 @@ EventSender::~EventSender()
   if (  pPendingPacket_ != NULL) {
     delete pPendingPacket_; 
   }
+  pSockProxy_->closeSocket(sendSock_); 
 }
 
 }
