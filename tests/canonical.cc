@@ -6,7 +6,7 @@ namespace somanetwork {
   {
     Raw_t r; 
     r.src = src; 
-    r.time = index + 0xAABBCCDD00000000; 
+    r.time = index + 0xAABBCCDD00000000LL; 
     r.chansrc = index * 3; 
     r.filterid = 0x1122 * (index + 10); 
     for(int i = 0; i < RAWBUF_LEN; i++) {
@@ -31,7 +31,7 @@ namespace somanetwork {
   {
     TSpike_t ts; 
     ts.src = src; 
-    ts.time = 0x1234 * (index + 7) + 0xAABBCCDD00000000;  // want to test all 64 bits
+    ts.time = 0x1234 * (index + 7) + 0xAABBCCDD00000000LL;  // want to test all 64 bits
     
     TSpikeWave_t * wave[] = {&ts.x, &ts.y, &ts.a, &ts.b}; 
     
@@ -82,7 +82,7 @@ namespace somanetwork {
   {
     Wave_t wave; 
     wave.src = src; 
-    wave.time = 0x1234 * (index + 7) + 0xAABBCCDD00000000;  // want to test all 64 bits
+    wave.time = 0x1234 * (index + 7) + 0xAABBCCDD00000000LL;  // want to test all 64 bits
     
     wave.sampratenum = index * 100 + 1; 
     wave.samprateden = index * 200 + 1; 
