@@ -8,6 +8,9 @@
 
 #include <somanetwork/datareceiver.h>
 #include <somanetwork/eventdispatcher.h>
+#include <somanetwork/sockproxy.h>
+#include <somanetwork/netsockproxy.h>
+
 #include "tests.h"
 
 using boost::unit_test::test_suite;
@@ -40,8 +43,9 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 10;
   datatype_t typ = RAW; 
-  
-  DataReceiver dr(ped, src, typ, &append); 
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -50,7 +54,7 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   
   
   server.start(); 
-  ped->runonce(); 
+  ped->runonce(1000); 
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
@@ -70,8 +74,10 @@ BOOST_AUTO_TEST_CASE(outofordertest)
   
   datasource_t src = 30;
   datatype_t  typ = TSPIKE; 
-  
-  DataReceiver dr(ped, src, typ, &append); 
+
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -91,7 +97,7 @@ BOOST_AUTO_TEST_CASE(outofordertest)
 
   server.start(); 
   for (int i = 0; i < 8; i++) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }  
 
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 8); 
@@ -106,7 +112,7 @@ BOOST_AUTO_TEST_CASE(outofordertest)
 
 BOOST_AUTO_TEST_CASE(dupetest)
 {
-  // we will send a series of packets with a dupe
+  // we will send a series of packets with a duplicate
   clearBuffer(); 
 
   // and then test them all. 
@@ -114,8 +120,10 @@ BOOST_AUTO_TEST_CASE(dupetest)
 
   datasource_t src = 30;
   datatype_t typ = TSPIKE; 
+
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
   
-  DataReceiver dr(ped, src, typ, &append); 
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -134,12 +142,12 @@ BOOST_AUTO_TEST_CASE(dupetest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
+  //struct epoll_event ev;
+  //epoll_event events[EPOLLMAXCNT];
   
   server.start(); 
   for (int i = 0; i < 9; i++) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }  
 
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 8); 
@@ -163,9 +171,10 @@ BOOST_AUTO_TEST_CASE(retxtest)
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 30;
   datatype_t typ = RAW; 
-  int epollfd = epoll_create(EPOLLMAXCNT);
-  
-  DataReceiver dr(ped, src, typ, &append); 
+
+  pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
+
+  DataReceiver dr(ped, sp, src, typ, &append); 
   
   // validate epoll addition
   FakeDataServer server(typ, src); 
@@ -184,12 +193,12 @@ BOOST_AUTO_TEST_CASE(retxtest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
+  //struct epoll_event ev;
+  //epoll_event events[EPOLLMAXCNT];
   
   server.start(); 
   for (int i = 0; i < 10; i++) {
-    ped->runonce(); 
+    ped->runonce(1000); 
   }  
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 10); 

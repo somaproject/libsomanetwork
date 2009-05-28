@@ -25,8 +25,8 @@ ENABLE_TESTING()
 include_directories(.)
 
 add_subdirectory(somanetwork)
-#add_subdirectory(tests)
-#add_subdirectory(benchmarks)
+add_subdirectory(tests)
+add_subdirectory(benchmarks)
 
 configure_file(somanetwork-1.0.pc.in somanetwork-1.0.pc)
 

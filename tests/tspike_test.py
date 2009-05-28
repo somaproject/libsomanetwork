@@ -26,7 +26,11 @@ tspike_desc = n.dtype([('typ', n.uint8),
 
 
 if __name__ == "__main__":
-    N = 10000; 
+<<<<<<< HEAD:tests/tspike_test.py
+    N = 10000
+=======
+    N = 9000; 
+>>>>>>> de26d13e8718b9ae86f0874cc4049e6a4b5e5f73:tests/tspike_test.py
 
     x = n.zeros(N, dtype=tspike_desc)
     r = x.tostring()
@@ -38,13 +42,23 @@ if __name__ == "__main__":
     for  i in range(N):
         x[i]['typ'] = 0
         x[i]['src'] = (i % 256)
-        x[i]['time'] = i * 10215
+        x[i]['time'] = i * 10215 + 0x12345678
         for j, s in enumerate(['x', 'y', 'a', 'b']):
             x[i][s]['filtid'] = (j * i)
             x[i][s]['valid'] = (j * i  % 256)
             x[i][s]['threshold'] = (j * i* (2*17-141))
             for k in range(WAVELEN):
+<<<<<<< HEAD:tests/tspike_test.py
+                x[i][s]['wave'][k] = (j * i * 0x12345 +  (k)) % 2**31
+=======
+                #try:
                 x[i][s]['wave'][k] = j * i * 0x12345 +  (k)
+                #except Exception, e:
+                #    print "j = %d, i = %d, k = %d" % (j,i,k) 
+                #    print "%ld" % (j * i * 0x12345 +  (k))
+                #    exit()
+
+>>>>>>> de26d13e8718b9ae86f0874cc4049e6a4b5e5f73:tests/tspike_test.py
     print len(r)/N
 
     x.tofile('tspikes.frompy.dat')
