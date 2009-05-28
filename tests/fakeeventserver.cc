@@ -1,5 +1,5 @@
 #include "fakeeventserver.h"
-#include <somanetwork/soma_event.h>
+#include <somanetwork/event.h>
 
 #include <vector>
 #include <sys/types.h>

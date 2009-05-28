@@ -20,7 +20,7 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
-#include <somanetwork/soma_event.h>
+#include <somanetwork/event.h>
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
 #include <somanetwork/seqpktproto.h>

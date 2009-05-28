@@ -6,7 +6,7 @@ tspike.cc
 
 set(somanetwork_SRCS 
 datareceiver.cc
-soma_event.cc
+event.cc
 eventdispatcher.cc
 eventreceiver.cc
 eventsender.cc
@@ -23,7 +23,7 @@ sockproxy.h
 netsockproxy.h
 datareceiver.h
 eventdispatcher.h
-soma_event.h
+event.h
 eventreceiver.h
 eventsender.h
 eventtx.h

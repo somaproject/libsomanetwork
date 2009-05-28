@@ -12,7 +12,7 @@
 #include <somanetwork/ports.h>
 #include "tests.h"
 #include "eventtests.h"
-#include <somanetwork/soma_event.h>
+#include <somanetwork/event.h>
 
 FakeEventRXServer::FakeEventRXServer(skipMap_t norx, skipMap_t fail) :
   norxMap_(norx), 
