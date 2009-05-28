@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -20,7 +20,7 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp> //include all types plus i/o
 
-#include <somanetwork/event.h>
+#include <somanetwork/soma_event.h>
 #include <somanetwork/packetreceiver.h>
 #include <somanetwork/eventdispatcher.h>
 #include <somanetwork/seqpktproto.h>

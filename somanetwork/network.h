@@ -3,14 +3,13 @@
 
 #include <map>
 #include <utility>
-#include <sys/epoll.h>
 #include <boost/filesystem.hpp>
-#include <somanetwork/sockproxy.h>
+
 #include <somanetwork/tspipefifo.h> 
 #include <somanetwork/datareceiver.h> 
 #include <somanetwork/eventreceiver.h>
 #include <somanetwork/eventsender.h> 
-#include <somanetwork/event.h> 
+#include <somanetwork/soma_event.h> 
 #include <somanetwork/networkinterface.h>
 
 namespace somanetwork {

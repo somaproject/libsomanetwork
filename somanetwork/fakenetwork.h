@@ -4,13 +4,13 @@
 #include <map>
 #include <set>
 #include <utility>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <fstream>
 
 #include <somanetwork/tspipefifo.h>
 #include <somanetwork/datareceiver.h>
 #include <somanetwork/eventreceiver.h>
-#include <somanetwork/event.h>
+#include <somanetwork/soma_event.h>
 #include <somanetwork/networkinterface.h>
 #include <sigc++/sigc++.h>
 /* 

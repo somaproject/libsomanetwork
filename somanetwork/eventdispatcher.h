@@ -8,10 +8,22 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/shared_ptr.hpp>
 #include <utility>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <errno.h>
 #include <iostream>
 #include <list>
+
+#ifdef signal_add
+  #define signal_add_gtk signal_add
+#endif 
+#include <event.h>
+#undef signal_add
+#ifdef signal_add_gtk
+  #define signal_add signal_add_gtk
+#endif
+
+typedef struct event libevent_event_t;
+
 
 namespace somanetwork { 
 typedef boost::function<void (int fd)> eventCallback_t; 
@@ -29,8 +41,10 @@ class  EventDispatcher
   // thread safe (can call from other threads)
   void run(); 
   void halt(); 
-  void runonce(int epMaxWaitMS); 
+  void runonce(int maxwait); 
 
+    void dispatchEvent(int fd);
+    
   void addEvent(int fd, eventCallback_t cb); 
   void delEvent(int fd); 
 
@@ -39,11 +53,18 @@ class  EventDispatcher
 
  private:
   int epollFD_; 
+
   bool running_; 
+    
   int controlFDw_, controlFDr_; 
+  
   callbackTable_t callbackTable_; 
   boost::mutex cbTableMutex_;
-
+  
+    
+  std::map<int, struct event*> eventTable_; 
+  boost::mutex eventTableMutex_;
+    
   callbackList_t timeouts_; 
   boost::mutex cbTimeoutsMutex_; 
 

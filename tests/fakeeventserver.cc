@@ -1,4 +1,5 @@
-#include "fakeeventserver.h"
+#include "tests.h"
+#include "eventtests.h"
 #include <somanetwork/event.h>
 #include <vector>
 #include <sys/types.h>
@@ -12,7 +13,6 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <somanetwork/ports.h>
-#include "canonical.h"
 
 FakeEventServer::FakeEventServer() :
   running_(false), 
@@ -52,7 +52,19 @@ std::list<EventList_t> genEventList(std::vector<char> es)
   for (std::vector<char>::iterator i = es.begin(); 
        i != es.end(); i++)
 	{
-	  els.push_back(generateCanonicalEventList(*i, 0)); 
+	  EventList_t el; 
+	  // create the event
+	  for (int j = 0; j < *i; j++) {
+	    Event_t event; 
+	    event.cmd = j; 
+	    event.src = j * 4; 
+	    for (int k = 0; k < 5; k++)
+	      {
+		event.data[k] = k * 0x1234; 
+	      }
+	    el.push_back(event); 
+	  }
+	  els.push_back(el); 
 	}
   return els; 
 }
@@ -120,8 +132,6 @@ void FakeEventServer::shutdown()
 FakeEventServer::~FakeEventServer()
 {
   shutdown(); 
-  delete pmainthrd_;
-  delete pretxthrd_;
 
 }
 
@@ -193,14 +203,13 @@ void FakeEventServer::retxthread(void) {
       }
     
     if (FD_ISSET(s, &readfds)) {
-      
+
       int res = recv(s, dummy, 100, 0); 
       unsigned int seq; 
       memcpy(&seq, &dummy[0], 4); 
       unsigned int seq_host; 
       seq_host = ntohl(seq); 
-      std::cout << "Recieved event retx req for seq=" 
-		<< seq_host << std::endl; 
+
       std::vector<char> dp = retxLUT_[seq_host]; 
       int n = sendto(sendsock_, &(dp)[0],
 		     dp.size(), 0, (sockaddr*)&server,

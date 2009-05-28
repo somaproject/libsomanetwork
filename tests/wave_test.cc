@@ -5,8 +5,6 @@
 #include <iostream>    
 #include <fstream>                    
 #include "somanetwork/wave.h"
-#include "canonical.h"
-
 using  namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 
@@ -17,20 +15,36 @@ BOOST_AUTO_TEST_SUITE(wave_test);
 
 BOOST_AUTO_TEST_CASE(wave_toraw)
 {
-  /* 
-     Generate a Wave packet, convert to a datapacket, and read it back in
-   */
-  for( int src = 0; src < 64; src++) {
-    for (int index = 0; index < 1000; index++) {
-      Wave_t wave = generateCanonicalWave(src, index); 
-      pDataPacket_t dpt = rawFromWave(wave); 
-  
-      Wave_t wr = rawToWave(dpt); 
-  
-      test_equality(wave, wr); 
+  Wave_t w; 
+  w.src = 120; 
+  w.time = 0x123456789ABCDEF; 
+  w.sampratenum = 0xCD12; 
+  w.selchan = 0x4567; 
+  w.filterid = 0x1234; 
+  // fil the wave with 128 words
+  for (int i = 0; i < WAVEBUF_LEN; i++)
+    {
+      w.wave[i] = (i * 1000); 
     }
-  }
   
+  pDataPacket_t dpt = rawFromWave(w); 
+  
+  Wave_t wr = rawToWave(dpt); 
+  
+  BOOST_CHECK_EQUAL(wr.src, w.src); 
+  BOOST_CHECK_EQUAL(wr.time, w.time); 
+
+  BOOST_CHECK_EQUAL(wr.sampratenum, w.sampratenum); 
+  
+  BOOST_CHECK_EQUAL(wr.selchan, w.selchan); 
+
+  BOOST_CHECK_EQUAL(wr.filterid, w.filterid); 
+
+  for (int i = 0; i < 128; i++)
+    {
+      BOOST_CHECK_EQUAL(wr.wave[i], i*1000); 
+    }
+
 }
 
 
