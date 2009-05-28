@@ -22,6 +22,10 @@ add_executable(wavetest
   wave_test.cc
   runner.cc)
 
+add_executable(networktest
+  network_test.cc
+  runner.cc)
+
 add_executable(rawtest
   raw_test.cc
   runner.cc)
@@ -57,6 +61,7 @@ set(testlist
   eventreceivertest
   eventtxtest
   tinytest
+  networktest
   domainsockproxytest
   pktseqtest)
 

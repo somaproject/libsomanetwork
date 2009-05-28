@@ -2,223 +2,117 @@
 #include <boost/test/auto_unit_test.hpp>
 #include <iostream>
 #include <boost/array.hpp>
-#include <asio.hpp>
 #include <arpa/inet.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp>
 
 #include <somanetwork/datareceiver.h>
 #include <somanetwork/network.h>
+
+#include <sys/un.h>
+#include <sys/socket.h>
+
 #include "tests.h"
 
-using asio::ip::udp;
 
-using boost::unit_test::test_suite;
+using namespace boost::filesystem; 
+using namespace std; 
+using namespace somanetwork; 
+namespace bf = boost::filesystem; 
+
+BOOST_AUTO_TEST_SUITE(network_test); 
 
 
-class ReTxServer
+bf::path createTempDir()
 {
-public:
-  ReTxServer(asio::io_service& io_service)
-    : socket_(io_service, udp::endpoint(udp::v4(), 4400))
-  {
-    start_receive();
+  char tempdir[] = "/tmp/testXXXXXX"; 
+  char * ptr = mkdtemp(tempdir); 
+  if(ptr == NULL) {
+    throw std::runtime_error("unable to create temporary directory"); 
   }
 
-private:
-  void start_receive()
-  {
-    socket_.async_receive_from(
-        asio::buffer(recv_buffer_), remote_endpoint_,
-        boost::bind(&ReTxServer::handle_receive, this,
-          asio::placeholders::error,
-          asio::placeholders::bytes_transferred));
-  }
+  return bf::path(ptr); 
+}
 
-  void handle_receive(const asio::error_code& error,
-      std::size_t /*bytes_transferred*/)
-  {
-    if (!error || error == asio::error::message_size)
-      {
-	
-	unsigned char typ = recv_buffer_[0]; 
-	unsigned char src = recv_buffer_[1]; 
-	unsigned int seq; 
-	memcpy(&seq, &recv_buffer_[2], 4); 
-	unsigned int seq_host; 
-	seq_host = ntohl(seq); 
-	
-	char * resp = fakeDataPacket(seq_host, src, typ); 
-	udp::endpoint retxep = remote_endpoint_;
-	retxep.port(dataPortLookup(typ, src)); 
-	
-	socket_.async_send_to(asio::buffer(resp, BUFSIZE), 
-			      retxep,
-			      boost::bind(&ReTxServer::handle_send, 
-					  this, resp,
-					  asio::placeholders::error,
-					  asio::placeholders::bytes_transferred));
-	
-	start_receive();
-      }
+int createBoundDomainSocket(bf::path srcpath)
+{
+  // Create and bind a temporary domain socket at the indicated path
+
+  int sock = socket(AF_LOCAL, SOCK_DGRAM, 0); 
+  
+  if (sock < 0) {
+    throw std::runtime_error("test infrastructure could not create socket"); 
+    
   }
   
-  void handle_send(char * message,
-		   const asio::error_code& /*error*/,
-		   std::size_t /*bytes_transferred*/)
-  {
-    delete message; 
+  struct sockaddr_un su_me; 
+  
+  
+  bzero((char *) &su_me, sizeof(su_me));
+  
+  su_me.sun_family = AF_LOCAL;
+  
+  strcpy(su_me.sun_path, srcpath.string().c_str()); 
+  
+  int res =  bind(sock, (sockaddr*)&su_me, sizeof(su_me)); 
+  
+  if (res < 0) {
+    throw std::runtime_error("test infrastrucutre error binding socket"); 
   }
+  
+  return sock; 
+  
+}
 
-  udp::socket socket_;
-  udp::endpoint remote_endpoint_;
-  boost::array<char, 6> recv_buffer_;
-};
-
-void sendPackets(udp::socket & socket,
-		 int seqstart, int seqstop, int src, int typ)
+BOOST_AUTO_TEST_CASE(simple)
 {
-  // send packets:
-  udp::endpoint receiver_endpoint(asio::ip::address::from_string("127.0.0.1"),
-				  dataPortLookup(typ, src)); 
+  // Create and destroy network
+  pNetworkInterface_t ni = Network::createINet("127.0.0.1"); 
+  
+  
+}
 
-  for (int i = seqstart; i <= seqstop; i++) {
-    char * fd = fakeDataPacket(i, src, typ); 
-
-    socket.send_to(asio::buffer(fd, BUFSIZE), receiver_endpoint);  
-  }
+BOOST_AUTO_TEST_CASE(simple_start)
+{
+  // Create and destroy network
+  pNetworkInterface_t ni = Network::createINet("127.0.0.1"); 
+  ni->run(); 
+  ni->shutdown(); 
+  
+  
 }
 
 
-// retx response
-
-
-BOOST_AUTO_TEST_CASE( simpletest )
+BOOST_AUTO_TEST_CASE(simple_start_eanble)
 {
-  Network network; 
-  network.enableDataRx(0, 0);
-  network.enableDataRx(1, 0);
-  network.enableDataRx(2, 0);
-
-  network.run(); 
-
-  // first, set up the generic IO 
-  asio::io_service io_service;
-
-  // construct tx endpoint
-
-
-  udp::socket socket(io_service);
-  socket.open(udp::v4());
+  // Create and destroy network
+  pNetworkInterface_t ni = Network::createINet("127.0.0.1"); 
+  ni->enableDataRX(0, TSPIKE); 
+  ni->run(); 
+  ni->shutdown(); 
   
-  int N = 11; 
-  sendPackets(socket, 0, 10, 0, 0); 
-  sendPackets(socket, 0, 0, 1, 0); 
-  sendPackets(socket, 0, 10, 2, 0); 
-  sendPackets(socket, 1, 10, 1, 0); 
   
-  std::vector<sequence_t> rxseqpos(3); 
-  rxseqpos[0] = 0; rxseqpos[1] = 0; rxseqpos[2] = 0; 
-
-  for (int i = 0; i < N*3; i++) 
-    {
-      char x; 
-      read(network.getTSPipeFifoPipe(), &x, 1); 
-      RawData * rdp = network.getNewData(); 
-      
-      BOOST_CHECK_EQUAL(rxseqpos[rdp->src], rdp->seq); 
-      rxseqpos[rdp->src]++; 
-
-    }
-
-  network.shutdown(); 
-
-
 }
 
-// BOOST_AUTO_TEST_CASE( simpletest2 )
+
+// BOOST_AUTO_TEST_CASE(simple_start_domain)
 // {
-//   Network network; 
-//   network.enableDataRx(0, 0);
-//   network.enableDataRx(0, 1);
-//   network.enableDataRx(0, 2);
+//   bf::path tempdir = createTempDir(); 
 
-//   network.run(); 
-
-//   // first, set up the generic IO 
-//   asio::io_service io_service;
-
-//   // construct tx endpoint
-
-//   udp::socket socket(io_service);
-//   socket.open(udp::v4());
+//   createBoundDomainSocket(tempdir / "dataretx"); 
+//   createBoundDomainSocket(tempdir / "eventretx"); 
+//   createBoundDomainSocket(tempdir / "eventtx"); 
   
-//   int N = 11; 
-//   sendPackets(socket, 0, 10, 0, 0); 
-//   sendPackets(socket, 0, 0, 0, 1); 
-//   sendPackets(socket, 0, 10, 0, 2); 
-//   sendPackets(socket, 1, 10, 0, 1); 
 
-//   for (int i = 0; i < N*3; i++) 
-//     {
-//       char x; 
-//       read(network.getTSPipeFifoPipe(), &x, 1); 
-//       //int y = tp.pop(); 
-//       //BOOST_CHECK_EQUAL(y, i); 
-//     }
-
-//   network.shutdown(); 
-
-
-//   BOOST_CHECK_EQUAL(4, 4); 
+//   // Create and destroy network
+//   pNetworkInterface_t ni = Network::createDomain(tempdir);
+//   ni->enableDataRX(0, TSPIKE); 
+//   ni->run(); 
+//   sleep(1); 
+//   ni->shutdown(); 
+  
+  
 // }
 
 
-
-BOOST_AUTO_TEST_CASE( simpleReTX )
-{
-  Network network; 
-  network.enableDataRx(0, 0);
-  network.enableDataRx(1, 0);
-  network.enableDataRx(2, 0);
-
-  network.run(); 
-
-
-  // create the retx thread
-  asio::io_service retx_service;
-  ReTxServer retxserver(retx_service);
-  boost::thread retxthread(boost::bind(&asio::io_service::run, &retx_service));
-
-
-  // construct tx endpoint
-
-  // first, set up the generic IO 
-  asio::io_service io_service;
-
-
-  udp::socket socket(io_service);
-  socket.open(udp::v4());
-  
-  int N = 11; 
-  sendPackets(socket, 0, 10, 0, 0); 
-  sendPackets(socket, 0, 5, 1, 0); 
-  sendPackets(socket, 0, 10, 2, 0); 
-  sendPackets(socket, 8, 10, 1, 0); 
-  //sendPackets(socket, 6, 6, 1, 0); 
-
-  for (int i = 0; i < N*3; i++) 
-    {
-      char x; 
-      read(network.getTSPipeFifoPipe(), &x, 1); 
-      RawData* rdp  = network.getNewData(); 
-      
-      //BOOST_CHECK_EQUAL(y, i); 
-    }
-
-  network.shutdown();
-  retx_service.stop(); 
-  retxthread.join(); 
-
-  BOOST_CHECK_EQUAL(4, 4); 
-}
+BOOST_AUTO_TEST_SUITE_END(); 

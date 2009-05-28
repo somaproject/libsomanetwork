@@ -61,7 +61,9 @@ void EventDispatcher::delEvent(int fd)
   int errorret = epoll_ctl(epollFD_, EPOLL_CTL_DEL, fd, &ev); 
 
   if (errorret != 0 ) {
-    throw std::runtime_error("could not del FD to epoll event set");
+    int errsv = errno; 
+    boost::format errorstr("could not delete FD from epoll event set, err = '%s'"); 
+    throw std::runtime_error(boost::str(errorstr % strerror(errsv)));
   }
   
   boost::mutex::scoped_lock lock( cbTableMutex_ );
