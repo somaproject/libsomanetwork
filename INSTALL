@@ -12,7 +12,9 @@ These packages are available from the Ubuntu package archive.
 
 Typically, building can be accomplished with : 
 
-cmake
+[note the period after cmake]
+
+cmake .
 make
 make test
 sudo make install
