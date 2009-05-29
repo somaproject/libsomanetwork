@@ -18,7 +18,7 @@ pkg_check_modules(BENCHMARKS REQUIRED
   gtkmm-2.4>=2.10)
 
 ENABLE_TESTING()
-
+INCLUDE(CTest)
 
 include_directories(.)
 
