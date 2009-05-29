@@ -8,7 +8,7 @@
 #include <somanetwork/raw.h>
 #include <somanetwork/tspike.h>
 #include <somanetwork/wave.h>
-#include <somanetwork/soma_event.h>
+#include <somanetwork/event.h>
 
 /*
   Deterministic functions which generate canonical versions
