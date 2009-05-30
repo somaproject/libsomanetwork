@@ -1,8 +1,3 @@
-
-//#define __STDC_LIMIT_MACROS 
-#define __STDC_CONSTANT_MACROS 
-//#include <stdint.h> 
-
 #include <boost/test/auto_unit_test.hpp>
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/fstream.hpp"   
@@ -10,8 +5,9 @@
 #include <fstream>                    
 #include <somanetwork/tspike.h>
 #include "canonical.h"
+#include "test_config.h"
 
-using  namespace boost;       
+using namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 
 using namespace somanetwork; 
@@ -47,8 +43,16 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
     We generate test data in python with tspike_test.py and read it here
     
   */
-  std::fstream pyfile("tspikes.frompy.dat", ios::in | ios::binary); 
-  int N = 9000; 
+
+  path datadir(TEST_DATA_PATH); 
+  path datafile = datadir / path("tspikes.frompy.dat"); 
+  if (!exists(datafile)) {
+    throw std::runtime_error("Test could not find tspikes.frompy.dat"); 
+  }
+  
+  std::fstream pyfile(datafile.string().c_str(), ios::in | ios::binary); 
+  int N = 10000; 
+
   for (int i = 0; i < N; i++)
     {
       pDataPacket_t rdp(new DataPacket_t()); 

@@ -69,8 +69,7 @@ void EventDispatcher::delEvent(int fd)
     }
     
     event_del(ev);
-    
-  
+      
   boost::mutex::scoped_lock lock( cbTableMutex_ );
   
   callbackTable_.erase(fd);
