@@ -57,6 +57,7 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   ped->runonce(1000); 
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
+	BOOST_CHECK(rawDataBuffer.front() != NULL);
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
   
   clearBuffer(); 

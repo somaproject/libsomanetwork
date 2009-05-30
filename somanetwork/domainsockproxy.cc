@@ -95,7 +95,8 @@ namespace somanetwork {
     su_me.sun_family = AF_LOCAL;
     bf::path srcpath(rootdir_ / "data"); 
     bf::path destpath; 
-    if (type == TSPIKE) {
+		
+		if (type == TSPIKE) {
       destpath = srcpath /  bf::path("tspike") / boost::str(boost::format("%d") % (int)src); 
     } else if (type == RAW) {
       destpath = srcpath /  bf::path("raw") / boost::str(boost::format("%d") % (int)src); 
@@ -105,10 +106,12 @@ namespace somanetwork {
       throw std::runtime_error("unimplemented data type"); 
     }
 
-    strcpy(su_me.sun_path, destpath.string().c_str()); 
-    size_t len = sizeof(su_me.sun_family) + strlen(su_me.sun_path); 
+    
+		strcpy(su_me.sun_path, destpath.string().c_str()); 
+    size_t len = sizeof(su_me.sun_family) + strlen(su_me.sun_path) + 1; 
     res =  bind(sock, (sockaddr*)&su_me, len); 
-    if (res < 0) {
+    //std::cout << "su_me.sun_path: " << su_me.sun_path << std::endl; 
+		if (res < 0) {
       std::cout << su_me.sun_path << std::endl; 
       int errv =errno; // save errno
       boost::format errormsg("Domain socket proxy: error binding data socket, err '%s'"); 

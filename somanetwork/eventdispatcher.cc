@@ -87,16 +87,23 @@ void EventDispatcher::run(void)
     
     
   while(running_){
-      runonce(1);
+		// DDC: Note, I'm not running "runonce()" here so that I can let libevent
+		// do it's thing without artificial timeout periods.  The runonce() remains
+		// however, because the tests (and possibly other code) need it in order to 
+		// work correctly
+		event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
   }
-  event_loopexit(NULL);
     
 }
 
-void EventDispatcher::runonce(int timeout)
+void EventDispatcher::runonce(int timeout_ms)
 {
     // todo -- use that new timeout
-    event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
+  struct timeval timeout;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = timeout_ms * 1000;
+	event_loopexit(&timeout);
+	event_loop(0);
 }
   
 void EventDispatcher::controlEvent(int fd)

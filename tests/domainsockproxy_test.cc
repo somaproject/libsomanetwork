@@ -87,8 +87,9 @@ pDataPacket_t sendData(Raw_t raw, bf::path outdir,
     / "raw" / boost::str((boost::format("%d") % (int)raw.src)); 
 
   if(!bf::exists(destpath)) {
+		std::cout << (int)raw.src << std::endl;
     std::cout << destpath << std::endl; 
-    throw std::runtime_error("target socket path does not exist"); 
+    throw std::runtime_error("target socket path does not exist (1)"); 
   }
   strcpy(sun.sun_path, destpath.string().c_str()); 
 
@@ -124,7 +125,7 @@ pDataPacket_t sendData(TSpike_t raw, bf::path outdir,
 
   if(!bf::exists(destpath)) {
     std::cout << destpath << std::endl; 
-    throw std::runtime_error("target socket path does not exist"); 
+    throw std::runtime_error("target socket path does not exist (2)"); 
   }
   strcpy(sun.sun_path, destpath.string().c_str()); 
 
@@ -160,7 +161,7 @@ pDataPacket_t sendData(Wave_t raw, bf::path outdir,
 
   if(!bf::exists(destpath)) {
     std::cout << destpath << std::endl; 
-    throw std::runtime_error("target socket path does not exist"); 
+    throw std::runtime_error("target socket path does not exist (3)"); 
   }
   strcpy(sun.sun_path, destpath.string().c_str()); 
 
