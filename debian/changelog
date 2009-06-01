@@ -1,6 +1,6 @@
-libsomanetwork (1.0-5ubuntu2) unstable; urgency=low
+libsomanetwork (0.9-0ubuntu~soma1) unstable; urgency=low
 
-  * Fake Audio Data Transmitter Added
+  * Testing Only
 
  -- Stuart Layton <slayton@mit.edu>  Wed, 17 Sep 2008 16:42:54 -0500
 
