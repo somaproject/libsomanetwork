@@ -18,7 +18,7 @@ pkg_check_modules(BENCHMARKS REQUIRED
   gtkmm-2.4>=2.10)
 
 ENABLE_TESTING()
-
+INCLUDE(CTest)
 
 include_directories(.)
 
@@ -26,6 +26,8 @@ add_subdirectory(somanetwork)
 add_subdirectory(tests)
 add_subdirectory(benchmarks)
 
-configure_file(somanetwork-1.0.pc.in somanetwork-1.0.pc)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/somanetwork-1.0.pc.in 
+  ${CMAKE_CURRENT_BINARY_DIR}/somanetwork-1.0.pc)
 
-install(FILES somanetwork-1.0.pc DESTINATION lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/somanetwork-1.0.pc 
+  DESTINATION lib/pkgconfig)

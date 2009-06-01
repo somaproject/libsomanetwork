@@ -10,6 +10,15 @@ sigc++-2.0 for the benchmarks
 
 These packages are available from the Ubuntu package archive.
 
+CMake
+------------------------------
+We use cmake to build the source
+
+http://www.vtk.org/Wiki/CMake_Useful_Variables
+
+If you want to do the equivalent of "./configure --prefix=$FOO" 
+run "cmake -DCMAKE_INSTALL_PREFIX=$FOO". 
+
 Typically, building can be accomplished with : 
 
 [note the period after cmake]

@@ -1,6 +1,5 @@
 # BUILD OUTPUT
 *.o
-*.in
 Makefile
 *.o
 *.lo
