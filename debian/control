@@ -1,11 +1,19 @@
 Source: libsomanetwork
-Section: Soma Software
+Section: science
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
-Build-Depends: debhelper (>= 5)
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 5), cdbs
+Standards-Version: 3.8.0
 
 Package: libsomanetwork
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Soma networking libraries
+Description: Network library used to communicate with the Soma Backplane
+ The Soma network library, libsomanetwork, is a high-speed
+ multithreaded c++ library that serves as the backbone for most
+ compiled Soma apps. The library handles packet encoding and decoding,
+ queuing, out-of-order handling, retransmission, and presents a simple
+ interface for taking data on and off the wire. It is licensed under
+ the LGPL.
+
+ 
