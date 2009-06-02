@@ -76,7 +76,7 @@ foreach(testname ${testlist})
   
   target_link_libraries(${testname}
     network_test_utils
-    somanetwork)
+    somanetwork_test)
   
   ADD_TEST(${testname} ${testname})
 

@@ -49,6 +49,12 @@ ADD_LIBRARY(somanetwork SHARED
 target_link_libraries(somanetwork 
   ${Boost_LIBRARIES} ${SIGC++_LIBRARIES})
 
+ADD_LIBRARY(somanetwork_test
+  ${somanetwork_SRCS})
+
+target_link_libraries(somanetwork_test
+  ${Boost_LIBRARIES} ${SIGC++_LIBRARIES})
+
 SET_TARGET_PROPERTIES(somanetwork
   PROPERTIES VERSION ${LIBRARY_VERSION}
   SOVERSION ${LIBRARY_SOVERSION})
