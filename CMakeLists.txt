@@ -29,5 +29,5 @@ add_subdirectory(benchmarks)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/somanetwork-1.0.pc.in 
   ${CMAKE_CURRENT_BINARY_DIR}/somanetwork-1.0.pc)
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/somanetwork-1.0.pc 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/somanetwork-1.0.pc 
   DESTINATION lib/pkgconfig)
