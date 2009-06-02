@@ -1,4 +1,4 @@
-Source: libsomanetwork
+Source: libsomanetwork0
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
 Build-Depends: debhelper (>= 7), cmake, cdbs
