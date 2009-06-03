@@ -1,6 +1,12 @@
-libsomanetwork0 (0.9~soma1) jaunty; urgency=low
+libsomanetwork0 (0.9~soma4) jaunty; urgency=low
+
+  * fixed Build-Depends such that libsomanetwork will succesfully build on launchpad
+
+ -- Stuart Layton <slayton@mit.edu>  Wed, 03 Jun 2009 12:35:58 -0400
+
+libsomanetwork0 (0.9~soma3) jaunty; urgency=low
 
   * Testing Only
+  * Messed with build-depends
 
- -- Stuart Layton <slayton@mit.edu>  Wed, 17 Sep 2008 16:42:54 -0500
-
+ -- Stuart Layton <slayton@mit.edu>  Tue, 02 Jun 2009 23:02:34 -0400

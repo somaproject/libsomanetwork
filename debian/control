@@ -1,7 +1,10 @@
 Source: libsomanetwork0
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
-Build-Depends: debhelper (>= 7), cmake, cdbs
+Build-Depends: debhelper (>= 7), cmake, cdbs, 
+                libboost-thread1.37-dev, libboost-test1.37-dev, libboost-program-options1.37-dev,
+                libboost1.37-dev, libboost-filesystem1.37-dev, libboost-system1.37-dev, libgtkmm-2.4-dev,
+                libglibmm-2.4-dev, libsigc++-2.0-dev 
 Standards-Version: 3.8.0
 Section: libs
 Homepage: http://soma.mit.edu/
