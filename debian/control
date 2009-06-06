@@ -12,7 +12,9 @@ Homepage: http://soma.mit.edu/
 Package: libsomanetwork-dev
 Section: libdevel
 Architecture: any
-Depends: libsomanetwork0, ${misc:Depends}, ${shlibs:Depends}
+Depends: libsomanetwork0, ${misc:Depends}, ${shlibs:Depends}, libboost-thread1.37-dev, libboost-test1.37-dev, 
+                libboost-program-options1.37-dev, libboost1.37-dev, libboost-filesystem1.37-dev, 
+                libboost-system1.37-dev, libgtkmm-2.4-dev, libglibmm-2.4-dev, libsigc++-2.0-dev
 Description: Soma networking library headers
  The Soma network library, libsomanetwork, is a high-speed
  multithreaded c++ library that serves as the backbone for most
