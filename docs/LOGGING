@@ -1,0 +1,9 @@
+We want to make it easy to debug the soma network library if
+necessary. We use the pre-release Boost Logging Library v2. 
+
+We use the following log levels: 
+debug: All socket and buffer operations are logged. 
+info: Out-of-order operations are logged
+warning: Information like packets being dropped are logged
+error:
+fatal:

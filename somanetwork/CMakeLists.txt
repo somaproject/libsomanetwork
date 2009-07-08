@@ -14,6 +14,7 @@ set(somanetwork_SRCS
   network.cc
   netsockproxy.cc
   domainsockproxy.cc
+  logging.cc
   ${datatype_SRCS})
 
 set(somanetwork_HEADERS
@@ -38,6 +39,8 @@ seqpktproto.h
 tspike.h
 tspipefifo.h
 wave.h
+logging.h
+
 )
 
 include_directories(${Boost_INCLUDE_DIRS})

@@ -26,6 +26,7 @@ ENABLE_TESTING()
 INCLUDE(CTest)
 
 include_directories(.)
+include_directories(logging-ext/boost)
 
 add_subdirectory(somanetwork)
 add_subdirectory(tests)
