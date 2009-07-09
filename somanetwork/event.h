@@ -10,6 +10,7 @@
 #include <vector>
 #include <list>
 #include <string.h>
+#include <ostream>
 
 namespace somanetwork { 
 
@@ -31,7 +32,10 @@ class Event_t
       data[i] = 0; 
     }
   }
+  friend std::ostream& operator<< (std::ostream &out, const Event_t &event);
 }; 
+
+  std::ostream& operator<< (std::ostream &out, const Event_t &event);
 
 
 typedef std::vector<Event_t> EventList_t; 

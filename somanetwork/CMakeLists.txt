@@ -7,6 +7,7 @@ set(datatype_SRCS
 set(somanetwork_SRCS 
   datareceiver.cc
   event.cc
+  eventtx.cc
   eventdispatcher.cc
   eventreceiver.cc
   eventsender.cc

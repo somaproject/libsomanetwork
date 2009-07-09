@@ -43,6 +43,11 @@ add_executable(datareceivertest
   tests.cc
   runner.cc)
 
+add_executable(eventtest
+  event_test.cc
+  eventtx_test.cc
+  runner.cc)
+
 add_executable(eventreceivertest
   eventreceiver_test.cc
   runner.cc)
@@ -62,6 +67,7 @@ set(testlist
   rawtest
   datareceivertest 
   eventreceivertest
+  eventtest
   eventtxtest
   loggingtest
   tinytest

@@ -1,4 +1,5 @@
 #include <somanetwork/event.h>
+#include <boost/format.hpp>
 
 namespace somanetwork {
 
@@ -102,6 +103,16 @@ std::vector<char> createEventBuffer(int seq, std::list<EventList_t> els)
       
     }
   return buffer; 
+}
+
+  std::ostream& operator<< (std::ostream &out, const Event_t &event)
+{
+  out << boost::format("event: cmd=%02.2X src=%02.2X %04.4X %04.4X %04.4X %04.4X %04.4X")
+    % (int)event.cmd % (int)event.src % event.data[0] 
+    % event.data[1] % event.data[2] % event.data[3]
+    % event.data[4]; 
+  return out; 
+
 }
 
 }
