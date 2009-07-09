@@ -17,7 +17,7 @@ namespace somanetwork {
     
   void init_logs()  {
     
-    somanetwork_l()->writer().add_formatter(bl::formatter::high_precision_time("$mm.$ss:$micro")); 
+    somanetwork_l()->writer().add_formatter(bl::formatter::high_precision_time("$mm.$ss:$micro ")); 
     somanetwork_l()->writer().add_formatter(bl::formatter::append_newline()); 
     somanetwork_l()->writer().add_destination( bl::destination::cout() );
     somanetwork_l()->mark_as_initialized();
