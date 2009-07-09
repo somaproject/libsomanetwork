@@ -25,6 +25,10 @@ add_executable(networktest
   network_test.cc
   runner.cc)
 
+add_executable(loggingtest
+  logging_test.cc
+  runner.cc)
+
 add_executable(rawtest
   raw_test.cc
   runner.cc)
@@ -59,6 +63,7 @@ set(testlist
   datareceivertest 
   eventreceivertest
   eventtxtest
+  loggingtest
   tinytest
   networktest
   domainsockproxytest
