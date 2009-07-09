@@ -1,5 +1,5 @@
 #include "netsockproxy.h"
-
+#include "logging.h"
 
 namespace somanetwork {
   
@@ -7,14 +7,24 @@ namespace somanetwork {
     somaip_(somaip)
   {
     
+    L_(info) << "NetSockProxy: Constructor"; 
+    L_(info) << "NetSockProxy: DATARETXPORT : Data Retransmission requests will be sent to "
+	     << somaip << ":" << DATARETXPORT; 
+
     /* initially create the sockaddr structures */ 
     retxDataReqSockAddr_.sin_port = htons(DATARETXPORT); 
     retxDataReqSockAddr_.sin_family = AF_INET;
     inet_pton(AF_INET, somaip_.c_str(), &retxDataReqSockAddr_.sin_addr);
+
+    L_(info) << "NetSockProxy: EVENTRXRETXPORT : Event RX Rtransmission requests will be sent to "
+	     << somaip << ":" << EVENTRXRETXPORT; 
     
     retxEventReqSockAddr_.sin_port = htons(EVENTRXRETXPORT); 
     retxEventReqSockAddr_.sin_family = AF_INET;
     inet_pton(AF_INET, somaip_.c_str(), &retxEventReqSockAddr_.sin_addr);
+
+    L_(info) << "NetSockProxy: EVENTTXPORT : TX Events will be sent to "
+	     << somaip << ":" << EVENTTXPORT; 
 
     eventTXSockAddr_.sin_port = htons(EVENTTXPORT); 
     eventTXSockAddr_.sin_family = AF_INET;
@@ -72,6 +82,12 @@ namespace somanetwork {
       throw std::runtime_error("error binding socket"); 
     }
     
+
+    L_(debug) << "NetSockProxy: creted data socket " 
+	      << "for src=" << (int) src << " type=" << (int) type
+	      << "port = " << dataPortLookup(type,  src)
+	      << "socket num = sock "; 
+
     return sock; 
 
   }

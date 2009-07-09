@@ -2,6 +2,7 @@
 #include <arpa/inet.h>
 #include "eventreceiver.h"
 #include "ports.h"
+#include "logging.h"
 
 namespace somanetwork {
 
@@ -34,6 +35,10 @@ EventReceiver::~EventReceiver()
 
 void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
 {
+  L_(info) << "EventReceiver:" 
+	   << "requesting retranmission "
+	   << " sequence = " << seq; 
+
 
   char * retxbuf =  new char[4]; 
   unsigned int seqn = htonl(seq); 
@@ -61,7 +66,7 @@ void EventReceiver::handleReceive(int fd)
       
   if ( len == -1 )
     { 
-      std::cerr << "error in recvfrom" << std::endl; 
+      L_(warning) << "EventReceiver error in ReceiveFrom"; 
     } else
     {
 

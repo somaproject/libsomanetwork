@@ -29,6 +29,8 @@ class EventTX_t
   std::ostream& operator<< (std::ostream &out, const EventTX_t &event);
 
 typedef std::vector<EventTX_t> EventTXList_t; 
+  
+  std::ostream& operator<< (std::ostream &out, const EventTXList_t &eventlist);
 
 inline std::vector<char> createEventTXBuffer(eventtxnonce_t nonce, 
 					     const EventTXList_t & events)

@@ -3,6 +3,7 @@
 #include "datareceiver.h"
 #include "eventdispatcher.h"
 #include "ports.h"
+#include "logging.h"
 
 namespace somanetwork { 
 DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch, 
@@ -30,6 +31,9 @@ DataReceiver::DataReceiver(eventDispatcherPtr_t dispatch,
 
 DataReceiver::~DataReceiver()
 {
+  L_(debug) << "DataReceiver("  << (int)source_
+	    << ", " << (int)type_ << "):" << "destructor"; 
+
   // remove from epoll
   pDispatch_->delEvent(socket_); 
   pSockProxy_->closeSocket(socket_); 
@@ -39,6 +43,10 @@ DataReceiver::~DataReceiver()
 void DataReceiver::sendReTxReq(datasource_t src, datatype_t typ, unsigned
 			       int seq,  sockaddr_in & sfrom)
 {
+  L_(info) << "DataReceiver(" << (int)source_  << ", " << (int)type_ << "):"  
+	   << "requesting retranmission of data src ="
+	   << (int) src << " type=" << (int) typ 
+	   << " sequence = " << seq; 
 
   char * retxbuf =  new char[6]; 
   retxbuf[0] = typ; 
@@ -69,17 +77,20 @@ void DataReceiver::handleReceive(int fd)
       
   if ( error == -1 )
     { 
-      std::cerr << "error in recvfrom" << std::endl; 
+      L_(warning) << "DataReceiver(" << (int)source_  << ", " << (int)type_ << "):"  
+		  << " Error in data receiver recvfrom" ; 
+
     } else
     {
 
       pDataPacket_t prd = newDataPacket(recvbuffer); 
 
       if (prd->src != source_ or prd->typ != type_) {
-	std::cerr  << "Incorrect packet header " << std::endl  
-		   << "either pkt source " << (int) prd->src 
-		   << " != datarx src " << source_  << " or pkt typ " 
-		   << (int) prd->typ << " != datarx typ " << type_  << std::endl; 
+	L_(warning)  << "DataReceiver(" << (int)source_  << ", " << (int)type_ << "):"  
+		     << " incorrect packet header " << std::endl  
+		     << "either pkt source " << (int) prd->src 
+		     << " != datarx src " << source_  << " or pkt typ " 
+		     << (int) prd->typ << " != datarx typ " << type_  << std::endl; 
       }
       seqpacketproto_.addPacket(prd, prd->seq); 
 
