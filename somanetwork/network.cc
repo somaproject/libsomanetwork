@@ -120,7 +120,7 @@ pDataPacket_t Network::getNewData(void)
 
 pEventPacket_t Network::getNewEvents(void)
 {
-  L_(debug) << "Network: getNewData()"; 
+  L_(debug) << "Network: getNewEvent()"; 
 
   return outputEventFifo_.pop(); 
 }

@@ -24,7 +24,7 @@ BOOST_DECLARE_LOG(somanetwork_l, somanetwork_finder::logger)
 
 namespace somanetwork
 {
-  void init_logs(); 
+  void init_logs( boost::logging::level::type level); 
 
 }
 

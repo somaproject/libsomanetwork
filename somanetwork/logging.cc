@@ -14,9 +14,8 @@ BOOST_DEFINE_LOG_FILTER(somanetwork_log_level, somanetwork_finder::filter ) // h
 BOOST_DEFINE_LOG(somanetwork_l, somanetwork_finder::logger); 
 
 namespace somanetwork {
-    
-  void init_logs()  {
-    
+  void init_logs( boost::logging::level::type level) {
+    somanetwork_log_level()->set_enabled(level); 
     somanetwork_l()->writer().add_formatter(bl::formatter::high_precision_time("$mm.$ss:$micro ")); 
     somanetwork_l()->writer().add_formatter(bl::formatter::append_newline()); 
     somanetwork_l()->writer().add_destination( bl::destination::cout() );
