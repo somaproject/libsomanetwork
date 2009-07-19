@@ -54,7 +54,7 @@ void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
 
 void EventReceiver::handleReceive(int fd)
 {
-
+  L_(debug) << "EventReceiver::handle receive"; 
   boost::mutex::scoped_lock lock( statusMutex_ );
 
   boost::array<char, EBUFSIZE> recvbuffer; 
@@ -72,7 +72,6 @@ void EventReceiver::handleReceive(int fd)
 
       // do we always extract out the events? 
       pEventPacket_t pEventPacket = newEventPacket(recvbuffer, len); 
-
       seqpacketproto_.addPacket(pEventPacket, pEventPacket->seq); 
 	    
       SequentialPacketProtocol<pEventPacket_t>::outqueue_t out = 

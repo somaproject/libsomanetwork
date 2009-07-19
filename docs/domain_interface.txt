@@ -21,7 +21,7 @@ Data Transmission from Soma Emulator to libsomanetwork
 ------------------------------------------------------------
 (here we use tspike source 0 as an example) 
 
-libsomanetwork exposes socket $DIRECTORY/data/tspikes/0
+libsomanetwork exposes socket $DIRECTORY/data/tspike/0
 emulator writes datagrams to that socket
 
 Retransmission: 
