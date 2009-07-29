@@ -11,6 +11,8 @@ ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 SET(LIBRARY_VERSION "1.0")
 SET(LIBRARY_SOVERSION "0")
 
+SET(Boost_ADDITIONAL_VERSIONS "1.38" "1.38.0" "1.39" "1.39.0")
+
 
 # boost requirements
 find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework program_options filesystem system REQUIRED)
