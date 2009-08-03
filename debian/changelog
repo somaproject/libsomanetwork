@@ -1,3 +1,9 @@
+libsomanetwork0 (0.9~soma-ubuntu3) jaunty; urgency=low
+
+  * updated version number so build wouldn't fail on launchpad
+
+ -- Stuart Layton <slayton@mit.edu>  Mon, 03 Aug 2009 11:00:59 -0400
+
 libsomanetwork0 (0.9~soma-ubuntu2) jaunty; urgency=low
 
   [ Eric Jonas ]
