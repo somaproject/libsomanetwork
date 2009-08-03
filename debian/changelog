@@ -1,3 +1,37 @@
+libsomanetwork0 (0.9~soma-ubuntu3) jaunty; urgency=low
+
+  * updated version number so build wouldn't fail on launchpad
+
+ -- Stuart Layton <slayton@mit.edu>  Mon, 03 Aug 2009 11:00:59 -0400
+
+libsomanetwork0 (0.9~soma-ubuntu2) jaunty; urgency=low
+
+  [ Eric Jonas ]
+  * [372774fffe72a0fb7bfe3aa5d352c8dcabdeb792] First commit of logging!
+  * [a3cd355e24762fed9bc07c50942accc867a802db] It took all day, but I
+    now understand the boost::logging infrastructure and its namespace-
+    related problems.
+  * [5990b7faa1030a050dec233ac652e8146cc0a410] Added event output
+    printing and associated tests.
+  * [1e2199a1b2c28b236f44ea4e349e76678615bf2a] added high-precision
+    timer.
+  * [4d74e2fe7f1297dc4555c328ab55092f1b0fde2c] Added initial logging to
+    the somanetwork library.
+  * [28182b82f2603dd655e28b01bb9f7f0f15740044] Correctly add in logging
+    level configuration.
+  * [69154fdaf3e29ff44b03ede511b131085d37cef5]   * updated docs on
+    domain interface   * added a bit of extra logging
+  * [697a4fec06db74d37ba47e7fc15d6d1d9e00e500] Added additional boost
+    versions
+  * [4d10439e01e6d20df1e0825fb5b1a7937f35896d] Moved to correct git
+    logging url
+  * [4f8d8704d6e9ab8cb99980d4e0e7615e2de6eb04] added wave->raw
+    conversion with length argument
+
+  [ Stuart Layton ]
+
+ -- Stuart Layton <slayton@mit.edu>  Mon, 03 Aug 2009 10:33:33 -0400
+
 libsomanetwork0 (0.9~soma-ubuntu1) jaunty; urgency=low
 
   * Initial check in using new naming scheme
