@@ -19,12 +19,11 @@ find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework program_options 
 find_package(PkgConfig)
 
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0>=2.0
-   log4cpp>=1.0)
+   )
 pkg_check_modules(BENCHMARKS REQUIRED 
   sigc++-2.0>=2.0 
   glibmm-2.4>=2.13.0
   gtkmm-2.4>=2.10
-  log4cpp>=1.0
 )
 
 ENABLE_TESTING()
