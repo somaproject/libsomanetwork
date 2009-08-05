@@ -67,6 +67,14 @@ Wave_t rawToWave(pDataPacket_t dp)
 
 pDataPacket_t rawFromWave(const Wave_t & w)
 {
+  size_t dummy; 
+  return rawFromWaveForTX(w, &dummy); 
+}
+
+
+
+pDataPacket_t rawFromWaveForTX(const Wave_t & w, size_t * len)
+{
   
   pDataPacket_t rdp(new DataPacket_t); 
   
@@ -128,7 +136,7 @@ pDataPacket_t rawFromWave(const Wave_t & w)
       memcpy(&rdp->body[bpos], &x, sizeof(x));
       bpos += sizeof(x);
     }
-
+  *len = bpos; 
   return rdp; 
 
 }

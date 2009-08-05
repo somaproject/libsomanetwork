@@ -1,0 +1,24 @@
+We want to make it easy to debug the soma network library if
+necessary. We use the pre-release Boost Logging Library v2. 
+
+We use the following log levels: 
+
+debug: Almost all socket and buffer operations
+
+info: setup, teardown, and configuration
+
+warning : Information like packets being dropped are logged
+
+error : Severe problems that will significantly impact functionality
+
+To initialize the default logger, call:
+
+somanetwork::init_logs()
+
+which will by default dump to standard out. To set the logging level, include
+<somanetwork/logging.h> and call : 
+
+somanetwork_log_level()->set_enabled(level::error);
+
+note that this is -outside- of the somanetwork:: namespace, due to issues
+with the boost logging library. 

@@ -5,17 +5,20 @@ tspike.cc
 )
 
 set(somanetwork_SRCS 
-datareceiver.cc
-event.cc
-eventdispatcher.cc
-eventreceiver.cc
-eventsender.cc
-fakenetwork.cc
-network.cc
-netsockproxy.cc
-domainsockproxy.cc
-${datatype_SRCS}
-)
+
+  datareceiver.cc
+  event.cc
+  eventtx.cc
+  eventdispatcher.cc
+  eventreceiver.cc
+  eventsender.cc
+  fakenetwork.cc
+  network.cc
+  netsockproxy.cc
+  domainsockproxy.cc
+  logging.cc
+  ${datatype_SRCS})
+
 
 set(somanetwork_HEADERS
 datapacket.h
@@ -39,6 +42,8 @@ seqpktproto.h
 tspike.h
 tspipefifo.h
 wave.h
+logging.h
+
 )
 
 include_directories(${Boost_INCLUDE_DIRS})
@@ -51,6 +56,12 @@ ADD_LIBRARY(somanetwork SHARED
 
 target_link_libraries(somanetwork 
   ${Boost_LIBRARIES} ${SIGC++_LIBRARIES} event ${Event_LIBRARIES})
+
+ADD_LIBRARY(somanetwork_test
+  ${somanetwork_SRCS})
+
+target_link_libraries(somanetwork_test
+  ${Boost_LIBRARIES} ${SIGC++_LIBRARIES})
 
 SET_TARGET_PROPERTIES(somanetwork
   PROPERTIES VERSION ${LIBRARY_VERSION}

@@ -30,6 +30,8 @@ struct Wave_t
 
 Wave_t rawToWave(pDataPacket_t dp); 
 pDataPacket_t rawFromWave(const Wave_t & w); 
+pDataPacket_t rawFromWaveForTX(const Wave_t & w, size_t * len); 
+
 } 
 
 #endif // WAVE_TYPE_H

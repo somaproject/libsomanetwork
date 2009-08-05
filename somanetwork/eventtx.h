@@ -2,6 +2,7 @@
 #define SOMANETWORK_EVENTTX_H
 
 #include <vector>
+#include <ostream>
 
 #include <somanetwork/event.h>
 
@@ -20,9 +21,16 @@ class EventTX_t
   EventTX_t() {
     bzero(&destaddr, sizeof(destaddr)); 
   }
+
+  friend std::ostream& operator<< (std::ostream &out, const EventTX_t &event);
+
 }; 
 
+  std::ostream& operator<< (std::ostream &out, const EventTX_t &event);
+
 typedef std::vector<EventTX_t> EventTXList_t; 
+  
+  std::ostream& operator<< (std::ostream &out, const EventTXList_t &eventlist);
 
 inline std::vector<char> createEventTXBuffer(eventtxnonce_t nonce, 
 					     const EventTXList_t & events)

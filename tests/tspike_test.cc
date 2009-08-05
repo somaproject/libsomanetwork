@@ -10,7 +10,7 @@
 using namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 
-using namespace somanetwork; 
+using namespace soma dnetwork; 
 
 
 BOOST_AUTO_TEST_SUITE(tspike_test); 
@@ -82,8 +82,8 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
 	  BOOST_CHECK_EQUAL(tsw.threshold, j * i * (2*17 - 141)); 
 	  for (int k = 0; k < TSPIKEWAVE_LEN; k++)
 	    {
-	      uint64_t val = (j*i*0x12345 + k); 
-	      val = val % (1<<31); 
+	      int64_t val = (j*i*0x12345 + k); 
+ 	      val = val & 0x7FFFFFFF; 
 	      BOOST_CHECK_EQUAL(tsw.wave[k], val); 
 	    }
 	}

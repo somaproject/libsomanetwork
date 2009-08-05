@@ -25,6 +25,10 @@ add_executable(networktest
   network_test.cc
   runner.cc)
 
+add_executable(loggingtest
+  logging_test.cc
+  runner.cc)
+
 add_executable(rawtest
   raw_test.cc
   runner.cc)
@@ -37,6 +41,11 @@ add_executable(pktseqtest
 add_executable(datareceivertest
   datareceiver_test.cc
   tests.cc
+  runner.cc)
+
+add_executable(eventtest
+  event_test.cc
+  eventtx_test.cc
   runner.cc)
 
 add_executable(eventreceivertest
@@ -58,7 +67,9 @@ set(testlist
   rawtest
   datareceivertest 
   eventreceivertest
+  eventtest
   eventtxtest
+  loggingtest
   tinytest
   networktest
   domainsockproxytest
@@ -76,7 +87,7 @@ foreach(testname ${testlist})
   
   target_link_libraries(${testname}
     network_test_utils
-    somanetwork)
+    somanetwork_test)
   
   ADD_TEST(${testname} ${testname})
 

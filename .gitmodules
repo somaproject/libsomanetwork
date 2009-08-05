@@ -1,0 +1,3 @@
+[submodule "logging-ext"]
+	path = logging-ext
+	url = git://github.com/somaproject/logging.git

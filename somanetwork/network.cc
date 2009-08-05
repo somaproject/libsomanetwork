@@ -5,18 +5,22 @@
 #include "sockproxy.h"
 #include "netsockproxy.h"
 #include "domainsockproxy.h"
+#include "logging.h"
 
 
 namespace somanetwork { 
   
   pNetworkInterface_t Network::createINet(std::string somaip) 
   {
-    
+    L_(info) << "Network: creating INet interface for soma ip " 
+	      << somaip; 
     pISocketProxy_t sp(new NetSocketProxy(somaip)); 
     return pNetworkInterface_t(new Network(sp)); 
   }
   
   pNetworkInterface_t Network::createDomain(boost::filesystem::path rootdir) {
+    L_(info) << "Network: creating domain socket interface in root dir " 
+	      << rootdir; 
 
     pISocketProxy_t sp(new DomainSocketProxy(rootdir)); 
     return pNetworkInterface_t(new Network(sp)); 
@@ -38,6 +42,8 @@ Network::Network(pISocketProxy_t sockprox) :
 
 void Network::run()
 {
+  L_(info) << "Network: run() invoked, launching thread"; 
+
   running_ = true; 
   pthrd_ = new boost::thread(boost::bind(&Network::workthread,
 					 this));
@@ -52,6 +58,7 @@ void Network::workthread()
 
 void Network::shutdown()
 {
+  L_(info) << "Network: shutdown() invoked, halting thread and dispatcher"; 
 
   running_ = false; 
   pDispatch_->halt(); 
@@ -60,6 +67,8 @@ void Network::shutdown()
 
 Network::~Network()
 {
+
+  L_(info) << "Network: destructor called"; 
   shutdown(); 
 
   if(pthrd_) {
@@ -104,11 +113,15 @@ void Network::appendEventOut(pEventPacket_t out) {
 
 pDataPacket_t Network::getNewData(void)
 {
+  L_(debug) << "Network: getNewData()"; 
+
   return outputDataFifo_.pop(); 
 }
 
 pEventPacket_t Network::getNewEvents(void)
 {
+  L_(debug) << "Network: getNewEvent()"; 
+
   return outputEventFifo_.pop(); 
 }
 
@@ -124,6 +137,8 @@ int Network::getEventFifoPipe()
 
 void Network::enableDataRX(datasource_t src, datatype_t typ)
 {
+  L_(info) << "Network: enable data RX, src=" 
+	   << (int) src << " type=" << (int)typ; 
 
   datagen_t dg(src, typ); 
 
@@ -137,7 +152,9 @@ void Network::enableDataRX(datasource_t src, datatype_t typ)
 
 void Network::disableDataRX(datasource_t src, datatype_t typ)
 {
-  std::cout << "Disable called " << std::endl; 
+  L_(info) << "Network: disable data RX, src=" 
+	   << (int) src << " type=" << (int)typ; 
+
   // we really need a custom try/catch here 
   datagen_t dg(src, typ); 
   DataReceiver* dr = dataReceivers_[dg]; 
@@ -169,6 +186,9 @@ SeqPacketProtoStats Network::getEventStats()
 
 eventtxnonce_t Network::sendEvents(const EventTXList_t & el)
 {
+  L_(debug) << "Network: sending events " << el; 
+
+
   eventSender_.sendEvents(el);  // the eventSender is thread-safe, so 
   // this can be called from external functions
 
@@ -176,6 +196,7 @@ eventtxnonce_t Network::sendEvents(const EventTXList_t & el)
 
 void Network::resetDataStats() 
 {
+  L_(warning) << "Network : unimplemented resetDataStats called"; 
   // FIXME
 
 }
@@ -183,6 +204,7 @@ void Network::resetDataStats()
 
 void Network::resetEventStats()
 {
+  L_(warning) << "Network : unimplemented resetEventStats called"; 
   // FIXME
 
 }

@@ -17,12 +17,12 @@ add_executable(soma-netbench-tx
 )
 
 target_link_libraries(soma-netbench-tx
-  somanetwork
+  somanetwork_test
    ${Boost_LIBRARIES}
    ${BENCHMARKS_LIBRARIES})
 
-target_link_libraries(soma-netbench
-  somanetwork
+ target_link_libraries(soma-netbench
+   somanetwork_test
    ${Boost_LIBRARIES} 
    ${BENCHMARKS_LIBRARIES})
 
