@@ -10,7 +10,7 @@
 using namespace boost;       
 using namespace boost::filesystem; 
 using namespace std; 
-using namespace soma dnetwork; 
+using namespace somanetwork; 
 
 
 BOOST_AUTO_TEST_SUITE(tspike_test); 

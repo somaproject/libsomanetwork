@@ -36,7 +36,7 @@ include_directories(logging-ext/boost)
 
 add_subdirectory(somanetwork)
 add_subdirectory(tests)
-add_subdirectory(benchmarks)
+#add_subdirectory(benchmarks)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/somanetwork-1.0.pc.in 
   ${CMAKE_CURRENT_BINARY_DIR}/somanetwork-1.0.pc)
