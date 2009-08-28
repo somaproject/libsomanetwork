@@ -1,3 +1,9 @@
+libsomanetwork0 (0.9~somatesting-jaunty-github-0908281339) jaunty; urgency=low
+
+  * updated sources
+
+ -- Stuart Layton <slayton@mit.edu>  Fri, 28 Aug 2009 13:38:34 -0400
+
 libsomanetwork0 (0.9~soma-ubuntu5) jaunty; urgency=low
 
   * rebuilding with proper sources.
