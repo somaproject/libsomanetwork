@@ -1,10 +1,11 @@
-
 set(datatype_SRCS
-  raw.cc
-  tspike.cc
-  wave.cc)
+raw.cc
+wave.cc
+tspike.cc
+)
 
 set(somanetwork_SRCS 
+
   datareceiver.cc
   event.cc
   eventtx.cc
@@ -17,6 +18,7 @@ set(somanetwork_SRCS
   domainsockproxy.cc
   logging.cc
   ${datatype_SRCS})
+
 
 set(somanetwork_HEADERS
 datapacket.h
@@ -46,12 +48,14 @@ logging.h
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SIGC++_INCLUDE_DIRS})
+include_directories(${Event_INCLUDE_DIRS})
 
 ADD_LIBRARY(somanetwork SHARED
-  ${somanetwork_SRCS})
+  ${somanetwork_SRCS} 
+  ${somanetwork_HEADERS})
 
 target_link_libraries(somanetwork 
-  ${Boost_LIBRARIES} ${SIGC++_LIBRARIES})
+  ${Boost_LIBRARIES} ${SIGC++_LIBRARIES} event ${Event_LIBRARIES})
 
 ADD_LIBRARY(somanetwork_test
   ${somanetwork_SRCS})

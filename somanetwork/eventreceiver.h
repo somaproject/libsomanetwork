@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>

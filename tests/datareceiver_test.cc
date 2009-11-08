@@ -57,6 +57,7 @@ BOOST_AUTO_TEST_CASE( simpledatatest )
   ped->runonce(1000); 
   
   BOOST_CHECK_EQUAL(rawDataBuffer.size(), 1); 
+	BOOST_CHECK(rawDataBuffer.front() != NULL);
   BOOST_CHECK_EQUAL(rawDataBuffer.front()->seq, SEQ); 
   
   clearBuffer(); 
@@ -142,8 +143,8 @@ BOOST_AUTO_TEST_CASE(dupetest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
+  //struct epoll_event ev;
+  //epoll_event events[EPOLLMAXCNT];
   
   server.start(); 
   for (int i = 0; i < 9; i++) {
@@ -171,7 +172,6 @@ BOOST_AUTO_TEST_CASE(retxtest)
   eventDispatcherPtr_t ped(new EventDispatcher()); 
   datasource_t src = 30;
   datatype_t typ = RAW; 
-  int epollfd = epoll_create(EPOLLMAXCNT);
 
   pISocketProxy_t sp(new NetSocketProxy("127.0.0.1")); 
 
@@ -194,8 +194,8 @@ BOOST_AUTO_TEST_CASE(retxtest)
 
   server.appendSeqsToSend(seqs); 
 
-  struct epoll_event ev;
-  epoll_event events[EPOLLMAXCNT];
+  //struct epoll_event ev;
+  //epoll_event events[EPOLLMAXCNT];
   
   server.start(); 
   for (int i = 0; i < 10; i++) {

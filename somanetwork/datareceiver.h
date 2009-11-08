@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <sys/epoll.h>
+//#include <sys/epoll.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -46,7 +46,8 @@ public:
 	       pISocketProxy_t sockProxy, 
 	       int source, datatype_t type,
 	       boost::function<void (pDataPacket_t)> rdp); 
-  ~DataReceiver(); 
+
+    ~DataReceiver(); 
 
   DataReceiverStats getStats(); 
   void resetStats(); 

@@ -17,6 +17,7 @@ SET(Boost_ADDITIONAL_VERSIONS "1.38" "1.38.0" "1.39" "1.39.0")
 # boost requirements
 find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework program_options filesystem system REQUIRED)
 find_package(PkgConfig)
+find_package(Event)
 
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0>=2.0
    )
@@ -26,6 +27,7 @@ pkg_check_modules(BENCHMARKS REQUIRED
   gtkmm-2.4>=2.10
 )
 
+
 ENABLE_TESTING()
 INCLUDE(CTest)
 
@@ -34,7 +36,7 @@ include_directories(logging-ext/boost)
 
 add_subdirectory(somanetwork)
 add_subdirectory(tests)
-add_subdirectory(benchmarks)
+#add_subdirectory(benchmarks)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/somanetwork-1.0.pc.in 
   ${CMAKE_CURRENT_BINARY_DIR}/somanetwork-1.0.pc)

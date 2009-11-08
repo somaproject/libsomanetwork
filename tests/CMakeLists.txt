@@ -8,6 +8,9 @@ add_library(network_test_utils
   fakeeventserver.cc
 )
 
+target_link_libraries(network_test_utils
+    event)
+
 add_executable(tspiketest 
   test_config.h
   tspike_test.cc

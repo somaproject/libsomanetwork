@@ -1,4 +1,3 @@
-
 #include <boost/test/auto_unit_test.hpp>
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/fstream.hpp"   
@@ -13,6 +12,7 @@ using namespace boost::filesystem;
 using namespace std; 
 using namespace somanetwork; 
 
+
 BOOST_AUTO_TEST_SUITE(tspike_test); 
 
 BOOST_AUTO_TEST_CASE(tspike_toandfrom) 
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(tspike_toandfrom)
   for (int i = 0; i < 20; i++) { 
     for (int j = 0; j < 10; j++) { 
       TSpike_t ts = generateCanonicalTSpike(i, j) ; 
-      
+
       pDataPacket_t rdp = rawFromTSpike(ts); 
 
       TSpike_t tsr = rawToTSpike(rdp); 
@@ -52,6 +52,7 @@ BOOST_AUTO_TEST_CASE(tspike_fromrawpy)
   
   std::fstream pyfile(datafile.string().c_str(), ios::in | ios::binary); 
   int N = 10000; 
+
   for (int i = 0; i < N; i++)
     {
       pDataPacket_t rdp(new DataPacket_t()); 
