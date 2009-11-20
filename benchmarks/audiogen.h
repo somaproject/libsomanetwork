@@ -15,7 +15,7 @@ public:
   AudioGenerator(int chan, float tonefreq); 
   void addEvents(somatime_t time, EventList_t * elt); 
   
-  static const int FS = 8000; 
+  static const int FS = 32000; 
   static const int PKTPERBUF = 4; 
 
   
