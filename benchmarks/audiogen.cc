@@ -33,7 +33,7 @@ void AudioGenerator::addEvents(somatime_t time, EventList_t * pelt)
       Event_t event; 
       event.src = 0x20; 
       event.cmd = 0x18; 
-      event.data[0] = chan_; 
+      event.data[0] = 1;
       for(int i = 0; i < PKTPERBUF; i++) {
 	event.data[i +1] = generateSample(internalt_); 
 	internalt_ += (1.0/FS); 
