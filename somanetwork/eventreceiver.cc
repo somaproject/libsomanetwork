@@ -12,7 +12,8 @@ EventReceiver::EventReceiver(eventDispatcherPtr_t ed,
   : seqpacketproto_(SEQMAX), 
     putIn_(erxp), 
     pDispatch_(ed), 
-    pSockProxy_(sp)
+    pSockProxy_(sp),
+    enabled_(false)
 {
   socket_ = pSockProxy_->createEventRXSocket(); 
     
@@ -32,6 +33,10 @@ EventReceiver::~EventReceiver()
 
 }
 
+void EventReceiver::setEnabled(bool state)
+{
+  enabled_ = state; 
+}
 
 void EventReceiver::sendReTxReq(eventseq_t seq, sockaddr_in sfrom)
 {
@@ -89,7 +94,10 @@ void EventReceiver::handleReceive(int fd)
 
       SequentialPacketProtocol<pEventPacket_t>::outqueue_t::iterator i; 
       for (i = out.begin(); i != out.end(); i++) {
-	putIn_(*i); 	
+	// FIXME: enable/disable should actually control the socket!
+	if (enabled_)
+	  putIn_(*i); 	
+	
       }
       
 

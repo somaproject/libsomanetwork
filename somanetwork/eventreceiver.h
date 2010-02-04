@@ -44,6 +44,8 @@ public:
   void handleReceive(int fd);   
   SeqPacketProtoStats getStats(); 
   void resetStats(); 
+
+  void setEnabled(bool); 
   
 private:
   typedef SequentialPacketProtocol<pEventPacket_t> spp_t; 
@@ -59,7 +61,8 @@ private:
   
   boost::mutex statusMutex_;
   pISocketProxy_t pSockProxy_; 
-  
+
+  bool enabled_; 
 }; 
 }
 
