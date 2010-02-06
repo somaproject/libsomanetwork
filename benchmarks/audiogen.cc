@@ -32,8 +32,8 @@ void AudioGenerator::addEvents(somatime_t time, EventList_t * pelt)
       // send the packet
       Event_t event; 
       event.src = 0x20; 
-      event.cmd = 0x30; 
-      event.data[0] = chan_; 
+      event.cmd = 0x18; 
+      event.data[0] = 1;
       for(int i = 0; i < PKTPERBUF; i++) {
 	event.data[i +1] = generateSample(internalt_); 
 	internalt_ += (1.0/FS); 
@@ -57,7 +57,7 @@ int16_t AudioGenerator::generateSample(float t)
   int16_t yi = (int)yr; 
   //yi= lastdummyval_; 
   lastdummyval_++; 
-
-  return yi; 
+  
+  return yi;  
 
 }

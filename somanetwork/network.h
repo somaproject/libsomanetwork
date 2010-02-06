@@ -29,6 +29,10 @@ class Network : public NetworkInterface
   void disableDataRX(datasource_t, datatype_t); 
   void disableAllDataRX(); 
 
+  void enableEventRX(); 
+  void disableEventRX(); 
+
+
   pDataPacket_t  getNewData(void); 
   pEventPacket_t getNewEvents(void); 
 
@@ -67,6 +71,7 @@ class Network : public NetworkInterface
   boost::thread *  pthrd_; 
   void workthread(void); 
 
+  bool eventRXEnabled_; 
 
 
 };

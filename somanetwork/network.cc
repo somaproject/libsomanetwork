@@ -209,5 +209,15 @@ void Network::resetEventStats()
 
 }
 
+void Network::enableEventRX()
+{
+  eventReceiver_.setEnabled(true); 
+}
+  
+void Network::disableEventRX()
+{
+  eventReceiver_.setEnabled(false); 
 
+}
+  
 }
