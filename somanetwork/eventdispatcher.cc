@@ -9,7 +9,7 @@ namespace somanetwork {
 
 EventDispatcher::EventDispatcher() {
   
-    event_init();
+  event_base = event_init();
     
   // setup control endpoint
   int pipes[2]; 
@@ -26,9 +26,6 @@ EventDispatcher::EventDispatcher() {
 
 EventDispatcher::~EventDispatcher()
 {
-  
-
-
 }
   
 
@@ -47,15 +44,15 @@ void EventDispatcher::addEvent(int fd, eventCallback_t cb)
     callbackTable_[fd] = cb; 
   } 
 
-    struct event *ev = new struct event();
+  libevent_event_t *event_struct = new libevent_event_t();
+  event_set(event_struct, fd, EV_READ | EV_PERSIST, generic_event_callback, this);
+  event_base_set(event_base, event_struct);
+  event_add(event_struct, NULL);
     
-    event_set(ev, fd, EV_READ | EV_PERSIST, generic_event_callback, this);
-    event_add(ev, NULL);
-    
-    {
-        boost::mutex::scoped_lock lock( eventTableMutex_ );
-        eventTable_[fd] = ev;
-    }
+  {
+    boost::mutex::scoped_lock lock( eventTableMutex_ );
+    eventTable_[fd] = event_struct;
+  }
     
 }
 
@@ -90,7 +87,8 @@ void EventDispatcher::run(void)
 		// do it's thing without artificial timeout periods.  The runonce() remains
 		// however, because the tests (and possibly other code) need it in order to 
 		// work correctly
-		event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
+		//event_loop(EVLOOP_NONBLOCK | EVLOOP_ONCE);
+    runonce(100);
   }
     
 }
@@ -101,8 +99,8 @@ void EventDispatcher::runonce(int timeout_ms)
   struct timeval timeout;
 	timeout.tv_sec = 0;
 	timeout.tv_usec = timeout_ms * 1000;
-	event_loopexit(&timeout);
-	event_loop(0);
+	event_base_loopexit(event_base, &timeout);
+	event_base_loop(event_base, EVLOOP_NONBLOCK);
 }
   
 void EventDispatcher::controlEvent(int fd)

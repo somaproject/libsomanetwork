@@ -22,10 +22,13 @@
   #define signal_add signal_add_gtk
 #endif
 
-typedef struct event libevent_event_t;
 
 
 namespace somanetwork { 
+
+typedef struct event libevent_event_t;
+typedef struct event_base libevent_event_base_t;
+
 typedef boost::function<void (int fd)> eventCallback_t; 
 typedef std::map<int, eventCallback_t> callbackTable_t; 
 typedef std::list<eventCallback_t> callbackList_t; 
@@ -56,13 +59,15 @@ class  EventDispatcher
 
   bool running_; 
     
+  libevent_event_base_t *event_base;
+    
   int controlFDw_, controlFDr_; 
   
   callbackTable_t callbackTable_; 
   boost::mutex cbTableMutex_;
   
     
-  std::map<int, struct event*> eventTable_; 
+  std::map<int, libevent_event_t *> eventTable_; 
   boost::mutex eventTableMutex_;
     
   callbackList_t timeouts_; 
