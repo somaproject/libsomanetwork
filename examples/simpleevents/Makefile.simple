@@ -2,4 +2,4 @@
 CXXFLAGS =-O2 -g `pkg-config --cflags somanetwork-1.0`
 LDFLAGS = `pkg-config --libs somanetwork-1.0 sigc++-2.0` -lboost_thread-mt
 
-simplereader: simplereader.o
+simpleevents: simpleevents.o

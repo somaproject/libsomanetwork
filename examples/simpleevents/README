@@ -1,0 +1,5 @@
+A simple example to read tspike data. To send fake tspikes to the example,
+use: 
+
+./soma-netbench-tx --tspikes=0
+

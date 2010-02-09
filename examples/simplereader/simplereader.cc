@@ -8,15 +8,16 @@ std::string SOMAIP = "10.0.0.2";
 int main()
 {
   // Create the soma network object
-  somanetwork::Network net(SOMAIP); 
+  somanetwork::pNetworkInterface_t pnet = 
+    somanetwork::Network::createINet(SOMAIP); 
   
   // enable TSPIKE from data source 0
-  net.enableDataRX(0, somanetwork::TSPIKE); 
+  pnet->enableDataRX(0, somanetwork::TSPIKE); 
 
   // start running
-  net.run(); 
+  pnet->run(); 
   
-  int datapipe = net.getDataFifoPipe(); 
+  int datapipe = pnet->getDataFifoPipe(); 
   
   // create a list to hold our spikes
   std::list<somanetwork::TSpike_t> tspike_list; 
@@ -26,7 +27,7 @@ int main()
     char dummychar; 
     read(datapipe, &dummychar, 1);  // read a single byte out of the fifo, or block
     
-    somanetwork::pDataPacket_t dp = net.getNewData(); 
+    somanetwork::pDataPacket_t dp = pnet->getNewData(); 
     
     // now convert to a tspike packet
 
@@ -36,7 +37,7 @@ int main()
     tspike_list.push_back(ts); 
   }
 
-  net.shutdown(); 
+  pnet->shutdown(); 
 
   std::cout << "We received " << tspike_list.size() 
 	    << " tspikes" << std::endl; 
