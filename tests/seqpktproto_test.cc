@@ -141,6 +141,20 @@ BOOST_AUTO_TEST_CASE(test_lienar_addition) {
 
 }
 
+BOOST_AUTO_TEST_CASE(test_lienar_addition_offset) {
+  /*
+    Add a sequence of packets,
+   */
+
+  seqid_t SEQMAX = 4; 
+  
+  seqlist_t goodin; 
+  goodin += 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3; 
+  
+  run_sequential_test(goodin, goodin, SEQMAX); 
+
+}
+
 BOOST_AUTO_TEST_CASE(test_out_of_order) {
   /*
     Add a sequence of packets with 
